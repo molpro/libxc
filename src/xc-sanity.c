@@ -21,7 +21,7 @@ int main(void) {
 
   /* Get list of available functionals */
   N=xc_number_of_functionals();
-  flist=malloc(N*sizeof(int));
+  flist = (int *) malloc(N*sizeof(int));
   xc_available_functional_numbers(flist);
 
   /* Loop over functionals */
@@ -87,6 +87,10 @@ int main(void) {
       strcpy(family,"mgga_");
       break;
 
+    case(XC_FAMILY_HYB_LDA):
+      strcpy(family,"hyb_lda_");
+      break;
+
     case(XC_FAMILY_HYB_GGA):
       strcpy(family,"hyb_gga_");
       break;
@@ -126,10 +130,14 @@ int main(void) {
           rangesep++;
         if(func.info->flags & XC_FLAGS_HYB_CAMY)
           rangesep++;
-        if(func.info->flags & XC_FLAGS_HYB_LC)
+        if(func.info->flags & XC_FLAGS_HYB_LC) {
+          printf("Functional %i '%s' is marked HYB_LC which should not be used.\n",func_id, fname);
           rangesep++;
-        if(func.info->flags & XC_FLAGS_HYB_LCY)
+        }
+        if(func.info->flags & XC_FLAGS_HYB_LCY) {
+          printf("Functional %i '%s' is marked HYB_LCY which should not be used.\n",func_id, fname);
           rangesep++;
+        }
 
         switch(rangesep) {
         case(0):

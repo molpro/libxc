@@ -25,7 +25,7 @@ lda_xc_1d_ehwlrg_init(xc_func_type *p)
   lda_xc_1d_ehwlrg_params *params;
 
   assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(lda_xc_1d_ehwlrg_params));
+  p->params = libxc_malloc(sizeof(lda_xc_1d_ehwlrg_params));
   params = (lda_xc_1d_ehwlrg_params *) (p->params);
 
   switch(p->info->number){
@@ -50,49 +50,55 @@ lda_xc_1d_ehwlrg_init(xc_func_type *p)
   }
 }
 
-#define XC_DIMENSIONS 1
-
-#include "maple2c/lda_xc_1d_ehwlrg.c"
-
-#define func maple2c_func
+#include "decl_lda.h"
+#include "maple2c/lda_exc/lda_xc_1d_ehwlrg.c"
 #include "work_lda.c"
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_lda_xc_1d_ehwlrg_1 = {
   XC_LDA_XC_1D_EHWLRG_1,
   XC_EXCHANGE_CORRELATION,
   "LDA constructed from slab-like systems of 1 electron",
   XC_FAMILY_LDA,
   {&xc_ref_Entwistle2016_205134, NULL, NULL, NULL, NULL},
-  XC_FLAGS_1D |  XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_1D | MAPLE2C_FLAGS,
   1e-32,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   lda_xc_1d_ehwlrg_init, NULL,
   work_lda, NULL, NULL
 };
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_lda_xc_1d_ehwlrg_2 = {
   XC_LDA_XC_1D_EHWLRG_2,
   XC_EXCHANGE_CORRELATION,
   "LDA constructed from slab-like systems of 2 electrons",
   XC_FAMILY_LDA,
   {&xc_ref_Entwistle2016_205134, NULL, NULL, NULL, NULL},
-  XC_FLAGS_1D |  XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_1D | MAPLE2C_FLAGS,
   1e-32,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   lda_xc_1d_ehwlrg_init, NULL,
   work_lda, NULL, NULL
 };
 
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_lda_xc_1d_ehwlrg_3 = {
   XC_LDA_XC_1D_EHWLRG_3,
   XC_EXCHANGE_CORRELATION,
   "LDA constructed from slab-like systems of 3 electrons",
   XC_FAMILY_LDA,
   {&xc_ref_Entwistle2016_205134, NULL, NULL, NULL, NULL},
-  XC_FLAGS_1D |  XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_1D | MAPLE2C_FLAGS,
   1e-32,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   lda_xc_1d_ehwlrg_init, NULL,
   work_lda, NULL, NULL
 };

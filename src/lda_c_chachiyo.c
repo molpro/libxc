@@ -25,7 +25,7 @@ lda_c_chachiyo_init(xc_func_type *p)
   lda_c_chachiyo_params *params;
 
   assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(lda_c_chachiyo_params));
+  p->params = libxc_malloc(sizeof(lda_c_chachiyo_params));
   params = (lda_c_chachiyo_params *) (p->params);
 
   switch(p->info->number){
@@ -41,33 +41,38 @@ lda_c_chachiyo_init(xc_func_type *p)
   }
 }
 
-#include "maple2c/lda_c_chachiyo.c"
-
-#define func maple2c_func
+#include "decl_lda.h"
+#include "maple2c/lda_exc/lda_c_chachiyo.c"
 #include "work_lda.c"
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_lda_c_chachiyo = {
   XC_LDA_C_CHACHIYO,
   XC_CORRELATION,
   "Chachiyo simple 2 parameter correlation",
   XC_FAMILY_LDA,
   {&xc_ref_Chachiyo2016_021101, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-24,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   lda_c_chachiyo_init, NULL,
   work_lda, NULL, NULL
 };
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_lda_c_karasiev = {
   XC_LDA_C_KARASIEV,
   XC_CORRELATION,
   "Karasiev reparameterization of Chachiyo",
   XC_FAMILY_LDA,
   {&xc_ref_Karasiev2016_157101, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-24,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   lda_c_chachiyo_init, NULL,
   work_lda, NULL, NULL
 };

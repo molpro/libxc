@@ -91,12 +91,13 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
+
+#this is a hack for nvcc, this should be improved.
+@HAVE_CUDA_TRUE@am__append_1 = "-dc"
 bin_PROGRAMS = xc-info$(EXEEXT) xc-threshold$(EXEEXT)
 noinst_PROGRAMS = genwiki$(EXEEXT) xc-sanity$(EXEEXT)
-@COMPILE_FORTRAN_TRUE@am__append_1 = libxcf90.la
-@COMPILE_FORTRAN03_TRUE@am__append_2 = libxcf03.la
-@COMPILE_FORTRAN_TRUE@am__append_3 = $(LIBFUNCMOD) $(XCLIBMODS)
-@COMPILE_FORTRAN03_TRUE@am__append_4 = $(XCF03LIBMODS)
+@COMPILE_FORTRAN_TRUE@am__append_2 = libxcf90.la
+@COMPILE_FORTRAN_TRUE@am__append_3 = $(XCF90LIBMODS)
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ac_prog_sed.m4 \
@@ -148,64 +149,79 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(bindir)" \
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libxc_la_LIBADD =
 am__objects_1 = special_functions.lo bessel.lo expint_e1.lo \
-	integrate.lo util.lo mix_func.lo func_info.lo functionals.lo \
-	version.lo func_reference.lo lda.lo lda_x.lo lda_x_1d.lo \
-	lda_x_2d.lo lda_c_wigner.lo lda_c_gombas.lo lda_c_rpa.lo \
-	lda_c_hl.lo lda_c_vwn.lo lda_c_vwn_1.lo lda_c_vwn_2.lo \
-	lda_c_vwn_3.lo lda_c_vwn_4.lo lda_c_vwn_rpa.lo lda_c_pz.lo \
-	lda_c_pw.lo lda_c_pk09.lo lda_c_lp96.lo lda_c_ml1.lo \
-	lda_c_rc04.lo lda_xc_teter93.lo lda_c_1d_csc.lo \
+	faddeeva.lo integrate.lo math_brent.lo util.lo mix_func.lo \
+	func_info.lo functionals.lo version.lo func_reference.lo \
+	lda.lo lda_x.lo lda_x_2d.lo lda_c_wigner.lo lda_c_gombas.lo \
+	lda_c_rpa.lo lda_c_hl.lo lda_c_vwn.lo lda_c_vwn_1.lo \
+	lda_c_vwn_2.lo lda_c_vwn_3.lo lda_c_vwn_4.lo lda_c_vwn_rpa.lo \
+	lda_c_pz.lo lda_c_pw.lo lda_c_pk09.lo lda_c_lp96.lo \
+	lda_c_ml1.lo lda_c_rc04.lo lda_xc_teter93.lo lda_c_1d_csc.lo \
 	lda_c_1d_loos.lo lda_c_2d_amgb.lo lda_c_2d_prm.lo lda_k_tf.lo \
 	lda_xc_zlp.lo lda_xc_ksdt.lo lda_c_chachiyo.lo \
-	lda_xc_1d_ehwlrg.lo lda_x_rel.lo lda_x_erf.lo lda_k_zlp.lo \
-	lda_c_gk72.lo gga.lo gga_x_lg93.lo gga_x_pbe.lo gga_x_rpbe.lo \
-	gga_x_pbea.lo gga_x_mpbe.lo gga_x_herman.lo gga_x_b86.lo \
-	gga_x_b88.lo gga_x_g96.lo gga_x_pw86.lo gga_x_pw91.lo \
-	gga_x_optx.lo gga_x_airy.lo gga_x_c09x.lo gga_x_dk87.lo \
-	gga_x_ft97.lo gga_x_wc.lo gga_x_am05.lo gga_x_bayesian.lo \
-	gga_x_kt.lo gga_x_htbs.lo gga_c_pbe.lo gga_c_lyp.lo \
-	gga_c_p86.lo gga_c_pw91.lo gga_c_am05.lo gga_c_lm.lo \
-	gga_c_wl.lo gga_c_wi.lo gga_x_lb.lo gga_xc_b97.lo \
-	gga_xc_edf1.lo gga_xc_1w.lo gga_c_optc.lo gga_c_tca.lo \
-	gga_x_bpccac.lo gga_x_sogga11.lo gga_c_sogga11.lo \
+	lda_c_chachiyo_mod.lo lda_xc_1d_ehwlrg.lo lda_x_rel.lo \
+	lda_x_erf.lo lda_k_zlp.lo lda_c_gk72.lo lda_xc_bn05.lo \
+	lda_c_pmgb06.lo lda_k_gds08_worker.lo lda_xc_tih.lo \
+	lda_x_1d_exponential.lo lda_x_1d_soft.lo \
+	hyb_lda_xc_cam_lda0.lo lda_x_sloc.lo gga.lo gga_x_lg93.lo \
+	gga_x_pbe.lo gga_x_rpbe.lo gga_x_pbea.lo gga_x_mpbe.lo \
+	gga_x_herman.lo gga_x_b86.lo gga_x_b88.lo gga_x_g96.lo \
+	gga_x_pw86.lo gga_x_pw91.lo gga_x_optx.lo gga_x_airy.lo \
+	gga_x_c09x.lo gga_x_dk87.lo gga_x_ft97.lo gga_x_wc.lo \
+	gga_x_am05.lo gga_x_bayesian.lo gga_x_kt.lo gga_x_htbs.lo \
+	gga_c_pbe.lo gga_c_lyp.lo gga_c_p86.lo gga_c_pw91.lo \
+	gga_c_am05.lo gga_c_lm.lo gga_c_wl.lo gga_c_wi.lo gga_x_lb.lo \
+	gga_xc_b97.lo gga_xc_edf1.lo gga_xc_1w.lo gga_c_optc.lo \
+	gga_c_tca.lo gga_x_bpccac.lo gga_x_sogga11.lo gga_c_sogga11.lo \
 	gga_xc_th1.lo gga_x_wpbeh.lo gga_x_hjs.lo gga_x_ityh.lo \
-	gga_x_sfat.lo gga_x_ev93.lo gga_x_ak13.lo gga_x_q2d.lo \
-	gga_c_q2d.lo gga_x_ssb_sw.lo gga_c_ft97.lo gga_x_n12.lo \
-	gga_x_lv_rpw86.lo gga_x_2d_b86.lo gga_x_2d_b86_mgc.lo \
-	gga_x_2d_b88.lo gga_x_2d_pbe.lo gga_k_tflw.lo gga_k_pearson.lo \
-	gga_k_ol1.lo gga_k_ol2.lo gga_k_dk.lo gga_k_meyer.lo \
-	gga_x_vmt.lo gga_x_hcth_a.lo gga_x_cap.lo gga_x_beefvdw.lo \
-	gga_x_sg4.lo gga_x_gg99.lo gga_x_pbepow.lo gga_x_lag.lo \
-	gga_k_thakkar.lo gga_xc_oblyp_d.lo hyb_gga_xc_b3lyp.lo \
-	hyb_gga_xc_o3lyp.lo gga_x_pbeint.lo gga_x_rge2.lo \
-	gga_x_vmt84.lo gga_x_hjs_b88_v2.lo gga_c_revtca.lo \
-	gga_c_bcgp.lo gga_c_zpbeint.lo gga_c_pbeloc.lo gga_c_sg4.lo \
-	gga_c_regtpss.lo gga_c_scan_e0.lo gga_xc_th2.lo gga_xc_th3.lo \
-	gga_c_hcth_a.lo hyb_gga_xc_wb97.lo gga_c_bmk.lo gga_c_gapc.lo \
-	gga_c_gaploc.lo gga_c_zvpbeint.lo gga_c_w94.lo gga_c_cs1.lo \
-	gga_c_op_xalpha.lo gga_c_op_b88.lo gga_c_op_pbe.lo \
-	gga_c_op_g96.lo gga_c_op_pw91.lo gga_x_pbetrans.lo \
-	gga_x_chachiyo.lo gga_k_exp4.lo hyb_gga_xc_pbeh.lo \
-	hyb_gga_xc_b1wc.lo hyb_gga_xc_hse.lo hyb_gga_xc_cam_b3lyp.lo \
-	hyb_gga_xc_camy_blyp.lo hyb_gga_xc_camy_b3lyp.lo \
-	hyb_gga_xc_lcy_pbe.lo hyb_gga_xc_lcy_blyp.lo gga_xc_vv10.lo \
-	hyb_gga_xc_edf2.lo mgga.lo mgga_x_lta.lo mgga_x_tpss.lo \
-	mgga_x_br89.lo mgga_x_gvt4.lo mgga_x_m06l.lo \
-	mgga_x_tau_hcth.lo mgga_x_2d_prhg07.lo mgga_x_pkzb.lo \
-	hyb_mgga_x_m05.lo mgga_x_m08.lo mgga_x_ms.lo mgga_x_mn12.lo \
-	mgga_x_mk00.lo mgga_c_vsxc.lo mgga_c_pkzb.lo mgga_c_bc95.lo \
-	mgga_c_m08.lo mgga_xc_cc06.lo mgga_c_cs.lo mgga_xc_otpss_d.lo \
-	mgga_xc_zlp.lo hyb_mgga_xc_b88b95.lo mgga_x_mbeef.lo \
-	mgga_xc_b97mv.lo mgga_x_scan.lo mgga_c_scan.lo \
-	hyb_mgga_xc_tpssh.lo mgga_x_mvs.lo hyb_mgga_x_mvsh.lo \
-	mgga_x_tm.lo mgga_x_vt84.lo mgga_x_sa_tpss.lo mgga_k_pc07.lo \
-	mgga_x_mbeefvdw.lo mgga_x_m11.lo mgga_x_m11_l.lo \
-	hyb_mgga_xc_wb97mv.lo mgga_c_m05.lo mgga_c_m06l.lo \
-	hyb_mgga_x_dldf.lo mgga_c_tpss.lo mgga_c_revtpss.lo \
-	mgga_c_tpssloc.lo mgga_xc_hle17.lo mgga_c_kcis.lo \
-	mgga_xc_lp90.lo hyb_mgga_xc_kcis.lo mgga_c_b88.lo mgga_x_gx.lo \
-	mgga_x_pbe_gx.lo mgga_c_revscan.lo mgga_x_br89_explicit.lo \
-	mgga_xc_b98.lo
+	gga_x_sfat.lo gga_x_sfat_pbe.lo gga_x_ev93.lo gga_x_ak13.lo \
+	gga_x_q2d.lo gga_c_q2d.lo gga_x_ssb_sw.lo gga_c_ft97.lo \
+	gga_x_n12.lo gga_x_lv_rpw86.lo gga_x_2d_b86.lo gga_k_llp.lo \
+	gga_x_2d_b86_mgc.lo gga_x_2d_b88.lo gga_x_2d_pbe.lo \
+	gga_x_lspbe.lo gga_x_lsrpbe.lo gga_k_tflw.lo gga_k_pearson.lo \
+	gga_x_ol2.lo gga_k_ol1.lo gga_k_ol2.lo gga_k_dk.lo \
+	gga_k_meyer.lo gga_x_vmt.lo gga_x_hcth_a.lo gga_x_cap.lo \
+	gga_x_beefvdw.lo gga_x_sg4.lo gga_x_gg99.lo gga_x_pbepow.lo \
+	gga_x_lag.lo gga_k_thakkar.lo gga_xc_oblyp_d.lo \
+	hyb_gga_xc_b3lyp.lo hyb_gga_xc_o3lyp.lo gga_x_pbeint.lo \
+	gga_x_rge2.lo gga_x_vmt84.lo gga_x_hjs_b88_v2.lo \
+	gga_c_revtca.lo gga_c_acgga.lo gga_c_acggap.lo \
+	gga_c_zpbeint.lo gga_c_pbeloc.lo gga_c_sg4.lo gga_c_regtpss.lo \
+	gga_c_scan_e0.lo gga_xc_th2.lo gga_xc_th3.lo gga_c_hcth_a.lo \
+	hyb_gga_xc_wb97.lo gga_c_bmk.lo gga_c_gapc.lo gga_c_gaploc.lo \
+	gga_c_zvpbeint.lo gga_c_w94.lo gga_c_cs1.lo gga_c_op_xalpha.lo \
+	gga_c_op_b88.lo gga_c_op_pbe.lo gga_c_op_g96.lo \
+	gga_c_op_pw91.lo gga_x_pbetrans.lo gga_k_apbeint.lo \
+	gga_x_chachiyo.lo gga_k_gds08.lo gga_k_exp4.lo \
+	hyb_gga_xc_pbeh.lo hyb_gga_xc_b1wc.lo hyb_gga_xc_hse.lo \
+	hyb_gga_xc_cam_b3lyp.lo hyb_gga_xc_cam_qtp.lo gga_k_lc94.lo \
+	gga_c_zvpbeloc.lo hyb_gga_xc_camy_blyp.lo \
+	hyb_gga_xc_camy_b3lyp.lo hyb_gga_xc_lcy_pbe.lo \
+	hyb_gga_xc_lcy_blyp.lo gga_xc_vv10.lo hyb_gga_xc_edf2.lo \
+	gga_k_pw86.lo gga_k_mpbe.lo gga_k_apbe.lo gga_x_fd_lb94.lo \
+	gga_x_ncap.lo gga_c_chachiyo.lo hyb_gga_xc_lc_blyp.lo \
+	gga_c_pbe_vwn.lo gga_x_s12.lo gga_x_lcgau.lo mgga.lo \
+	mgga_x_lta.lo mgga_x_tpss.lo mgga_x_br89.lo mgga_x_gvt4.lo \
+	mgga_x_m06l.lo mgga_x_tau_hcth.lo mgga_x_2d_prhg07.lo \
+	mgga_x_2d_prp10.lo mgga_x_pkzb.lo hyb_mgga_x_m05.lo \
+	mgga_x_m08.lo mgga_x_ms.lo mgga_x_mn12.lo mgga_c_vsxc.lo \
+	mgga_c_pkzb.lo mgga_c_bc95.lo mgga_c_m08.lo mgga_xc_cc06.lo \
+	mgga_c_cs.lo mgga_xc_otpss_d.lo mgga_xc_zlp.lo \
+	hyb_mgga_xc_b88b95.lo mgga_x_mbeef.lo mgga_xc_b97mv.lo \
+	mgga_x_scan.lo mgga_c_scan.lo hyb_mgga_xc_tpssh.lo \
+	mgga_x_mvs.lo hyb_mgga_x_mvsh.lo mgga_x_tm.lo mgga_x_vt84.lo \
+	mgga_x_sa_tpss.lo mgga_k_pc07.lo mgga_x_mbeefvdw.lo \
+	mgga_x_m11.lo mgga_x_m11_l.lo hyb_mgga_xc_wb97mv.lo \
+	mgga_c_m05.lo mgga_c_m06l.lo hyb_mgga_x_dldf.lo mgga_c_tpss.lo \
+	mgga_c_revtpss.lo mgga_c_tpssloc.lo mgga_xc_hle17.lo \
+	mgga_c_kcis.lo mgga_xc_lp90.lo hyb_mgga_xc_kcis.lo \
+	mgga_c_b88.lo mgga_x_gx.lo mgga_x_pbe_gx.lo mgga_c_revscan.lo \
+	mgga_x_br89_explicit.lo mgga_xc_b98.lo mgga_x_rtpss.lo \
+	mgga_x_msb.lo mgga_x_mvsb.lo mgga_x_regtpss.lo mgga_x_rscan.lo \
+	mgga_c_rscan.lo mgga_x_2d_js17.lo mgga_x_tb09.lo \
+	mgga_x_edmgga.lo mgga_x_gdme.lo mgga_x_rlda.lo mgga_x_revtm.lo \
+	mgga_x_scanl.lo mgga_c_scanl.lo hyb_mgga_x_js18.lo \
+	hyb_mgga_x_pjs18.lo mgga_x_mbrxh_bg.lo mgga_x_mbrxc_bg.lo \
+	mgga_x_task.lo mgga_x_mggac.lo
 am_libxc_la_OBJECTS = references.lo $(am__objects_1)
 libxc_la_OBJECTS = $(am_libxc_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -215,27 +231,12 @@ am__v_lt_1 =
 libxc_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(libxc_la_LDFLAGS) $(LDFLAGS) -o $@
-@COMPILE_FORTRAN03_TRUE@libxcf03_la_DEPENDENCIES = libxc.la
-@COMPILE_FORTRAN03_TRUE@nodist_libxcf03_la_OBJECTS =  \
-@COMPILE_FORTRAN03_TRUE@	libxcf03_la-libxcf03.lo
-libxcf03_la_OBJECTS = $(nodist_libxcf03_la_OBJECTS)
-libxcf03_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=FC \
-	$(libxcf03_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link \
-	$(FCLD) $(AM_FCFLAGS) $(FCFLAGS) $(libxcf03_la_LDFLAGS) \
-	$(LDFLAGS) -o $@
-@COMPILE_FORTRAN03_TRUE@am_libxcf03_la_rpath = -rpath $(libdir)
 @COMPILE_FORTRAN_TRUE@libxcf90_la_DEPENDENCIES = libxc.la
-am__libxcf90_la_SOURCES_DIST = xc_f.c
-@COMPILE_FORTRAN_TRUE@am_libxcf90_la_OBJECTS = libxcf90_la-xc_f.lo
-@COMPILE_FORTRAN_TRUE@nodist_libxcf90_la_OBJECTS =  \
-@COMPILE_FORTRAN_TRUE@	libxcf90_la-libxc_funcs.lo \
-@COMPILE_FORTRAN_TRUE@	libxcf90_la-libxc.lo
-libxcf90_la_OBJECTS = $(am_libxcf90_la_OBJECTS) \
-	$(nodist_libxcf90_la_OBJECTS)
-libxcf90_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=FC \
-	$(libxcf90_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link \
-	$(FCLD) $(AM_FCFLAGS) $(FCFLAGS) $(libxcf90_la_LDFLAGS) \
-	$(LDFLAGS) -o $@
+@COMPILE_FORTRAN_TRUE@nodist_libxcf90_la_OBJECTS = libxcf90.lo
+libxcf90_la_OBJECTS = $(nodist_libxcf90_la_OBJECTS)
+libxcf90_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=FC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(FCLD) $(AM_FCFLAGS) $(FCFLAGS) \
+	$(libxcf90_la_LDFLAGS) $(LDFLAGS) -o $@
 @COMPILE_FORTRAN_TRUE@am_libxcf90_la_rpath = -rpath $(libdir)
 PROGRAMS = $(bin_PROGRAMS) $(noinst_PROGRAMS)
 am_genwiki_OBJECTS = genwiki.$(OBJEXT)
@@ -288,7 +289,6 @@ AM_V_CC = $(am__v_CC_@AM_V@)
 am__v_CC_ = $(am__v_CC_@AM_DEFAULT_V@)
 am__v_CC_0 = @echo "  CC      " $@;
 am__v_CC_1 = 
-CCLD = $(CC)
 LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
@@ -297,21 +297,25 @@ am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
 FCCOMPILE = $(FC) $(AM_FCFLAGS) $(FCFLAGS)
+LTFCCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=FC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=compile $(FC) $(AM_FCFLAGS) $(FCFLAGS)
 AM_V_FC = $(am__v_FC_@AM_V@)
 am__v_FC_ = $(am__v_FC_@AM_DEFAULT_V@)
 am__v_FC_0 = @echo "  FC      " $@;
 am__v_FC_1 = 
 FCLD = $(FC)
+FCLINK = $(LIBTOOL) $(AM_V_lt) --tag=FC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(FCLD) $(AM_FCFLAGS) $(FCFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_FCLD = $(am__v_FCLD_@AM_V@)
 am__v_FCLD_ = $(am__v_FCLD_@AM_DEFAULT_V@)
 am__v_FCLD_0 = @echo "  FCLD    " $@;
 am__v_FCLD_1 = 
-SOURCES = $(libxc_la_SOURCES) $(nodist_libxcf03_la_SOURCES) \
-	$(libxcf90_la_SOURCES) $(nodist_libxcf90_la_SOURCES) \
+SOURCES = $(libxc_la_SOURCES) $(nodist_libxcf90_la_SOURCES) \
 	$(genwiki_SOURCES) $(xc_info_SOURCES) $(xc_sanity_SOURCES) \
 	$(xc_threshold_SOURCES)
-DIST_SOURCES = $(libxc_la_SOURCES) $(am__libxcf90_la_SOURCES_DIST) \
-	$(genwiki_SOURCES) $(xc_info_SOURCES) $(xc_sanity_SOURCES) \
+DIST_SOURCES = $(libxc_la_SOURCES) $(genwiki_SOURCES) \
+	$(xc_info_SOURCES) $(xc_sanity_SOURCES) \
 	$(xc_threshold_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive cscopelist-recursive \
 	ctags-recursive dvi-recursive html-recursive info-recursive \
@@ -393,8 +397,10 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
-CC = @CC@
+BASH_SHELL = @BASH_SHELL@
+CC = @CC@ $(am__append_1)
 CCDEPMODE = @CCDEPMODE@
+CCLD = @CCLD@
 CFLAGS = @CFLAGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
@@ -527,20 +533,23 @@ genwiki_LDFLAGS =
 xc_sanity_SOURCES = xc-sanity.c
 xc_sanity_LDADD = libxc.la -lm
 xc_sanity_LDFLAGS = 
-lib_LTLIBRARIES = libxc.la $(am__append_1) $(am__append_2)
+lib_LTLIBRARIES = libxc.la $(am__append_2)
 libxc_la_FUNC_SOURCES = \
-	special_functions.c bessel.c expint_e1.c integrate.c util.c	\
-	mix_func.c func_info.c functionals.c version.c func_reference.c \
+	special_functions.c bessel.c expint_e1.c faddeeva.c integrate.c		\
+	math_brent.c util.c mix_func.c func_info.c functionals.c	\
+	version.c func_reference.c \
 	lda.c \
-	lda_x.c lda_x_1d.c lda_x_2d.c lda_c_wigner.c lda_c_gombas.c	\
-	lda_c_rpa.c lda_c_hl.c lda_c_vwn.c lda_c_vwn_1.c lda_c_vwn_2.c  \
-	lda_c_vwn_3.c lda_c_vwn_4.c lda_c_vwn_rpa.c lda_c_pz.c          \
-	lda_c_pw.c lda_c_pk09.c lda_c_lp96.c \
-	lda_c_ml1.c lda_c_rc04.c lda_xc_teter93.c lda_c_1d_csc.c	\
-	lda_c_1d_loos.c lda_c_2d_amgb.c lda_c_2d_prm.c		\
-	lda_k_tf.c lda_xc_zlp.c lda_xc_ksdt.c lda_c_chachiyo.c          \
-	lda_xc_1d_ehwlrg.c lda_x_rel.c lda_x_erf.c lda_k_zlp.c          \
-	lda_c_gk72.c \
+	lda_x.c lda_x_2d.c lda_c_wigner.c lda_c_gombas.c lda_c_rpa.c	\
+	lda_c_hl.c lda_c_vwn.c lda_c_vwn_1.c lda_c_vwn_2.c		\
+	lda_c_vwn_3.c lda_c_vwn_4.c lda_c_vwn_rpa.c lda_c_pz.c		\
+	lda_c_pw.c lda_c_pk09.c lda_c_lp96.c lda_c_ml1.c lda_c_rc04.c	\
+	lda_xc_teter93.c lda_c_1d_csc.c lda_c_1d_loos.c			\
+	lda_c_2d_amgb.c lda_c_2d_prm.c lda_k_tf.c lda_xc_zlp.c		\
+	lda_xc_ksdt.c lda_c_chachiyo.c lda_c_chachiyo_mod.c		\
+	lda_xc_1d_ehwlrg.c lda_x_rel.c lda_x_erf.c lda_k_zlp.c		\
+	lda_c_gk72.c lda_xc_bn05.c lda_c_pmgb06.c			\
+	lda_k_gds08_worker.c lda_xc_tih.c lda_x_1d_exponential.c	\
+	lda_x_1d_soft.c hyb_lda_xc_cam_lda0.c lda_x_sloc.c \
 	gga.c \
 	gga_x_lg93.c gga_x_pbe.c gga_x_rpbe.c gga_x_pbea.c		\
 	gga_x_mpbe.c gga_x_herman.c gga_x_b86.c gga_x_b88.c		\
@@ -552,85 +561,85 @@ libxc_la_FUNC_SOURCES = \
 	gga_xc_b97.c gga_xc_edf1.c gga_xc_1w.c gga_c_optc.c		\
 	gga_c_tca.c gga_x_bpccac.c gga_x_sogga11.c gga_c_sogga11.c	\
 	gga_xc_th1.c gga_x_wpbeh.c gga_x_hjs.c gga_x_ityh.c		\
-	gga_x_sfat.c gga_x_ev93.c gga_x_ak13.c gga_x_q2d.c gga_c_q2d.c	\
-	gga_x_ssb_sw.c gga_c_ft97.c gga_x_n12.c	gga_x_lv_rpw86.c        \
-	gga_x_2d_b86.c gga_x_2d_b86_mgc.c		\
-	gga_x_2d_b88.c gga_x_2d_pbe.c gga_k_tflw.c gga_k_pearson.c	\
-	gga_k_ol1.c gga_k_ol2.c gga_k_dk.c gga_k_meyer.c gga_x_vmt.c	\
-	gga_x_hcth_a.c gga_x_cap.c gga_x_beefvdw.c gga_x_sg4.c          \
-	gga_x_gg99.c gga_x_pbepow.c gga_x_lag.c gga_k_thakkar.c         \
-	gga_xc_oblyp_d.c hyb_gga_xc_b3lyp.c hyb_gga_xc_o3lyp.c		\
-	gga_x_pbeint.c gga_x_rge2.c gga_x_vmt84.c gga_x_hjs_b88_v2.c    \
-	gga_c_revtca.c gga_c_bcgp.c gga_c_zpbeint.c gga_c_pbeloc.c      \
-	gga_c_sg4.c gga_c_regtpss.c gga_c_scan_e0.c gga_xc_th2.c        \
-	gga_xc_th3.c gga_c_hcth_a.c hyb_gga_xc_wb97.c gga_c_bmk.c       \
-	gga_c_gapc.c gga_c_gaploc.c gga_c_zvpbeint.c gga_c_w94.c        \
-	gga_c_cs1.c gga_c_op_xalpha.c gga_c_op_b88.c gga_c_op_pbe.c     \
-	gga_c_op_g96.c gga_c_op_pw91.c gga_x_pbetrans.c \
-	gga_x_chachiyo.c gga_k_exp4.c \
-	hyb_gga_xc_pbeh.c hyb_gga_xc_b1wc.c 				\
-	hyb_gga_xc_hse.c hyb_gga_xc_cam_b3lyp.c				\
-	hyb_gga_xc_camy_blyp.c hyb_gga_xc_camy_b3lyp.c			\
-	hyb_gga_xc_lcy_pbe.c hyb_gga_xc_lcy_blyp.c gga_xc_vv10.c        \
-	hyb_gga_xc_edf2.c                                               \
-	mgga.c                                                          \
-	mgga_x_lta.c mgga_x_tpss.c mgga_x_br89.c mgga_x_gvt4.c	        \
-	mgga_x_m06l.c mgga_x_tau_hcth.c mgga_x_2d_prhg07.c	            \
-	mgga_x_pkzb.c hyb_mgga_x_m05.c mgga_x_m08.c mgga_x_ms.c	        \
-	mgga_x_mn12.c mgga_x_mk00.c mgga_c_vsxc.c mgga_c_pkzb.c	        \
-	mgga_c_bc95.c mgga_c_m08.c mgga_xc_cc06.c mgga_c_cs.c	          \
-	mgga_xc_otpss_d.c mgga_xc_zlp.c hyb_mgga_xc_b88b95.c	          \
-	mgga_x_mbeef.c mgga_xc_b97mv.c mgga_x_scan.c mgga_c_scan.c      \
-	hyb_mgga_xc_tpssh.c mgga_x_mvs.c hyb_mgga_x_mvsh.c              \
-	mgga_x_tm.c mgga_x_vt84.c mgga_x_sa_tpss.c mgga_k_pc07.c        \
-        mgga_x_mbeefvdw.c mgga_x_m11.c mgga_x_m11_l.c                   \
-	hyb_mgga_xc_wb97mv.c mgga_c_m05.c mgga_c_m06l.c                 \
-	hyb_mgga_x_dldf.c mgga_c_tpss.c mgga_c_revtpss.c                \
-	mgga_c_tpssloc.c mgga_xc_hle17.c mgga_c_kcis.c mgga_xc_lp90.c   \
-	hyb_mgga_xc_kcis.c mgga_c_b88.c mgga_x_gx.c mgga_x_pbe_gx.c     \
-        mgga_c_revscan.c mgga_x_br89_explicit.c mgga_xc_b98.c
+	gga_x_sfat.c gga_x_sfat_pbe.c gga_x_ev93.c gga_x_ak13.c		\
+	gga_x_q2d.c gga_c_q2d.c gga_x_ssb_sw.c gga_c_ft97.c		\
+	gga_x_n12.c gga_x_lv_rpw86.c gga_x_2d_b86.c gga_k_llp.c		\
+	gga_x_2d_b86_mgc.c gga_x_2d_b88.c gga_x_2d_pbe.c		\
+	gga_x_lspbe.c gga_x_lsrpbe.c gga_k_tflw.c gga_k_pearson.c	\
+	gga_x_ol2.c gga_k_ol1.c gga_k_ol2.c gga_k_dk.c gga_k_meyer.c	\
+	gga_x_vmt.c gga_x_hcth_a.c gga_x_cap.c gga_x_beefvdw.c		\
+	gga_x_sg4.c gga_x_gg99.c gga_x_pbepow.c gga_x_lag.c		\
+	gga_k_thakkar.c gga_xc_oblyp_d.c hyb_gga_xc_b3lyp.c		\
+	hyb_gga_xc_o3lyp.c gga_x_pbeint.c gga_x_rge2.c gga_x_vmt84.c	\
+	gga_x_hjs_b88_v2.c gga_c_revtca.c gga_c_acgga.c			\
+	gga_c_acggap.c gga_c_zpbeint.c gga_c_pbeloc.c gga_c_sg4.c	\
+	gga_c_regtpss.c gga_c_scan_e0.c gga_xc_th2.c gga_xc_th3.c	\
+	gga_c_hcth_a.c hyb_gga_xc_wb97.c gga_c_bmk.c gga_c_gapc.c	\
+	gga_c_gaploc.c gga_c_zvpbeint.c gga_c_w94.c gga_c_cs1.c		\
+	gga_c_op_xalpha.c gga_c_op_b88.c gga_c_op_pbe.c			\
+	gga_c_op_g96.c gga_c_op_pw91.c gga_x_pbetrans.c			\
+	gga_k_apbeint.c gga_x_chachiyo.c gga_k_gds08.c gga_k_exp4.c	\
+	hyb_gga_xc_pbeh.c hyb_gga_xc_b1wc.c hyb_gga_xc_hse.c		\
+	hyb_gga_xc_cam_b3lyp.c hyb_gga_xc_cam_qtp.c gga_k_lc94.c	\
+	gga_c_zvpbeloc.c hyb_gga_xc_camy_blyp.c				\
+	hyb_gga_xc_camy_b3lyp.c hyb_gga_xc_lcy_pbe.c			\
+	hyb_gga_xc_lcy_blyp.c gga_xc_vv10.c hyb_gga_xc_edf2.c		\
+	gga_k_pw86.c gga_k_mpbe.c gga_k_apbe.c gga_x_fd_lb94.c		\
+	gga_x_ncap.c gga_c_chachiyo.c hyb_gga_xc_lc_blyp.c		\
+	gga_c_pbe_vwn.c gga_x_s12.c gga_x_lcgau.c \
+	mgga.c \
+	mgga_x_lta.c mgga_x_tpss.c mgga_x_br89.c mgga_x_gvt4.c		\
+	mgga_x_m06l.c mgga_x_tau_hcth.c mgga_x_2d_prhg07.c mgga_x_2d_prp10.c	\
+	mgga_x_pkzb.c hyb_mgga_x_m05.c mgga_x_m08.c mgga_x_ms.c		\
+	mgga_x_mn12.c mgga_c_vsxc.c mgga_c_pkzb.c		\
+	mgga_c_bc95.c mgga_c_m08.c mgga_xc_cc06.c mgga_c_cs.c		\
+	mgga_xc_otpss_d.c mgga_xc_zlp.c hyb_mgga_xc_b88b95.c		\
+	mgga_x_mbeef.c mgga_xc_b97mv.c mgga_x_scan.c mgga_c_scan.c	\
+	hyb_mgga_xc_tpssh.c mgga_x_mvs.c hyb_mgga_x_mvsh.c		\
+	mgga_x_tm.c mgga_x_vt84.c mgga_x_sa_tpss.c mgga_k_pc07.c	\
+	mgga_x_mbeefvdw.c mgga_x_m11.c mgga_x_m11_l.c			\
+	hyb_mgga_xc_wb97mv.c mgga_c_m05.c mgga_c_m06l.c			\
+	hyb_mgga_x_dldf.c mgga_c_tpss.c mgga_c_revtpss.c		\
+	mgga_c_tpssloc.c mgga_xc_hle17.c mgga_c_kcis.c mgga_xc_lp90.c	\
+	hyb_mgga_xc_kcis.c mgga_c_b88.c mgga_x_gx.c mgga_x_pbe_gx.c	\
+	mgga_c_revscan.c mgga_x_br89_explicit.c mgga_xc_b98.c		\
+	mgga_x_rtpss.c mgga_x_msb.c mgga_x_mvsb.c mgga_x_regtpss.c	\
+	mgga_x_rscan.c mgga_c_rscan.c mgga_x_2d_js17.c mgga_x_tb09.c	\
+	mgga_x_edmgga.c mgga_x_gdme.c mgga_x_rlda.c mgga_x_revtm.c	\
+	mgga_x_scanl.c mgga_c_scanl.c hyb_mgga_x_js18.c hyb_mgga_x_pjs18.c \
+	mgga_x_mbrxh_bg.c mgga_x_mbrxc_bg.c mgga_x_task.c mgga_x_mggac.c
 
 libxc_la_SOURCES = references.c $(libxc_la_FUNC_SOURCES)
 libxc_la_LDFLAGS = -version-info $(XC_LT_VERSION)
-@COMPILE_FORTRAN_TRUE@libxcf90_la_SOURCES = xc_f.c
-@COMPILE_FORTRAN_TRUE@nodist_libxcf90_la_SOURCES = libxc_funcs.f90 libxc.f90
+@COMPILE_FORTRAN_TRUE@nodist_libxcf90_la_SOURCES = libxcf90.f90
 @COMPILE_FORTRAN_TRUE@libxcf90_la_LDFLAGS = -version-info $(XC_LT_VERSION)
 @COMPILE_FORTRAN_TRUE@libxcf90_la_LIBADD = libxc.la
-@COMPILE_FORTRAN_TRUE@libxcf90_la_LIBTOOLFLAGS = --tag=F77
-@COMPILE_FORTRAN03_TRUE@nodist_libxcf03_la_SOURCES = libxcf03.f90
-@COMPILE_FORTRAN03_TRUE@libxcf03_la_LDFLAGS = -version-info $(XC_LT_VERSION)
-@COMPILE_FORTRAN03_TRUE@libxcf03_la_LIBADD = libxc.la
-@COMPILE_FORTRAN03_TRUE@libxcf03_la_LIBTOOLFLAGS = --tag=F77
-
-# this is a hack to go around buggy libtool/automake versions
-LTFCCOMPILE = $(LIBTOOL) --mode=compile --tag=F77 $(FC) $(AM_FCFLAGS) $(FCFLAGS)
-FCLINK = $(LIBTOOL) --mode=link --tag=F77 $(FCLD) $(AM_FCFLAGS) $(FCFLAGS) \
-         $(AM_LDFLAGS) $(LDFLAGS) -o $@
-
 noinst_HEADERS = \
-	string_f.h references.h util.h work_lda.c \
-	work_gga_x.c work_gga_c.c \
-	work_mgga_x.c work_mgga_c.c \
-	libxc_master.F90 libxc_master.F03
+	string_f.h references.h util.h \
+	decl_lda.h decl_gga.h decl_mgga.h \
+  work_lda.c work_gga.c work_mgga.c \
+	libxc_master.F90
 
 include_HEADERS = xc.h xc_funcs_removed.h
-nodist_include_HEADERS = xc_funcs.h
+nodist_include_HEADERS = xc_funcs.h xc_funcs_worker.h
 BUILT_SOURCES = xc_funcs.h
 fmoddir = @FMODDIR@
-fmod_DATA = $(am__append_3) $(am__append_4)
-@COMPILE_FORTRAN_TRUE@@F90_MOD_UPPERCASE_FALSE@LIBFUNCMOD = libxc_funcs_m.@ax_cv_f90_modext@
-@COMPILE_FORTRAN_TRUE@@F90_MOD_UPPERCASE_TRUE@LIBFUNCMOD = LIBXC_FUNCS_M.@ax_cv_f90_modext@
-@COMPILE_FORTRAN_TRUE@@F90_MOD_UPPERCASE_FALSE@XCLIBMODS = xc_f90_lib_m.@ax_cv_f90_modext@ xc_f90_types_m.@ax_cv_f90_modext@
-@COMPILE_FORTRAN_TRUE@@F90_MOD_UPPERCASE_TRUE@XCLIBMODS = XC_F90_LIB_M.@ax_cv_f90_modext@ XC_F90_TYPES_M.@ax_cv_f90_modext@
-@COMPILE_FORTRAN03_TRUE@@F90_MOD_UPPERCASE_FALSE@XCF03LIBMODS = xc_f03_lib_m.@ax_cv_f90_modext@
+fmod_DATA = $(am__append_3)
+@COMPILE_FORTRAN_TRUE@@F90_MOD_UPPERCASE_FALSE@XCF90LIBMODS = xc_f90_lib_m.@ax_cv_f90_modext@
 
 # Double precision modules are always compiled
-@COMPILE_FORTRAN03_TRUE@@F90_MOD_UPPERCASE_TRUE@XCF03LIBMODS = XC_F03_LIB_M.@ax_cv_f90_modext@
+@COMPILE_FORTRAN_TRUE@@F90_MOD_UPPERCASE_TRUE@XCF90LIBMODS = XC_F90_LIB_M.@ax_cv_f90_modext@
 CLEANFILES = *~ *.bak *.mod *.il *.d *.pc* ifc* funcs_*.c funcs.h \
-	libxc.f90 libxc_funcs.f90 libxcf03.f90 libxc_inc.f03 xc_funcs.h xc_f_inc.c libxc_docs.txt
+  libxc_inc.f90 libxcf90.f90 xc_funcs.h xc_funcs_worker.h \
+  xc_f_inc.c libxc_docs.txt
 
 LTPREF = $(subst xc_f.lo,,$(firstword $(am_libxcf90_la_OBJECTS)))
-LTPREF03 = $(subst libxcf03.lo,,$(firstword $(nodist_libxcf03_la_OBJECTS)))
+# Surprisingly, libtool/automake do not seem to provide a macro or variable for what the object names will be,
+# so we have to extract it ourselves. LTPREF=libxcf90_la-, or blank for older libtool/automake versions.
+# Produces these warnings on some systems. Does not seem to matter.
+#src/Makefile.am:140: subst xc_f.lo,,$(firstword $(am_libxcf90_la_OBJECTS: non-POSIX variable name
+#src/Makefile.am:140: (probably a GNU make extension)
+LTPREF90 = $(subst libxcf90.lo,,$(firstword $(nodist_libxcf90_la_OBJECTS)))
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
@@ -703,9 +712,6 @@ clean-libLTLIBRARIES:
 
 libxc.la: $(libxc_la_OBJECTS) $(libxc_la_DEPENDENCIES) $(EXTRA_libxc_la_DEPENDENCIES) 
 	$(AM_V_CCLD)$(libxc_la_LINK) -rpath $(libdir) $(libxc_la_OBJECTS) $(libxc_la_LIBADD) $(LIBS)
-
-libxcf03.la: $(libxcf03_la_OBJECTS) $(libxcf03_la_DEPENDENCIES) $(EXTRA_libxcf03_la_DEPENDENCIES) 
-	$(AM_V_FCLD)$(libxcf03_la_LINK) $(am_libxcf03_la_rpath) $(libxcf03_la_OBJECTS) $(libxcf03_la_LIBADD) $(LIBS)
 
 libxcf90.la: $(libxcf90_la_OBJECTS) $(libxcf90_la_DEPENDENCIES) $(EXTRA_libxcf90_la_DEPENDENCIES) 
 	$(AM_V_FCLD)$(libxcf90_la_LINK) $(am_libxcf90_la_rpath) $(libxcf90_la_OBJECTS) $(libxcf90_la_LIBADD) $(LIBS)
@@ -792,14 +798,17 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bessel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/expint_e1.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/faddeeva.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/func_info.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/func_reference.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/functionals.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/genwiki.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_c_acgga.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_c_acggap.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_c_am05.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_c_bcgp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_c_bmk.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_c_chachiyo.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_c_cs1.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_c_ft97.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_c_gapc.Plo@am__quote@
@@ -815,6 +824,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_c_optc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_c_p86.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_c_pbe.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_c_pbe_vwn.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_c_pbeloc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_c_pw91.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_c_q2d.Plo@am__quote@
@@ -829,12 +839,20 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_c_wl.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_c_zpbeint.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_c_zvpbeint.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_c_zvpbeloc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_k_apbe.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_k_apbeint.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_k_dk.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_k_exp4.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_k_gds08.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_k_lc94.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_k_llp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_k_meyer.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_k_mpbe.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_k_ol1.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_k_ol2.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_k_pearson.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_k_pw86.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_k_tflw.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_k_thakkar.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_2d_b86.Plo@am__quote@
@@ -854,6 +872,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_chachiyo.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_dk87.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_ev93.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_fd_lb94.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_ft97.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_g96.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_gg99.Plo@am__quote@
@@ -866,10 +885,15 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_kt.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_lag.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_lb.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_lcgau.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_lg93.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_lspbe.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_lsrpbe.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_lv_rpw86.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_mpbe.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_n12.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_ncap.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_ol2.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_optx.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_pbe.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_pbea.Plo@am__quote@
@@ -881,7 +905,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_q2d.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_rge2.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_rpbe.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_s12.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_sfat.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_sfat_pbe.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_sg4.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_sogga11.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_x_ssb_sw.Plo@am__quote@
@@ -900,18 +926,23 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_gga_xc_b1wc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_gga_xc_b3lyp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_gga_xc_cam_b3lyp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_gga_xc_cam_qtp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_gga_xc_camy_b3lyp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_gga_xc_camy_blyp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_gga_xc_edf2.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_gga_xc_hse.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_gga_xc_lc_blyp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_gga_xc_lcy_blyp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_gga_xc_lcy_pbe.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_gga_xc_o3lyp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_gga_xc_pbeh.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_gga_xc_wb97.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_lda_xc_cam_lda0.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_mgga_x_dldf.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_mgga_x_js18.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_mgga_x_m05.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_mgga_x_mvsh.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_mgga_x_pjs18.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_mgga_xc_b88b95.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_mgga_xc_kcis.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_mgga_xc_tpssh.Plo@am__quote@
@@ -923,12 +954,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_c_2d_amgb.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_c_2d_prm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_c_chachiyo.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_c_chachiyo_mod.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_c_gk72.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_c_gombas.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_c_hl.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_c_lp96.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_c_ml1.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_c_pk09.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_c_pmgb06.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_c_pw.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_c_pz.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_c_rc04.Plo@am__quote@
@@ -940,18 +973,23 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_c_vwn_4.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_c_vwn_rpa.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_c_wigner.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_k_gds08_worker.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_k_tf.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_k_zlp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_x.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_x_1d.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_x_1d_exponential.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_x_1d_soft.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_x_2d.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_x_erf.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_x_rel.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_x_sloc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_xc_1d_ehwlrg.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_xc_bn05.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_xc_ksdt.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_xc_teter93.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_xc_tih.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_xc_zlp.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libxcf90_la-xc_f.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/math_brent.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_c_b88.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_c_bc95.Plo@am__quote@
@@ -963,14 +1001,20 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_c_pkzb.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_c_revscan.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_c_revtpss.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_c_rscan.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_c_scan.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_c_scanl.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_c_tpss.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_c_tpssloc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_c_vsxc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_k_pc07.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_2d_js17.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_2d_prhg07.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_2d_prp10.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_br89.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_br89_explicit.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_edmgga.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_gdme.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_gvt4.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_gx.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_lta.Plo@am__quote@
@@ -980,15 +1024,27 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_m11_l.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_mbeef.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_mbeefvdw.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_mk00.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_mbrxc_bg.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_mbrxh_bg.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_mggac.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_mn12.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_ms.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_msb.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_mvs.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_mvsb.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_pbe_gx.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_pkzb.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_regtpss.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_revtm.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_rlda.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_rscan.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_rtpss.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_sa_tpss.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_scan.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_scanl.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_task.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_tau_hcth.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_tb09.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_tm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_tpss.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_vt84.Plo@am__quote@
@@ -1029,13 +1085,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LTCOMPILE) -c -o $@ $<
 
-libxcf90_la-xc_f.lo: xc_f.c
-@am__fastdepCC_TRUE@	$(AM_V_CC)$(LIBTOOL) $(AM_V_lt) --tag=CC $(libxcf90_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT libxcf90_la-xc_f.lo -MD -MP -MF $(DEPDIR)/libxcf90_la-xc_f.Tpo -c -o libxcf90_la-xc_f.lo `test -f 'xc_f.c' || echo '$(srcdir)/'`xc_f.c
-@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libxcf90_la-xc_f.Tpo $(DEPDIR)/libxcf90_la-xc_f.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='xc_f.c' object='libxcf90_la-xc_f.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(LIBTOOL) $(AM_V_lt) --tag=CC $(libxcf90_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o libxcf90_la-xc_f.lo `test -f 'xc_f.c' || echo '$(srcdir)/'`xc_f.c
-
 .f90.o:
 	$(AM_V_FC)$(FCCOMPILE) -c -o $@ $(FCFLAGS_f90) $<
 
@@ -1044,15 +1093,6 @@ libxcf90_la-xc_f.lo: xc_f.c
 
 .f90.lo:
 	$(AM_V_FC)$(LTFCCOMPILE) -c -o $@ $(FCFLAGS_f90) $<
-
-libxcf03_la-libxcf03.lo: libxcf03.f90
-	$(AM_V_FC)$(LIBTOOL) $(AM_V_lt) --tag=FC $(libxcf03_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(AM_FCFLAGS) $(FCFLAGS) -c -o libxcf03_la-libxcf03.lo $(FCFLAGS_f90) `test -f 'libxcf03.f90' || echo '$(srcdir)/'`libxcf03.f90
-
-libxcf90_la-libxc_funcs.lo: libxc_funcs.f90
-	$(AM_V_FC)$(LIBTOOL) $(AM_V_lt) --tag=FC $(libxcf90_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(AM_FCFLAGS) $(FCFLAGS) -c -o libxcf90_la-libxc_funcs.lo $(FCFLAGS_f90) `test -f 'libxc_funcs.f90' || echo '$(srcdir)/'`libxc_funcs.f90
-
-libxcf90_la-libxc.lo: libxc.f90
-	$(AM_V_FC)$(LIBTOOL) $(AM_V_lt) --tag=FC $(libxcf90_la_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(FC) $(AM_FCFLAGS) $(FCFLAGS) -c -o libxcf90_la-libxc.lo $(FCFLAGS_f90) `test -f 'libxc.f90' || echo '$(srcdir)/'`libxc.f90
 
 mostlyclean-libtool:
 	-rm -f *.lo
@@ -1423,44 +1463,23 @@ uninstall-am: uninstall-binPROGRAMS uninstall-fmodDATA \
 
 @COMPILE_FORTRAN_TRUE@  # libtool stuff
 
-@COMPILE_FORTRAN_TRUE@  # this is a hack to go around buggy libtool/automake versions
-
-@COMPILE_FORTRAN03_TRUE@  # libtool stuff
-
-@COMPILE_FORTRAN03_TRUE@  # this is a hack to go around buggy libtool/automake versions
-
 xc_f.o : xc_f_inc.c
 
-xc_funcs.h libxc_inc.f03 libxc_funcs.f90 \
-funcs_lda.c funcs_gga.c funcs_hyb_gga.c \
+xc_funcs.h xc_funcs_worker.h libxc_inc.f90 \
+funcs_lda.c funcs_hyb_lda.c funcs_gga.c funcs_hyb_gga.c \
 funcs_mgga.c funcs_hyb_mgga.c funcs_key.c: $(srcdir)/../scripts/get_funcs.pl
 	$(srcdir)/../scripts/get_funcs.pl $(srcdir) $(top_builddir)/src
-# Surprisingly, libtool/automake do not seem to provide a macro or variable for what the object names will be,
-# so we have to extract it ourselves. LTPREF=libxcf90_la-, or blank for older libtool/automake versions.
-# Produces these warnings on some systems. Does not seem to matter.
-#src/Makefile.am:140: subst xc_f.lo,,$(firstword $(am_libxcf90_la_OBJECTS: non-POSIX variable name
-#src/Makefile.am:140: (probably a GNU make extension)
 
-$(LIBFUNCMOD) $(LIBSFUNCMOD): $(LTPREF)libxc_funcs.lo
-
-libxc.f90 : libxc_master.F90 $(LIBFUNCMOD)
-	@FCCPP@ @CPPFLAGS@ $(AM_CPPFLAGS) -I$(top_builddir)/src $(srcdir)/libxc_master.F90 > $(top_builddir)/src/libxc.f90
+references.h references.c: $(srcdir)/../scripts/get_references.pl $(srcdir)/../libxc.bib
+	(cd $(top_builddir)/src && $(srcdir)/../scripts/get_references.pl $(srcdir)/../libxc.bib)
+libxcf90.f90 : libxc_master.F90 libxc_inc.f90
+	@FCCPP@ @CPPFLAGS@ $(AM_CPPFLAGS) -I$(top_builddir)/src $(srcdir)/libxc_master.F90 > $(top_builddir)/src/libxcf90.f90
 	@if [ "@F90_ACCEPTS_LINE_NUMBERS@" = "no" ]; then \
-		grep -v "^#" $(top_builddir)/src/libxc.f90 > $(top_builddir)/src/libxc.f91; \
-		mv -f $(top_builddir)/src/libxc.f91 $(top_builddir)/src/libxc.f90; \
+		grep -v "^#" $(top_builddir)/src/libxcf90.f90 > $(top_builddir)/src/libxcf90.f91; \
+		mv -f $(top_builddir)/src/libxcf90.f91 $(top_builddir)/src/libxcf90.f90; \
 	fi
 
-$(LTPREF)libxc.lo   $(LTPREF)libxc.o   : $(LIBFUNCMOD)
-
-$(XCLIBMODS)   : $(LTPREF)libxc.lo
-libxcf03.f90 : libxc_master.F03 libxc_inc.f03
-	@FCCPP@ @CPPFLAGS@ $(AM_CPPFLAGS) -I$(top_builddir)/src $(srcdir)/libxc_master.F03 > $(top_builddir)/src/libxcf03.f90
-	@if [ "@F90_ACCEPTS_LINE_NUMBERS@" = "no" ]; then \
-		grep -v "^#" $(top_builddir)/src/libxcf03.f90 > $(top_builddir)/src/libxcf03.f91; \
-		mv -f $(top_builddir)/src/libxcf03.f91 $(top_builddir)/src/libxcf03.f90; \
-	fi
-
-$(XCF03LIBMODS)   : $(LTPREF03)libxcf03.lo
+$(XCF90LIBMODS) : $(LTPREF90)libxcf90.lo
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

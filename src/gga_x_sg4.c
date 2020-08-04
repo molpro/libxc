@@ -10,20 +10,22 @@
 
 #define XC_GGA_X_SG4         533 /* Semiclassical GGA at fourth order */
 
-#include "maple2c/gga_x_sg4.c"
+#include "decl_gga.h"
+#include "maple2c/gga_exc/gga_x_sg4.c"
+#include "work_gga.c"
 
-#define func maple2c_func
-#include "work_gga_x.c"
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_x_sg4 = {
   XC_GGA_X_SG4,
   XC_EXCHANGE,
   "Semiclassical GGA at fourth order",
   XC_FAMILY_GGA,
   {&xc_ref_Constantin2016_045126, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
-  1e-32,
-  0, NULL, NULL,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  1e-15,
+  {0, NULL, NULL, NULL, NULL},
   NULL, NULL, 
-  NULL, work_gga_x, NULL
+  NULL, work_gga, NULL
 };

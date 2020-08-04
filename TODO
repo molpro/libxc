@@ -1,31 +1,24 @@
 Improve existing functionals:
+  *) Check all flags to see if they have the right derivatives
   *) Add XC_FLAGS_STABLE or XC_FLAGS_DEVELOPMENT to all functionals in libxc.
 
 Add functionals:
 
 LDA:
- *) Short-range LDA correlation functional (Phys. Rev. B 73, 155111 (2006))
- *) Short-range exchange 10.1080/00268979609484488
 
 GGAs:
-  *) Tozer, Ingamells and Handy neural network potential JCP 105, 9200 (1996); doi: 10.1063/1.472753
   *) http://dx.doi.org/10.1063/1.3243845 Missing are: CS1, wPBE, WI, W1, W2, Wl, bPBE, qPBE, rPBE, A1, A2, A3, WLV.
-  *) df-LB94, df-revLB94 http://dx.doi.org/10.1103/PhysRevA.83.012509
   *) Lambda-LB94, Q-LB94, Q-revLB94  http://dx.doi.org/10.1063/1.3684261
-  *) Gilbert and Gill c [CPL 312, 511 (1999)] http://www.sciencedirect.com/science/article/pii/S0009261499008362
-  *) BNL (Baer-Neuhauser-Livshits) [Phys. Rev. Lett. 94, 043002 (2005) and Phys. Chem. Chem. Phys. 9, 2932 (2007)] http://journals.aps.org/prl/abstract/10.1103/PhysRevLett.94.043002 and http://pubs.rsc.org/en/content/articlelanding/2007/cp/b617919c
-  *) B97GGA-1 and B97-1b (A.J.Cohen,N.C.Handy, Chem.Phys.Lett., 316,160 (2000)) This is a different version of B97-1!!!
-  *) B98-1, and VS98-1	(A.J.Cohen,N.C.Handy, Chem.Phys.Lett., 316,160 (2000))
-  *) GDS08 KED functional http://dx.doi.org/10.1103/PhysRevB.77.073104
-  *) GHDS10 KED functional http://dx.doi.org/10.1063/1.3280953
-  *) GHDS10 reparametrized and TKVln http://dx.doi.org/10.1103/PhysRevB.84.075146
+     Lambda functional depends on r.nabla and is not therefore of a kind
+     handled by libxc. Q involves a numerical integral.
   *) https://repository.aust.edu.ng/xmlui/bitstream/handle/123456789/549/Iyomo%20Irewole.pdf?sequence=1&isAllowed=y Equation (3.36)
   *) ZLP2 (https://journals.aps.org/pra/pdf/10.1103/PhysRevA.47.918 Eq. (21), and at the end there are several kinetic contributions to the correlation energy) and k (Chem. Phys. Lett. 232, 31)
-  *) KT3 http://aip.scitation.org/doi/10.1063/1.1784777
   *) OF https://aip.scitation.org/doi/full/10.1063/1.5025171 
 
 mGGAs:
-  *) regTPSS exchange http://pubs.acs.org/doi/abs/10.1021/ct300269u
+  *) B98-1, and VS98-1 https://doi.org/10.1016/S0009-2614(99)01273-7
+     These functionals are mentioned and reparametrized in the article,
+     but the coefficients are not given in the paper.
   *) KCISK 10.1063/1.1390178 i.e. Krieger2001_48
   *) hybrids in http://scitation.aip.org/content/aip/journal/jcp/112/9/10.1063/1.480951
   *) tau-PBE (http://scitation.aip.org/content/aip/journal/jcp/111/3/10.1063/1.479374)
@@ -39,20 +32,15 @@ mGGAs:
   *) L0.4 and L0.6 ( S. Laricchia, E. Fabiano, L. A. Constantin, F. Della Sala,
 !           J. Chem. Theory Comput. 10, 164 (2014). )
      http://www.theory-ecmt.it/nnldft_web/lkin.txt
-  *) 2D exchange functional of https://arxiv.org/pdf/1703.01728.pdf
   *) Lap3 correlation http://onlinelibrary.wiley.com/doi/10.1002/(SICI)1097-461X(1997)64:4%3C427::AID-QUA5%3E3.0.CO;2-Y/full
-  *) tau1 functional (modified Becke exchange already implemented) http://aip.scitation.org/doi/abs/10.1063/1.1321309
+  *) tau1 functional (modified Becke exchange already implemented) http://aip.scitation.org/doi/abs/10.1063/1.1321309 This is a good reference for all LAP functionals.
 
 hybrids:
   *) doi:10.1021/ct800530u (LR-omegaPBE08)
   *) http://dx.doi.org/10.1021/ct300715s
-  *) (CAM-)S12g / (CAM-)S12h http://www.sciencedirect.com/science/article/pii/S0009261413008221
   *) HISS http://scitation.aip.org/content/aip/journal/jcp/127/22/10.1063/1.2822021 [*two* range separation constants!)
-  *) hAPBE DOI: 10.1021/ct500902p
-  *) rCAM-B3LYP http://aip.scitation.org/doi/abs/10.1063/1.2741248
-  *) WC04 and WP04 http://pubs.acs.org/doi/abs/10.1021/ct6001016
-  *) CAM-LDA0 http://pubs.acs.org/doi/abs/10.1021/acs.jpca.5b10864
-
+  *) Swart's range-separated hybrids CAM-S12g and CAM-S12h https://doi.org/10.1016/j.cplett.2013.06.045
+  
 hybrid meta:
   *) b1b95 (54, 60)
   *) dispersion corrected wB97X

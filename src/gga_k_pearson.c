@@ -10,22 +10,22 @@
 
 #define XC_GGA_K_PEARSON          511 /* Pearson */
 
-#include "maple2c/gga_k_pearson.c"
+#include "decl_gga.h"
+#include "maple2c/gga_exc/gga_k_pearson.c"
+#include "work_gga.c"
 
-#define func maple2c_func
-#define XC_KINETIC_FUNCTIONAL
-#include "work_gga_x.c"
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_k_pearson = {
   XC_GGA_K_PEARSON,
   XC_KINETIC,
   "Pearson 1992",
   XC_FAMILY_GGA,
   {&xc_ref_Lacks1994_4446, &xc_ref_Pearson1985_881, &xc_ref_Pearson1983, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-32,
-  0, NULL, NULL,
-  NULL, NULL, NULL,
-  work_gga_k,
-  NULL
+  {0, NULL, NULL, NULL, NULL},
+  NULL, NULL,
+  NULL, work_gga, NULL
 };

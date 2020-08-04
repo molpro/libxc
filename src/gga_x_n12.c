@@ -1,5 +1,6 @@
 /*
  Copyright (C) 2006-2007 M.A.L. Marques
+ Copyright (C) 2019 X. Andrade
 
  This Source Code Form is subject to the terms of the Mozilla Public
  License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -37,7 +38,7 @@ static const double CC_GAM[4][4] = {
 };
 
 typedef struct{
-  const double (*CC)[4];
+  double CC[4][4];
 } gga_x_n12_params;
 
 
@@ -45,79 +46,91 @@ static void
 gga_x_n12_init(xc_func_type *p)
 {
   gga_x_n12_params *params;
+  int ii, jj;
 
   assert(p != NULL);
 
   assert(p->params == NULL);
-  p->params = malloc(sizeof(gga_x_n12_params));
+  p->params = libxc_malloc(sizeof(gga_x_n12_params));
   params = (gga_x_n12_params *) (p->params);
 
+  const double (*pCC)[4];
+  
   switch(p->info->number){
   case XC_GGA_X_N12: 
-    params->CC = CC_N12;
+    pCC = CC_N12;
     break;
   case XC_HYB_GGA_X_N12_SX:
-    params->CC = CC_N12_SX;
+    pCC = CC_N12_SX;
     p->cam_alpha = 0.00;
     p->cam_beta  = 0.25;
     p->cam_omega = 0.11;
     break;
   case XC_GGA_X_GAM:
-    params->CC = CC_GAM;
+    pCC = CC_GAM;
     break;
   default:
     fprintf(stderr, "Internal error in gga_x_n12\n");
     exit(1);
   }
+
+  for(ii = 0; ii < 4; ii++){
+    for(jj = 0; jj < 4; jj++){
+      params->CC[ii][jj] = pCC[ii][jj];
+    }
+  }
+  
 }
 
-#include "maple2c/gga_x_n12.c"
+#include "decl_gga.h"
+#include "maple2c/gga_exc/gga_x_n12.c"
+#include "work_gga.c"
 
-#define func maple2c_func
-#include "work_gga_c.c"
 
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_x_n12 = {
   XC_GGA_X_N12,
   XC_EXCHANGE,
   "Minnesota N12 exchange functional",
   XC_FAMILY_GGA,
   {&xc_ref_Peverati2012_2310, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-24,
-  0, NULL, NULL,
-  gga_x_n12_init,
-  NULL, NULL,
-  work_gga_c,
-  NULL
+  {0, NULL, NULL, NULL, NULL},
+  gga_x_n12_init, NULL,
+  NULL, work_gga, NULL
 };
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_hyb_gga_x_n12_sx = {
   XC_HYB_GGA_X_N12_SX,
   XC_EXCHANGE,
   "Minnesota N12-SX exchange functional",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Peverati2012_16187, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HYB_CAM | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | XC_FLAGS_HYB_CAM | MAPLE2C_FLAGS,
   1e-24,
-  0, NULL, NULL,
-  gga_x_n12_init,
-  NULL, NULL,
-  work_gga_c,
-  NULL
+  {0, NULL, NULL, NULL, NULL},
+  gga_x_n12_init, NULL,
+  NULL, work_gga, NULL
 };
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_x_gam = {
   XC_GGA_X_GAM,
   XC_EXCHANGE,
   "Minnesota GAM exhange functional",
   XC_FAMILY_GGA,
   {&xc_ref_Yu2015_12146, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-24,
-  0, NULL, NULL,
-  gga_x_n12_init,
-  NULL, NULL,
-  work_gga_c,
-  NULL
+  {0, NULL, NULL, NULL, NULL},
+  gga_x_n12_init, NULL,
+  NULL, work_gga, NULL
 };

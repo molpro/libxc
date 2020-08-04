@@ -11,20 +11,22 @@
 
 #define XC_GGA_C_W94 561 /* Wilson 94 (Eq. 25) */
 
-#include "maple2c/gga_c_w94.c"
+#include "decl_gga.h"
+#include "maple2c/gga_exc/gga_c_w94.c"
+#include "work_gga.c"
 
-#define func maple2c_func
-#include "work_gga_c.c"
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_c_w94 = {
   XC_GGA_C_W94,
   XC_CORRELATION,
   "Wilson 94 (Eq. 25)",
   XC_FAMILY_GGA,
   {&xc_ref_Wilson1994_337, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-24,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   NULL, NULL, 
-  NULL, work_gga_c, NULL
+  NULL, work_gga, NULL
 };

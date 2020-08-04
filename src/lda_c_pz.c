@@ -64,7 +64,7 @@ lda_c_pz_init(xc_func_type *p)
   lda_c_pz_params *params;
 
   assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(lda_c_pz_params));
+  p->params = libxc_malloc(sizeof(lda_c_pz_params));
   params = (lda_c_pz_params *) (p->params);
 
   switch(p->info->number){
@@ -83,46 +83,54 @@ lda_c_pz_init(xc_func_type *p)
   }
 }
 
-#include "maple2c/lda_c_pz.c"
-
-#define func maple2c_func
+#include "decl_lda.h"
+#include "maple2c/lda_exc/lda_c_pz.c"
 #include "work_lda.c"
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_lda_c_pz = {
   XC_LDA_C_PZ,
   XC_CORRELATION,
   "Perdew & Zunger",
   XC_FAMILY_LDA,
   {&xc_ref_Perdew1981_5048, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-24,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   lda_c_pz_init, NULL,
   work_lda, NULL, NULL
 };
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_lda_c_pz_mod = {
   XC_LDA_C_PZ_MOD,
   XC_CORRELATION,
   "Perdew & Zunger (Modified)",
   XC_FAMILY_LDA,
   {&xc_ref_Perdew1981_5048_mod, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-24,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   lda_c_pz_init, NULL,
   work_lda, NULL, NULL
 };
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_lda_c_ob_pz = {
   XC_LDA_C_OB_PZ,
   XC_CORRELATION,
   "Ortiz & Ballone (PZ parametrization)",
   XC_FAMILY_LDA,
   {&xc_ref_Ortiz1994_1391, &xc_ref_Ortiz1994_1391_err, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-24,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   lda_c_pz_init, NULL,
   work_lda, NULL, NULL
 };

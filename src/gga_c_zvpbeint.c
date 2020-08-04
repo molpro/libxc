@@ -21,7 +21,7 @@ gga_c_zvpbeint_init(xc_func_type *p)
   gga_c_zvpbeint_params *params;
 
   assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(gga_c_zvpbeint_params));
+  p->params = libxc_malloc(sizeof(gga_c_zvpbeint_params));
   params = (gga_c_zvpbeint_params *) (p->params);
  
   switch(p->info->number){
@@ -41,33 +41,38 @@ gga_c_zvpbeint_init(xc_func_type *p)
   }
 }
 
-#include "maple2c/gga_c_zvpbeint.c"
+#include "decl_gga.h"
+#include "maple2c/gga_exc/gga_c_zvpbeint.c"
+#include "work_gga.c"
 
-#define func maple2c_func
-#include "work_gga_c.c"
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_c_zvpbeint = {
   XC_GGA_C_ZVPBEINT,
   XC_CORRELATION,
   "another spin-dependent correction to PBEint",
   XC_FAMILY_GGA,
   {&xc_ref_Constantin2012_194105, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-10,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   gga_c_zvpbeint_init, NULL, 
-  NULL, work_gga_c, NULL
+  NULL, work_gga, NULL
 };
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_c_zvpbesol = {
   XC_GGA_C_ZVPBESOL,
   XC_CORRELATION,
   "another spin-dependent correction to PBEsol",
   XC_FAMILY_GGA,
   {&xc_ref_Constantin2012_194105, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-10,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   gga_c_zvpbeint_init, NULL, 
-  NULL, work_gga_c, NULL
+  NULL, work_gga, NULL
 };

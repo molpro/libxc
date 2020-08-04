@@ -138,8 +138,10 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
+BASH_SHELL = @BASH_SHELL@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
+CCLD = @CCLD@
 CFLAGS = @CFLAGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
@@ -259,7 +261,9 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-dist_noinst_SCRIPTS = get_funcs.pl get_references.pl maple2c.pl
+dist_noinst_SCRIPTS = get_funcs.pl get_references.pl maple2c.pl \
+  maple2c_work.pm maple2c_derivatives.pm
+
 all: all-am
 
 .SUFFIXES:

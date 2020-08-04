@@ -13,6 +13,7 @@
 #define XC_HYB_MGGA_X_M06_HF    444 /* M06-HF hybrid exchange functional from Minnesota  */
 #define XC_HYB_MGGA_X_M06       449 /* M06 hybrid exchange functional from Minnesota     */
 #define XC_MGGA_X_REVM06_L      293 /* revised M06-L exchange functional from Minnesota  */
+#define XC_HYB_MGGA_X_REVM06    305 /* revised M06 hybrid exchange functional from Minnesota  */
 
 static const double a_m06l[12] = {
   0.3987756, 0.2548219, 0.3923994, -2.103655, -6.302147, 10.97615,
@@ -38,8 +39,14 @@ static const double a_revm06l[12] = {
 };
 static const double d_revm06l[6] = {-0.423227252, 0.0, 0.003724234, 0.0, 0.0, 0.0};
 
+static const double a_revm06[12] = {
+  0.6511394014, -0.1214497763, -0.1367041135,  0.3987218551,  0.6056741356, -2.379738662,
+  -1.492098351,   3.031473420,   0.5149637108,  2.633751911,  0.9886749252, -4.243714128
+};
+static const double d_revm06[6] = {-0.05523940140, 0.0, -0.003782631233, 0.0, 0.0, 0.0};
+
 typedef struct{
-  const double *a, *d;
+  double a[12], d[6];
 } mgga_x_m06l_params;
 
 
@@ -47,29 +54,35 @@ static void
 mgga_x_m06l_init(xc_func_type *p)
 {
   mgga_x_m06l_params *params;
+  int ii;
 
   assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(mgga_x_m06l_params));
+  p->params = libxc_malloc(sizeof(mgga_x_m06l_params));
   params = (mgga_x_m06l_params *)p->params;
 
   switch(p->info->number){
   case XC_MGGA_X_M06_L:
-    params->a = a_m06l;
-    params->d = d_m06l;
+    for(ii = 0; ii < 12; ii++) params->a[ii] = a_m06l[ii];
+    for(ii = 0; ii <  6; ii++) params->d[ii] = d_m06l[ii];
     break;
   case XC_HYB_MGGA_X_M06_HF:
-    params->a = a_m06hf;
-    params->d = d_m06hf;
+    for(ii = 0; ii < 12; ii++) params->a[ii] = a_m06hf[ii];
+    for(ii = 0; ii <  6; ii++) params->d[ii] = d_m06hf[ii];
     p->cam_alpha = 1.0;
     break;
   case XC_HYB_MGGA_X_M06:
-    params->a = a_m06;
-    params->d = d_m06;
+    for(ii = 0; ii < 12; ii++) params->a[ii] = a_m06[ii];
+    for(ii = 0; ii <  6; ii++) params->d[ii] = d_m06[ii];
     p->cam_alpha = 0.27;
     break;
   case XC_MGGA_X_REVM06_L:
-    params->a = a_revm06l;
-    params->d = d_revm06l;
+    for(ii = 0; ii < 12; ii++) params->a[ii] = a_revm06l[ii];
+    for(ii = 0; ii <  6; ii++) params->d[ii] = d_revm06l[ii];
+    break;
+  case XC_HYB_MGGA_X_REVM06:
+    for(ii = 0; ii < 12; ii++) params->a[ii] = a_revm06[ii];
+    for(ii = 0; ii <  6; ii++) params->d[ii] = d_revm06[ii];
+    p->cam_alpha = 0.4041;
     break;
   default:
     fprintf(stderr, "Internal error in mgga_x_m06l\n");
@@ -77,59 +90,86 @@ mgga_x_m06l_init(xc_func_type *p)
   }
 }
 
-#include "maple2c/mgga_x_m06l.c"
+#include "decl_mgga.h"
+#include "maple2c/mgga_exc/mgga_x_m06l.c"
+#include "work_mgga.c"
 
-#define func xc_mgga_x_m06l_enhance
-#include "work_mgga_x.c"
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_mgga_x_m06_l = {
   XC_MGGA_X_M06_L,
   XC_EXCHANGE,
   "Minnesota M06-L exchange functional",
   XC_FAMILY_MGGA,
   {&xc_ref_Zhao2006_194101, &xc_ref_Zhao2008_215, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1.0e-22,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   mgga_x_m06l_init, NULL,
-  NULL, NULL, work_mgga_x,
+  NULL, NULL, work_mgga,
 };
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_hyb_mgga_x_m06_hf = {
   XC_HYB_MGGA_X_M06_HF,
   XC_EXCHANGE,
   "Minnesota M06-HF hybrid exchange functional",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Zhao2006_13126, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1.0e-32,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   mgga_x_m06l_init, NULL,
-  NULL, NULL, work_mgga_x,
+  NULL, NULL, work_mgga,
 };
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_hyb_mgga_x_m06 = {
   XC_HYB_MGGA_X_M06,
   XC_EXCHANGE,
   "Minnesota M06 hybrid exchange functional",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Zhao2008_215, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1.0e-32,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   mgga_x_m06l_init, NULL, 
-  NULL, NULL, work_mgga_x,
+  NULL, NULL, work_mgga,
 };
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_mgga_x_revm06_l = {
   XC_MGGA_X_REVM06_L,
   XC_EXCHANGE,
   "Minnesota revM06-L exchange functional",
   XC_FAMILY_MGGA,
   {&xc_ref_Wang2017_8487, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   5.0e-13,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   mgga_x_m06l_init, NULL,
-  NULL, NULL, work_mgga_x,
+  NULL, NULL, work_mgga,
+};
+
+#ifdef __cplusplus
+extern "C"
+#endif
+const xc_func_info_type xc_func_info_hyb_mgga_x_revm06 = {
+  XC_HYB_MGGA_X_REVM06,
+  XC_EXCHANGE,
+  "Revised Minnesota M06 hybrid exchange functional",
+  XC_FAMILY_HYB_MGGA,
+  {&xc_ref_Wang2018_10257, NULL, NULL, NULL, NULL},
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  1.0e-32,
+  {0, NULL, NULL, NULL, NULL},
+  mgga_x_m06l_init, NULL, 
+  NULL, NULL, work_mgga,
 };

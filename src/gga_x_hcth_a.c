@@ -10,23 +10,22 @@
 
 #define XC_GGA_X_HCTH_A          34 /* HCTH-A */
 
-#include "maple2c/gga_x_hcth_a.c"
+#include "decl_gga.h"
+#include "maple2c/gga_exc/gga_x_hcth_a.c"
+#include "work_gga.c"
 
-#define func maple2c_func
-#include "work_gga_x.c"
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_x_hcth_a = {
   XC_GGA_X_HCTH_A,
   XC_EXCHANGE,
   "HCTH-A",
   XC_FAMILY_GGA,
   {&xc_ref_Hamprecht1998_6264, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-24,
-  0, NULL, NULL,
-  NULL, 
-  NULL,
-  NULL,
-  work_gga_x,
-  NULL
+  {0, NULL, NULL, NULL, NULL},
+  NULL, NULL,
+  NULL, work_gga, NULL
 };

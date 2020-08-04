@@ -14,12 +14,12 @@ if(@ARGV < 2) {
 $srcdir = shift;
 $builddir = shift;
 
-my @funcs = ("lda", "gga", "hyb_gga", "mgga", "hyb_mgga");
+my @funcs = ("lda", "hyb_lda", "gga", "hyb_gga", "mgga", "hyb_mgga");
 my %all_ids;
 
 open(DOCS, ">$builddir/libxc_docs.txt") or die("Could not open '$builddir/libxc_docs.txt.'\n");
 
-$s0 = ""; $s3 = ""; $s4 = ""; $s5 = "";
+$s0 = ""; $s3 = ""; $s4 = ""; $s5 = ""; $s6 = "";
 $publiclist = ""; $xclist = ""; $fxclist = ""; $xcf90list = ""; $xcfclist = "";
 
 foreach $func (@funcs){
@@ -31,20 +31,28 @@ foreach $func (@funcs){
 
   $s1 = ""; $s2 = "";
   foreach $key (sort { $a <=> $b } keys %deflist_f) {
-    $s0 .= sprintf "%s %-30s %3s  /*%-70s*/\n", "#define ",
+    $s = sprintf "%s %-30s %3s  /*%-70s*/\n", "#define ",
       $deflist_f{$key}, $key, $deflist_c{$key};
 
+    if($key < 100000){
+      $s0 .= $s;
+    }else{
+      $s6 .= $s;
+    }
+    
     $t = $deflist_f{$key};
     $t =~ s/XC_(.*)/\L$1/;
 
     $s4 .= ",\n" if($s4);
     $s4 .= sprintf "{\"%s\", %d}", $t, $key;
 
-    $s3 .= sprintf "  %s %-30s = %3s  ! %s\n", "integer, parameter ::",
-      $deflist_f{$key}, $key, $deflist_c{$key};
+    if($key < 100000){
+      $s3 .= sprintf "  %s %-30s = %3s  ! %s\n", "integer, parameter ::",
+        $deflist_f{$key}, $key, $deflist_c{$key};
 
-    $s5 .= sprintf "  %s %-30s = %3s  ! %s\n", "integer(c_int), parameter, public ::",
+      $s5 .= sprintf "  %s %-30s = %3s  ! %s\n", "integer(c_int), parameter, public ::",
       $deflist_f{$key}, $key, $deflist_c{$key};
+    }
 
     $s1 .= "extern xc_func_info_type xc_func_info_$t;\n";
     $s2 .= "  &xc_func_info_$t,\n";
@@ -79,66 +87,13 @@ EOF
 
 open(OUT, ">$builddir/xc_funcs.h") or die("Could not open '$builddir/xc_funcs.h'.\n");
 print OUT $s0;
-print $so;
 close OUT;
 
-open(OUT, ">$builddir/libxc_funcs.f90") or die("Could not open '$builddir/libxc_funcs.f90'.\n");
-print OUT <<EOF
-!! Copyright (C) 2003-2015 Miguel Marques
-!! All rights reserved.
-!!
-!! This file is dual-licensed under a GPL and a BSD license
-!!
-!! MPL License:
-!!
-!! This Source Code Form is subject to the terms of the Mozilla Public
-!! License, v. 2.0. If a copy of the MPL was not distributed with this
-!! file, You can obtain one at http://mozilla.org/MPL/2.0/.
-!!
-!! BSD License:
-!!
-!! Redistribution and use in source and binary forms, with or without
-!! modification, are permitted provided that the following conditions
-!! are met:
-!!
-!! 1. Redistributions of source code must retain the above copyright
-!! notice, this list of conditions and the following disclaimer.
-!!
-!! 2. Redistributions in binary form must reproduce the above
-!! copyright notice, this list of conditions and the following
-!! disclaimer in the documentation and/or other materials provided
-!! with the distribution.
-!!
-!! 3. Neither the name of the copyright holder nor the names of its
-!! contributors may be used to endorse or promote products derived
-!! from this software without specific prior written permission.
-!!
-!! THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-!! "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-!! LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-!! FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-!! COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-!! INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-!! (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-!! SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-!! HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
-!! STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-!! ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
-!! OF THE POSSIBILITY OF SUCH DAMAGE.
-
-module libxc_funcs_m
-  implicit none
-
-  public
-
-$s3
-end module libxc_funcs_m
-EOF
-  ;
+open(OUT, ">$builddir/xc_funcs_worker.h") or die("Could not open '$builddir/xc_funcs_worker.h'.\n");
+print OUT $s6;
 close OUT;
 
-
-open(OUT, ">$builddir/libxc_inc.f03") or die("Could not open '$builddir/libxc_incs.f03'.\n");
+open(OUT, ">$builddir/libxc_inc.f90") or die("Could not open '$builddir/libxc_incs.f90'.\n");
 print OUT <<EOF
 $s5
 EOF

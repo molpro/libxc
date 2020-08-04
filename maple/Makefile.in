@@ -121,14 +121,74 @@ am__v_at_0 = @
 am__v_at_1 = 
 SOURCES =
 DIST_SOURCES =
+RECURSIVE_TARGETS = all-recursive check-recursive cscopelist-recursive \
+	ctags-recursive dvi-recursive html-recursive info-recursive \
+	install-data-recursive install-dvi-recursive \
+	install-exec-recursive install-html-recursive \
+	install-info-recursive install-pdf-recursive \
+	install-ps-recursive install-recursive installcheck-recursive \
+	installdirs-recursive pdf-recursive ps-recursive \
+	tags-recursive uninstall-recursive
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
     *) (install-info --version) >/dev/null 2>&1;; \
   esac
+RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
+  distclean-recursive maintainer-clean-recursive
+am__recursive_targets = \
+  $(RECURSIVE_TARGETS) \
+  $(RECURSIVE_CLEAN_TARGETS) \
+  $(am__extra_recursive_targets)
+AM_RECURSIVE_TARGETS = $(am__recursive_targets:-recursive=) TAGS CTAGS \
+	distdir
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
+# Read a list of newline-separated strings from the standard input,
+# and print each of them once, without duplicates.  Input order is
+# *not* preserved.
+am__uniquify_input = $(AWK) '\
+  BEGIN { nonempty = 0; } \
+  { items[$$0] = 1; nonempty = 1; } \
+  END { if (nonempty) { for (i in items) print i; }; } \
+'
+# Make sure the list of sources is unique.  This is necessary because,
+# e.g., the same source file might be shared among _SOURCES variables
+# for different programs/libraries.
+am__define_uniq_tagged_files = \
+  list='$(am__tagged_files)'; \
+  unique=`for i in $$list; do \
+    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+  done | $(am__uniquify_input)`
+ETAGS = etags
+CTAGS = ctags
+DIST_SUBDIRS = $(SUBDIRS)
 am__DIST_COMMON = $(srcdir)/Makefile.in
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
+am__relativize = \
+  dir0=`pwd`; \
+  sed_first='s,^\([^/]*\)/.*$$,\1,'; \
+  sed_rest='s,^[^/]*/*,,'; \
+  sed_last='s,^.*/\([^/]*\)$$,\1,'; \
+  sed_butlast='s,/*[^/]*$$,,'; \
+  while test -n "$$dir1"; do \
+    first=`echo "$$dir1" | sed -e "$$sed_first"`; \
+    if test "$$first" != "."; then \
+      if test "$$first" = ".."; then \
+        dir2=`echo "$$dir0" | sed -e "$$sed_last"`/"$$dir2"; \
+        dir0=`echo "$$dir0" | sed -e "$$sed_butlast"`; \
+      else \
+        first2=`echo "$$dir2" | sed -e "$$sed_first"`; \
+        if test "$$first2" = "$$first"; then \
+          dir2=`echo "$$dir2" | sed -e "$$sed_rest"`; \
+        else \
+          dir2="../$$dir2"; \
+        fi; \
+        dir0="$$dir0"/"$$first"; \
+      fi; \
+    fi; \
+    dir1=`echo "$$dir1" | sed -e "$$sed_rest"`; \
+  done; \
+  reldir="$$dir2"
 ACLOCAL = @ACLOCAL@
 ALLOCA = @ALLOCA@
 AMTAR = @AMTAR@
@@ -138,8 +198,10 @@ AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
 AWK = @AWK@
+BASH_SHELL = @BASH_SHELL@
 CC = @CC@
 CCDEPMODE = @CCDEPMODE@
+CCLD = @CCLD@
 CFLAGS = @CFLAGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
@@ -259,53 +321,12 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+SUBDIRS = lda_exc lda_vxc gga_exc gga_vxc mgga_exc mgga_vxc
 dist_noinst_SCRIPTS = \
-  util.mpl gvt4.mpl tpss_x.mpl \
-  lda_c_pz.mpl lda_xc_1d_ehwlrg.mpl lda_c_rc04.mpl lda_c_pw.mpl             \
-  lda_c_gombas.mpl lda_c_chachiyo.mpl lda_c_wigner.mpl lda_c_rpa.mpl        \
-  vwn.mpl lda_c_vwn.mpl lda_c_vwn_1.mpl lda_c_vwn_2.mpl lda_c_vwn_3.mpl     \
-  lda_c_vwn_4.mpl lda_c_vwn_rpa.mpl lda_c_ml1.mpl lda_c_hl.mpl lda_k_tf.mpl \
-  lda_xc_zlp.mpl lda_xc_teter93.mpl lda_xc_ksdt.mpl lda_c_2d_prm.mpl        \
-  lda_c_1d_loos.mpl lda_c_2d_amgb.mpl lda_c_1d_csc.mpl lda_x.mpl            \
-  lda_x_2d.mpl lda_x_erf.mpl lda_x_rel.mpl lda_k_zlp.mpl lda_c_pk09.mpl     \
-  lda_c_gk72.mpl \
-  gga_k_thakkar.mpl gga_x_b86.mpl gga_x_g96.mpl gga_x_rpbe.mpl              \
-  gga_x_airy.mpl gga_x_b88.mpl gga_x_herman.mpl gga_x_wc.mpl gga_x_ak13.mpl \
-  gga_x_bayesian.mpl gga_x_lag.mpl gga_x_am05.mpl gga_x_c09x.mpl            \
-  gga_x_pbepow.mpl gga_x_pbeint.mpl gga_x_pbe.mpl gga_x_rge2.mpl            \
-  gga_x_beefvdw.mpl gga_x_pw91.mpl gga_x_pbea.mpl gga_x_mpbe.mpl            \
-  gga_x_sg4.mpl gga_x_cap.mpl gga_x_lg93.mpl gga_x_pw86.mpl gga_x_dk87.mpl  \
-  gga_x_ssb_sw.mpl gga_x_sogga11.mpl gga_x_optx.mpl gga_x_q2d.mpl           \
-  gga_x_lv_rpw86.mpl gga_x_kt.mpl gga_x_ft97.mpl gga_x_eg93.mpl             \
-  gga_x_hcth_a.mpl gga_x_htbs.mpl gga_k_dk.mpl gga_k_meyer.mpl              \
-  gga_k_ol1.mpl gga_k_ol2.mpl gga_k_pearson.mpl gga_k_tflw.mpl              \
-  gga_x_2d_b86.mpl gga_x_2d_b86_mgc.mpl gga_x_2d_b88.mpl gga_x_2d_pbe.mpl   \
-  gga_x_bpccac.mpl gga_x_vmt84.mpl gga_x_vmt.mpl gga_x_hjs_b88_v2.mpl       \
-  gga_x_hjs.mpl gga_x_n12.mpl scaling.mpl gga_x_wpbeh.mpl \
-  gga_c_wi.mpl gga_c_wl.mpl gga_c_lm.mpl gga_c_p86.mpl gga_c_am05.mpl       \
-  gga_c_revtca.mpl gga_c_tca.mpl gga_c_bcgp.mpl gga_c_zpbeint.mpl           \
-  gga_c_pbe.mpl gga_c_pbeloc.mpl gga_c_sg4.mpl gga_c_regtpss.mpl            \
-  gga_c_scan_e0.mpl gga_c_pw91.mpl gga_c_q2d.mpl gga_c_optc.mpl             \
-  gga_c_lyp.mpl gga_c_sogga11.mpl th.mpl gga_xc_th1.mpl gga_xc_th2.mpl      \
-  b97.mpl gga_c_bmk.mpl gga_c_hcth_a.mpl gga_xc_b97.mpl hyb_gga_xc_wb97.mpl \
-  gga_xc_th3.mpl gga_c_gapc.mpl gga_c_gaploc.mpl gga_c_zvpbeint.mpl         \
-  gga_c_w94.mpl gga_c_cs1.mpl op.mpl gga_c_op_b88.mpl gga_c_op_g96.mpl      \
-  gga_c_op_pbe.mpl gga_c_op_pw91.mpl gga_c_op_xalpha.mpl gga_k_exp4.mpl     \
-  mgga_x_gvt4.mpl mgga_x_lta.mpl mgga_x_mk00.mpl mgga_x_ms.mpl              \
-  mgga_x_mvs.mpl mgga_x_pkzb.mpl mgga_x_tpss.mpl mgga_x_tm.mpl              \
-  mgga_x_vt84.mpl mgga_x_sa_tpss.mpl mgga_k_pc07.mpl                        \
-  mgga_x_tau_hcth.mpl mgga_x_scan.mpl mgga_x_gx.mpl mgga_x_pbe_gx.mpl       \
-  mgga_c_cs.mpl mgga_c_bc95.mpl mgga_c_m08.mpl mgga_xc_zlp.mpl              \
-  mgga_xc_cc06.mpl mbeef.mpl mgga_x_mbeef.mpl mgga_x_mbeefvdw.mpl           \
-  mgga_x_m08.mpl mgga_x_m11.mpl mgga_x_m11_l.mpl mgga_x_mn12.mpl            \
-  b97mv.mpl mgga_xc_b97mv.mpl hyb_mgga_xc_wb97mv.mpl mgga_c_vsxc.mpl        \
-  mgga_c_m05.mpl mgga_c_m06l.mpl hyb_mgga_x_m05.mpl hyb_mgga_x_dldf.mpl     \
-  tpss.mpl mgga_c_pkzb.mpl mgga_c_revtpss.mpl mgga_c_tpss.mpl               \
-  mgga_c_tpssloc.mpl mgga_c_scan.mpl mgga_c_kcis.mpl mgga_xc_lp90.mpl       \
-  mgga_c_b88.mpl mgga_c_revscan.mpl mgga_x_br89_explicit.mpl                \
-  mgga_xc_b98.mpl
+attenuation.mpl  b97mv.mpl  mbeef.mpl  scaling.mpl  tpss_c.mpl  util.mpl \
+b97.mpl          gvt4.mpl   op.mpl     th.mpl       tpss_x.mpl  vwn.mpl
 
-all: all-am
+all: all-recursive
 
 .SUFFIXES:
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
@@ -343,12 +364,105 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
-tags TAGS:
 
-ctags CTAGS:
+# This directory's subdirectories are mostly independent; you can cd
+# into them and run 'make' without going through this Makefile.
+# To change the values of 'make' variables: instead of editing Makefiles,
+# (1) if the variable is set in 'config.status', edit 'config.status'
+#     (which will cause the Makefiles to be regenerated when you run 'make');
+# (2) otherwise, pass the desired values on the 'make' command line.
+$(am__recursive_targets):
+	@fail=; \
+	if $(am__make_keepgoing); then \
+	  failcom='fail=yes'; \
+	else \
+	  failcom='exit 1'; \
+	fi; \
+	dot_seen=no; \
+	target=`echo $@ | sed s/-recursive//`; \
+	case "$@" in \
+	  distclean-* | maintainer-clean-*) list='$(DIST_SUBDIRS)' ;; \
+	  *) list='$(SUBDIRS)' ;; \
+	esac; \
+	for subdir in $$list; do \
+	  echo "Making $$target in $$subdir"; \
+	  if test "$$subdir" = "."; then \
+	    dot_seen=yes; \
+	    local_target="$$target-am"; \
+	  else \
+	    local_target="$$target"; \
+	  fi; \
+	  ($(am__cd) $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
+	  || eval $$failcom; \
+	done; \
+	if test "$$dot_seen" = "no"; then \
+	  $(MAKE) $(AM_MAKEFLAGS) "$$target-am" || exit 1; \
+	fi; test -z "$$fail"
 
-cscope cscopelist:
+ID: $(am__tagged_files)
+	$(am__define_uniq_tagged_files); mkid -fID $$unique
+tags: tags-recursive
+TAGS: tags
 
+tags-am: $(TAGS_DEPENDENCIES) $(am__tagged_files)
+	set x; \
+	here=`pwd`; \
+	if ($(ETAGS) --etags-include --version) >/dev/null 2>&1; then \
+	  include_option=--etags-include; \
+	  empty_fix=.; \
+	else \
+	  include_option=--include; \
+	  empty_fix=; \
+	fi; \
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+	  if test "$$subdir" = .; then :; else \
+	    test ! -f $$subdir/TAGS || \
+	      set "$$@" "$$include_option=$$here/$$subdir/TAGS"; \
+	  fi; \
+	done; \
+	$(am__define_uniq_tagged_files); \
+	shift; \
+	if test -z "$(ETAGS_ARGS)$$*$$unique"; then :; else \
+	  test -n "$$unique" || unique=$$empty_fix; \
+	  if test $$# -gt 0; then \
+	    $(ETAGS) $(ETAGSFLAGS) $(AM_ETAGSFLAGS) $(ETAGS_ARGS) \
+	      "$$@" $$unique; \
+	  else \
+	    $(ETAGS) $(ETAGSFLAGS) $(AM_ETAGSFLAGS) $(ETAGS_ARGS) \
+	      $$unique; \
+	  fi; \
+	fi
+ctags: ctags-recursive
+
+CTAGS: ctags
+ctags-am: $(TAGS_DEPENDENCIES) $(am__tagged_files)
+	$(am__define_uniq_tagged_files); \
+	test -z "$(CTAGS_ARGS)$$unique" \
+	  || $(CTAGS) $(CTAGSFLAGS) $(AM_CTAGSFLAGS) $(CTAGS_ARGS) \
+	     $$unique
+
+GTAGS:
+	here=`$(am__cd) $(top_builddir) && pwd` \
+	  && $(am__cd) $(top_srcdir) \
+	  && gtags -i $(GTAGS_ARGS) "$$here"
+cscopelist: cscopelist-recursive
+
+cscopelist-am: $(am__tagged_files)
+	list='$(am__tagged_files)'; \
+	case "$(srcdir)" in \
+	  [\\/]* | ?:[\\/]*) sdir="$(srcdir)" ;; \
+	  *) sdir=$(subdir)/$(srcdir) ;; \
+	esac; \
+	for i in $$list; do \
+	  if test -f "$$i"; then \
+	    echo "$(subdir)/$$i"; \
+	  else \
+	    echo "$$sdir/$$i"; \
+	  fi; \
+	done >> $(top_builddir)/cscope.files
+
+distclean-tags:
+	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 
 distdir: $(DISTFILES)
 	@srcdirstrip=`echo "$(srcdir)" | sed 's/[].[^$$\\*]/\\\\&/g'`; \
@@ -380,19 +494,45 @@ distdir: $(DISTFILES)
 	    || exit 1; \
 	  fi; \
 	done
+	@list='$(DIST_SUBDIRS)'; for subdir in $$list; do \
+	  if test "$$subdir" = .; then :; else \
+	    $(am__make_dryrun) \
+	      || test -d "$(distdir)/$$subdir" \
+	      || $(MKDIR_P) "$(distdir)/$$subdir" \
+	      || exit 1; \
+	    dir1=$$subdir; dir2="$(distdir)/$$subdir"; \
+	    $(am__relativize); \
+	    new_distdir=$$reldir; \
+	    dir1=$$subdir; dir2="$(top_distdir)"; \
+	    $(am__relativize); \
+	    new_top_distdir=$$reldir; \
+	    echo " (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) top_distdir="$$new_top_distdir" distdir="$$new_distdir" \\"; \
+	    echo "     am__remove_distdir=: am__skip_length_check=: am__skip_mode_fix=: distdir)"; \
+	    ($(am__cd) $$subdir && \
+	      $(MAKE) $(AM_MAKEFLAGS) \
+	        top_distdir="$$new_top_distdir" \
+	        distdir="$$new_distdir" \
+		am__remove_distdir=: \
+		am__skip_length_check=: \
+		am__skip_mode_fix=: \
+	        distdir) \
+	      || exit 1; \
+	  fi; \
+	done
 check-am: all-am
-check: check-am
+check: check-recursive
 all-am: Makefile $(SCRIPTS)
-installdirs:
-install: install-am
-install-exec: install-exec-am
-install-data: install-data-am
-uninstall: uninstall-am
+installdirs: installdirs-recursive
+installdirs-am:
+install: install-recursive
+install-exec: install-exec-recursive
+install-data: install-data-recursive
+uninstall: uninstall-recursive
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 
-installcheck: installcheck-am
+installcheck: installcheck-recursive
 install-strip:
 	if test -z '$(STRIP)'; then \
 	  $(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
@@ -414,85 +554,86 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-clean: clean-am
+clean: clean-recursive
 
 clean-am: clean-generic clean-libtool mostlyclean-am
 
-distclean: distclean-am
+distclean: distclean-recursive
 	-rm -f Makefile
-distclean-am: clean-am distclean-generic
+distclean-am: clean-am distclean-generic distclean-tags
 
-dvi: dvi-am
+dvi: dvi-recursive
 
 dvi-am:
 
-html: html-am
+html: html-recursive
 
 html-am:
 
-info: info-am
+info: info-recursive
 
 info-am:
 
 install-data-am:
 
-install-dvi: install-dvi-am
+install-dvi: install-dvi-recursive
 
 install-dvi-am:
 
 install-exec-am:
 
-install-html: install-html-am
+install-html: install-html-recursive
 
 install-html-am:
 
-install-info: install-info-am
+install-info: install-info-recursive
 
 install-info-am:
 
 install-man:
 
-install-pdf: install-pdf-am
+install-pdf: install-pdf-recursive
 
 install-pdf-am:
 
-install-ps: install-ps-am
+install-ps: install-ps-recursive
 
 install-ps-am:
 
 installcheck-am:
 
-maintainer-clean: maintainer-clean-am
+maintainer-clean: maintainer-clean-recursive
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
-mostlyclean: mostlyclean-am
+mostlyclean: mostlyclean-recursive
 
 mostlyclean-am: mostlyclean-generic mostlyclean-libtool
 
-pdf: pdf-am
+pdf: pdf-recursive
 
 pdf-am:
 
-ps: ps-am
+ps: ps-recursive
 
 ps-am:
 
 uninstall-am:
 
-.MAKE: install-am install-strip
+.MAKE: $(am__recursive_targets) install-am install-strip
 
-.PHONY: all all-am check check-am clean clean-generic clean-libtool \
-	cscopelist-am ctags-am distclean distclean-generic \
-	distclean-libtool distdir dvi dvi-am html html-am info info-am \
+.PHONY: $(am__recursive_targets) CTAGS GTAGS TAGS all all-am check \
+	check-am clean clean-generic clean-libtool cscopelist-am ctags \
+	ctags-am distclean distclean-generic distclean-libtool \
+	distclean-tags distdir dvi dvi-am html html-am info info-am \
 	install install-am install-data install-data-am install-dvi \
 	install-dvi-am install-exec install-exec-am install-html \
 	install-html-am install-info install-info-am install-man \
 	install-pdf install-pdf-am install-ps install-ps-am \
 	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags-am uninstall uninstall-am
+	installdirs-am maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-generic mostlyclean-libtool pdf pdf-am \
+	ps ps-am tags tags-am uninstall uninstall-am
 
 .PRECIOUS: Makefile
 

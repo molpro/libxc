@@ -20,39 +20,33 @@ static void
 gga_x_rpbe_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(gga_x_rpbe_params));
-
-  /* same parameters as standard PBE */
-  xc_gga_x_rpbe_set_params(p, 0.8040, 0.2195149727645171);
+  p->params = libxc_malloc(sizeof(gga_x_rpbe_params));
 }
 
+#define RPBE_N_PAR 2
+static const char  *rpbe_names[RPBE_N_PAR]  = {"_kappa", "_mu"};
+static const char  *rpbe_desc[RPBE_N_PAR]   = {
+  "Asymptotic value of the enhancement function",
+  "Coefficient of the 2nd order expansion"};
+static const double rpbe_values[RPBE_N_PAR] =
+  {0.8040, MU_PBE};
 
-void 
-xc_gga_x_rpbe_set_params(xc_func_type *p, double kappa, double mu)
-{
-  gga_x_rpbe_params *params;
+#include "decl_gga.h"
+#include "maple2c/gga_exc/gga_x_rpbe.c"
+#include "work_gga.c"
 
-  assert(p != NULL && p->params != NULL);
-  params = (gga_x_rpbe_params *) (p->params);
-
-  params->rpbe_kappa = kappa;
-  params->rpbe_mu    = mu;
-}
-
-#include "maple2c/gga_x_rpbe.c"
-
-#define func xc_gga_x_rpbe_enhance
-#include "work_gga_x.c"
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_x_rpbe = {
   XC_GGA_X_RPBE,
   XC_EXCHANGE,
   "Hammer, Hansen, and Norskov",
   XC_FAMILY_GGA,
   {&xc_ref_Hammer1999_7413, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-32,
-  0, NULL, NULL,
+  {RPBE_N_PAR, rpbe_names, rpbe_desc, rpbe_values, set_ext_params_cpy},
   gga_x_rpbe_init, NULL, 
-  NULL, work_gga_x, NULL
+  NULL, work_gga, NULL
 };

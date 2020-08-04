@@ -57,54 +57,66 @@ hyb_mgga_xc_kcis_init(xc_func_type *p)
   p->cam_alpha = exx;
 }
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_hyb_mgga_xc_mpw1kcis = {
   XC_HYB_MGGA_XC_MPW1KCIS,
   XC_EXCHANGE_CORRELATION,
   "MPW1KCIS for barrier heights",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Zhao2005_2012, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_DEVELOPMENT,
+  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   hyb_mgga_xc_kcis_init,
   NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */
 };
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_hyb_mgga_xc_mpwkcis1k = {
   XC_HYB_MGGA_XC_MPWKCIS1K,
   XC_EXCHANGE_CORRELATION,
   "MPWKCIS1K for barrier heights",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Zhao2005_2012, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_DEVELOPMENT,
+  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   hyb_mgga_xc_kcis_init,
   NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */
 };
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_hyb_mgga_xc_pbe1kcis = {
   XC_HYB_MGGA_XC_PBE1KCIS,
   XC_EXCHANGE_CORRELATION,
   "PBE1KCIS for binding energies",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Zhao2005_415, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_DEVELOPMENT,
+  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   hyb_mgga_xc_kcis_init,
   NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */
 };
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_hyb_mgga_xc_tpss1kcis = {
   XC_HYB_MGGA_XC_TPSS1KCIS,
   XC_EXCHANGE_CORRELATION,
   "TPSS1KCIS for thermochemistry and kinetics",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Zhao2005_43, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_DEVELOPMENT,
+  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   hyb_mgga_xc_kcis_init,
   NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */
 };

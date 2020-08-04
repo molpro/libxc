@@ -10,21 +10,23 @@
 
 #define XC_GGA_X_WC         118 /* Wu & Cohen */
 
-#include "maple2c/gga_x_wc.c"
+#include "decl_gga.h"
+#include "maple2c/gga_exc/gga_x_wc.c"
+#include "work_gga.c"
 
-#define func xc_gga_x_wc_enhance
-#include "work_gga_x.c"
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_x_wc = {
   XC_GGA_X_WC,
   XC_EXCHANGE,
   "Wu & Cohen",
   XC_FAMILY_GGA,
   {&xc_ref_Wu2006_235116, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-32,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   NULL, NULL, 
-  NULL, work_gga_x, NULL
+  NULL, work_gga, NULL
 };
 

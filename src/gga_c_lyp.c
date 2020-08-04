@@ -18,66 +18,54 @@ typedef struct{
 
 void xc_gga_c_lyp_init(xc_func_type *p)
 {
-  assert(p->params == NULL);
-
-  p->params = malloc(sizeof(gga_c_lyp_params));
-
-  /* values of constants in standard LYP functional */
-  switch(p->info->number){
-  case XC_GGA_C_LYP:
-    xc_gga_c_lyp_set_params(p, 0.04918, 0.132, 0.2533, 0.349);
-    break;
-  case XC_GGA_C_TM_LYP:
-    xc_gga_c_lyp_set_params(p, 0.0393, 0.21, 0.41, 0.15);
-    break;
-  default:
-    fprintf(stderr, "Internal error in gga_c_lyp\n");
-    exit(1);
-  }
+  assert(p!=NULL && p->params == NULL);
+  p->params = libxc_malloc(sizeof(gga_c_lyp_params));
 }
 
+#define LYP_N_PAR 4
+static const char  *lyp_names[LYP_N_PAR]  = {"_A", "_B", "_c", "_d"};
+static const char  *lyp_desc[LYP_N_PAR]   = {
+  "Parameter A of LYP",
+  "Parameter B of LYP",
+  "Parameter c of LYP",
+  "Parameter d of LYP"};
+static const double lyp_values[LYP_N_PAR] =
+  {0.04918, 0.132, 0.2533, 0.349};
+static const double lyp_tm_values[LYP_N_PAR] =
+  {0.0393, 0.21, 0.41, 0.15};
+  
+#include "decl_gga.h"
+#include "maple2c/gga_exc/gga_c_lyp.c"
+#include "work_gga.c"
 
-void xc_gga_c_lyp_set_params(xc_func_type *p, double A, double B, double c, double d)
-{
-  gga_c_lyp_params *params;
-
-  assert(p != NULL && p->params != NULL);
-  params = (gga_c_lyp_params *) (p->params);
-
-  params->A = A;
-  params->B = B;
-  params->c = c;
-  params->d = d;
-}
-
-
-#include "maple2c/gga_c_lyp.c"
-
-#define func maple2c_func
-#include "work_gga_c.c"
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_c_lyp = {
   XC_GGA_C_LYP,
   XC_CORRELATION,
   "Lee, Yang & Parr",
   XC_FAMILY_GGA,
   {&xc_ref_Lee1988_785, &xc_ref_Miehlich1989_200, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-32,
-  0, NULL, NULL,
+  {LYP_N_PAR, lyp_names, lyp_desc, lyp_values, set_ext_params_cpy},
   xc_gga_c_lyp_init, NULL,
-  NULL, work_gga_c, NULL
+  NULL, work_gga, NULL
 };
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_c_tm_lyp = {
   XC_GGA_C_TM_LYP,
   XC_CORRELATION,
   "Takkar and McCarthy reparametrization",
   XC_FAMILY_GGA,
   {&xc_ref_Thakkar2009_134109, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-32,
-  0, NULL, NULL,
+  {LYP_N_PAR, lyp_names, lyp_desc, lyp_tm_values, set_ext_params_cpy},
   xc_gga_c_lyp_init, NULL,
-  NULL, work_gga_c, NULL
+  NULL, work_gga, NULL
 };

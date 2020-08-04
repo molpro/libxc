@@ -16,21 +16,22 @@
 
 #define XC_LDA_C_2D_AMGB  15   /* Attaccalite et al             */
 
-#include "maple2c/lda_c_2d_amgb.c"
-
-#define func maple2c_func
-#define XC_DIMENSIONS 2
+#include "decl_lda.h"
+#include "maple2c/lda_exc/lda_c_2d_amgb.c"
 #include "work_lda.c"
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_lda_c_2d_amgb = {
   XC_LDA_C_2D_AMGB,
   XC_CORRELATION,
   "AMGB (for 2D systems)",
   XC_FAMILY_LDA,
   {&xc_ref_Attaccalite2002_256601, NULL, NULL, NULL, NULL},
-  XC_FLAGS_2D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_2D | MAPLE2C_FLAGS,
   1e-9,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   NULL, NULL,
   work_lda, NULL, NULL
 };

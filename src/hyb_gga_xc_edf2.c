@@ -14,24 +14,30 @@
 static void
 hyb_gga_xc_edf2_init(xc_func_type *p)
 {
-  static int   funcs_id  [6] = {XC_LDA_X, XC_GGA_X_B88, XC_GGA_X_B88, XC_LDA_C_VWN, XC_GGA_C_LYP, XC_GGA_C_LYP};
+  static int    funcs_id  [6] = {XC_LDA_X, XC_GGA_X_B88, XC_GGA_X_B88, XC_LDA_C_VWN, XC_GGA_C_LYP, XC_GGA_C_LYP};
   static double funcs_coef[6] = {0.2811, 0.6227, -0.0551, 0.3029, 0.5998, -0.0053};
 
+  static double par_x_b88[] = {0.0035, 6.0};
+  static double par_c_lyp[] = {0.055, 0.158, 0.25, 0.3505};
+  
   xc_mix_init(p, 6, funcs_id, funcs_coef);  
-  xc_gga_x_b88_set_params(p->func_aux[2], 0.0035, 6.0);
-  xc_gga_c_lyp_set_params(p->func_aux[5], 0.055, 0.158, 0.25, 0.3505);
+  xc_func_set_ext_params(p->func_aux[2], par_x_b88);
+  xc_func_set_ext_params(p->func_aux[5], par_c_lyp);
   p->cam_alpha = 0.1695;
 }
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_hyb_gga_xc_edf2 = {
   XC_HYB_GGA_XC_EDF2,
   XC_EXCHANGE_CORRELATION,
   "EDF2",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Lin2004_365, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   hyb_gga_xc_edf2_init, 
   NULL, NULL, NULL, NULL
 };

@@ -21,13 +21,14 @@ XC_FAMILY_LCA = 8
 XC_FAMILY_OEP = 16
 XC_FAMILY_HYB_GGA = 32
 XC_FAMILY_HYB_MGGA = 64
-
+XC_FAMILY_HYB_LDA = 128
 
 XC_FLAGS_HAVE_EXC = (1 << 0)  # = 1
 XC_FLAGS_HAVE_VXC = (1 << 1)  # = 2
 XC_FLAGS_HAVE_FXC = (1 << 2)  # = 4
 XC_FLAGS_HAVE_KXC = (1 << 3)  # = 8
 XC_FLAGS_HAVE_LXC = (1 << 4)  # = 16
+XC_FLAGS_HAVE_ALL = 31 # The most common case
 XC_FLAGS_1D = (1 << 5)  # = 32
 XC_FLAGS_2D = (1 << 6)  # = 64
 XC_FLAGS_3D = (1 << 7)  # = 128

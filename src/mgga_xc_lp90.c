@@ -11,20 +11,22 @@
 
 #define XC_MGGA_XC_LP90          564 /* Lee & Parr, Eq. (56) */
 
-#include "maple2c/mgga_xc_lp90.c"
+#include "decl_mgga.h"
+#include "maple2c/mgga_exc/mgga_xc_lp90.c"
+#include "work_mgga.c"
 
-#define func maple2c_func
-#include "work_mgga_c.c"
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_mgga_xc_lp90 = {
   XC_MGGA_XC_LP90,
   XC_EXCHANGE_CORRELATION,
   "Lee & Parr, Eq. (56)",
   XC_FAMILY_MGGA,
   {&xc_ref_Lee1990_193, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_NEEDS_LAPLACIAN | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC,
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_LAPLACIAN | MAPLE2C_FLAGS,
   1e-24,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   NULL, NULL, 
-  NULL, NULL, work_mgga_c,
+  NULL, NULL, work_mgga,
 };

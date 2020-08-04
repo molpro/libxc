@@ -1,5 +1,6 @@
 /*
  Copyright (C) 2006-2007 M.A.L. Marques
+               2019      Susi Lehtola
 
  This Source Code Form is subject to the terms of the Mozilla Public
  License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -9,9 +10,10 @@
 
 #include "util.h"
 
-#define XC_LDA_X         1   /* Exchange                            */
-#define XC_LDA_C_XALPHA  6   /* Slater Xalpha                       */
-#define XC_LDA_X_RAE   549   /* Rae self-energy corrected exchange  */
+#define XC_LDA_X             1   /* Exchange                            */
+#define XC_LDA_C_XALPHA      6   /* Slater Xalpha                       */
+#define XC_LDA_X_RAE       549   /* Rae self-energy corrected exchange  */
+#define XC_HYB_LDA_XC_LDA0 177   /* LDA0: hybrid LDA exchange           */
 
 /*  
     Slater's Xalpha functional (Exc = alpha Ex)
@@ -38,219 +40,123 @@ lda_x_init(xc_func_type *p)
   lda_x_params *params;
 
   assert(p != NULL && p->params == NULL);
-  p->params = malloc(sizeof(lda_x_params));
+  p->params = libxc_malloc(sizeof(lda_x_params));
   params = (lda_x_params *) (p->params);
 
   params->alpha = 1.0;
 }
 
-/*
-    Int. J. of Quant. Chem. 100, 1047-1056 (2004)
-    J. Chem. Phys. 120, 8425 (2004)
-*/
-void
-xc_lda_x_attenuation_function_erf(int order, double aa, double *f, double *df, double *d2f, double *d3f)
-{
-  double aa2, auxa1, auxa2, auxa3;
-  
-  aa2 = aa*aa;
-
-  auxa1 = M_SQRTPI*erf(1.0/(2.0*aa));
-  
-  if(aa < 1.0e6) 
-    auxa2 = exp(-1.0/(4.0*aa2)) - 1.0;
-  else
-    auxa2 = -1.0/(4.0*aa2);
-  
-  auxa3 = 2.0*aa2*auxa2 + 0.5;
-  
-  switch(order) {
-  default:
-  case 3:
-    *d3f = -256.0*aa + 8.0*(1.0 + 8.0*aa2 + 32.0*aa2*aa2)*(auxa2 + 1.0)/(aa*aa2);
-  case 2:
-    *d2f = 16.0*(2.0 + (1.0 + 8.0*aa2)*auxa2);
-  case 1:
-    *df  = 8.0/3.0 * (4.0*aa - 2.0*(1.0 - 8.0*aa2)*aa*auxa2 - auxa1);
-  case 0:
-    *f   = 1.0 - 8.0/3.0*aa*(auxa1 + 2.0*aa*(auxa2 - auxa3));
-  }
-}
-
-
-/* Int. J. of Quant. Chem. 100, 1047-1056 (2004) */
-void
-xc_lda_x_attenuation_function_erf_gau(int order, double aa, double *f, double *df, double *d2f, double *d3f)
-{
-  double bb, bb2, bb3, auxb1, auxb2;
-
-  xc_lda_x_attenuation_function_erf(order, aa, f, df, d2f, d3f);
-
-  bb  = aa/M_SQRT3;
-  bb2 = bb*bb;
-  bb3 = bb*bb2;
-  auxb1 = M_SQRTPI*erf(1.0/(2.0*bb));
-  auxb2 = exp(-1.0/(4.0*bb2));
-
-  switch(order) {
-  default:
-  case 3:
-    *d3f -=  8.0/9.0*(-384.0*bb + 3.0*(1.0 + 8.0*bb2*(1.0 + bb2*(8.0 + bb2*32.0))*auxb2/(2.0*bb2*bb2*bb)));
-  case 2:
-    *d2f -= 8.0/(3.0*M_SQRT3)*(12.0 - 192.0*bb2 + 3.0*(1.0/bb2 + 12.0 + 64.0*bb2)*auxb2);
-  case 1:
-    *df -= 8.0/3.0*(4.0*bb*(3.0 - 16.0*bb2 + (1.0 + 16.0*bb2)*auxb2) - auxb1);
-  case 0:
-    *f += 8.0/M_SQRT3*bb*(auxb1 - 6.0*bb + 16.0*bb3 + (2.0*bb - 16*bb3)*auxb2);
-  }
-}
-
-/* Chem. Phys. Lett. 462(2008) 348-351 */
-void
-xc_lda_x_attenuation_function_yukawa(int order, double aa, double *f, double *df, double *d2f, double *d3f)
-{
-  double aa2, aa3;
-  double auxa1, auxa2, auxa3;
-
-  aa2 = aa*aa;
-
-  if (aa > 50.0) {
-    aa3 = aa*aa2;
-
-    /* One can also use the following expansions to circumvent the double switch-case ladder
-
-       auxa1 = 1.0/aa - 1/ (3.0*aa3) + 1.0/(5.0*aa3*aa2);
-       auxa2 = 1.0/aa2 - 1./(2.0*aa2*aa2) + 1.0/(3.0*aa3*aa3);
-       auxa3 = (aa2 + 1);
-    */
-    switch(order) {
-    default:	/* > 3 - catch-22 */
-    case 3:
-      *d3f = 4.0/(aa2*aa2*aa3) - 8.0/(aa3*aa3);
-    case 2:
-      *d2f = 2.0/(3.0*aa2*aa2) - 2.0/(3.0*aa3*aa3);
-    case 1:
-      *df = 2.0/(15.0*aa2*aa3) - 2.0/(9.0*aa3);
-    case 0:
-      *f = 1.0/(9.0*aa2) - 1.0/(30.0*aa2*aa2);
-    }
-  } else {
-    auxa1 = atan2(1.0, aa);
-    auxa2 = log(1.0 + (1.0/aa2));
-    auxa3 = aa2 + 1.0;
-
-    switch (order) {
-    default:	/* > 3 - catch-22 */
-    case 3:
-      *d3f = 16.0*aa*auxa2 - 8.0*(2.0*aa2 + 1.0)/(aa*auxa3);
-    case 2:
-      *d2f = 4.0*(2.0*aa2 + 1.0)*auxa2 - 8.0;
-    case 1:
-      *df = 4.0/3.0 * (aa*(2.0*aa2 + 3.0)*auxa2 - 2.0*(aa + auxa1));
-    case 0:
-      *f = 1.0 - 8.0/3.0*aa*(auxa1 + aa/4.0* (1.0 - (auxa3 + 2.0)*auxa2));
-    }
-  }
-}
-
-void
-xc_lda_x_attenuation_function(int interaction, int order, double aa, 
-                               double *f, double *df, double *d2f, double *d3f)
-{
-  switch(interaction){
-  case XC_RSF_ERF:
-    xc_lda_x_attenuation_function_erf(order, aa, f, df, d2f, d3f);
-    break;
-  case XC_RSF_ERF_GAU:
-    xc_lda_x_attenuation_function_erf_gau(order, aa, f, df, d2f, d3f);
-    break;
-  case XC_RSF_YUKAWA:
-    xc_lda_x_attenuation_function_yukawa(order, aa, f, df, d2f, d3f);
-    break;
-  default:
-    fprintf(stderr, "Unknown interaction in lda_x_attenuation_function\n");
-    exit(1);
-  }
-}
-
-#include "maple2c/lda_x.c"
-
-#define func maple2c_func
+#include "decl_lda.h"
+#include "maple2c/lda_exc/lda_x.c"
 #include "work_lda.c"
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_lda_x = {
   XC_LDA_X,
   XC_EXCHANGE,
   "Slater exchange",
   XC_FAMILY_LDA,
   {&xc_ref_Dirac1930_376, &xc_ref_Bloch1929_545, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-24,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   lda_x_init, NULL,
   work_lda, NULL, NULL
 };
 
-static const func_params_type ext_params[] = {
-  {1.0, "X-alpha multiplicative parameter"},
-};
+static const char  *xalpha_names[]  = {"alpha"};
+static const char  *xalpha_desc[]   = {"X-alpha multiplicative parameter"};
+static const double xalpha_values[] = {1.0};
 
 static void 
 set_ext_params(xc_func_type *p, const double *ext_params)
 {
   lda_x_params *params;
-  double ff;
 
   assert(p != NULL && p->params != NULL);
   params = (lda_x_params *)(p->params);
 
-  ff = (ext_params == NULL) ? p->info->ext_params[0].value : ext_params[0];
-  params->alpha = 1.5*ff - 1.0;
+  params->alpha = 1.5*get_ext_param(p, ext_params, 0) - 1.0;
 }
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_lda_c_xalpha = {
   XC_LDA_C_XALPHA,
   XC_CORRELATION,
   "Slater's Xalpha",
   XC_FAMILY_LDA,
   {&xc_ref_Slater1951_385, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-24,
-  1, ext_params, set_ext_params,
+  {1, xalpha_names, xalpha_desc, xalpha_values, set_ext_params},
   lda_x_init, NULL,
   work_lda, NULL, NULL
 };
 
-static const func_params_type N_ext_params[] = {
-  {1.0, "Number of electrons"},
-};
+static const char  *N_names[]  = {"N"};
+static const char  *N_desc[]   = {"Number of electrons"};
+static const double N_values[] = {1.0};
 
 static void 
 N_set_ext_params(xc_func_type *p, const double *ext_params)
 {
   lda_x_params *params;
-  double ff, N, dx, dx2;
+  double N, dx, dx2;
 
   assert(p != NULL && p->params != NULL);
   params = (lda_x_params *)(p->params);
 
-  ff = (ext_params == NULL) ? p->info->ext_params[0].value : ext_params[0];
-  N = ff;
+  N = get_ext_param(p, ext_params, 0);
 
   dx  = 1.0/CBRT(4.0*N);
   dx2 = dx*dx;
   params->alpha = 1.0 - 8.0/3.0*dx + 2.0*dx2 - dx2*dx2/3.0;
 }
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_lda_x_rae = {
   XC_LDA_X_RAE,
   XC_EXCHANGE,
   "Rae self-energy corrected exchange",
   XC_FAMILY_LDA,
   {&xc_ref_Rae1973_574, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-24,
-  1, N_ext_params, N_set_ext_params,
+  {1, N_names, N_desc, N_values, N_set_ext_params},
   lda_x_init, NULL,
   work_lda, NULL, NULL
+};
+
+/* Patrick Rinke confirmed that this functional only contains
+   75% of LDA correlation. */
+static void
+hyb_lda_xc_lda0_init(xc_func_type *p)
+{
+  static int    funcs_id[2] = {XC_LDA_X, XC_LDA_C_PW_MOD};
+  static double funcs_coef[2] = {1.0 - 0.25, 1.0 - 0.25};
+
+  xc_mix_init(p, 2, funcs_id, funcs_coef);
+  p->cam_alpha = 0.25;
+}
+
+#ifdef __cplusplus
+extern "C"
+#endif
+const xc_func_info_type xc_func_info_hyb_lda_xc_lda0 = {
+  XC_HYB_LDA_XC_LDA0,
+  XC_EXCHANGE,
+  "LDA hybrid exchange (LDA0)",
+  XC_FAMILY_HYB_LDA,
+  {&xc_ref_Rinke2012_126404, NULL, NULL, NULL, NULL},
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  1e-32,
+  {0, NULL, NULL, NULL, NULL},
+  hyb_lda_xc_lda0_init, NULL,
+  NULL, NULL, NULL /* this is taken care of by the generic routine */
 };

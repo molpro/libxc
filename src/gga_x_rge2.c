@@ -10,21 +10,23 @@
 
 #define XC_GGA_X_RGE2         142 /* Regularized PBE                                */
 
-#include "maple2c/gga_x_rge2.c"
+#include "decl_gga.h"
+#include "maple2c/gga_exc/gga_x_rge2.c"
+#include "work_gga.c"
 
-#define func xc_gga_x_rge2_enhance
-#include "work_gga_x.c"
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_x_rge2 = {
   XC_GGA_X_RGE2,
   XC_EXCHANGE,
   "Regularized PBE",
   XC_FAMILY_GGA,
   {&xc_ref_Ruzsinszky2009_763, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-32,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   NULL, NULL, 
-  NULL, work_gga_x, NULL
+  NULL, work_gga, NULL
 };
 

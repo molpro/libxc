@@ -11,20 +11,22 @@
 
 #define XC_MGGA_X_SA_TPSS          542 /* TPSS with correct surface asymptotics */
 
-#include "maple2c/mgga_x_sa_tpss.c"
+#include "decl_mgga.h"
+#include "maple2c/mgga_exc/mgga_x_sa_tpss.c"
+#include "work_mgga.c"
 
-#define func maple2c_func
-#include "work_mgga_x.c"
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_mgga_x_sa_tpss = {
   XC_MGGA_X_SA_TPSS,
   XC_EXCHANGE,
   "TPSS with correct surface asymptotics",
   XC_FAMILY_MGGA,
   {&xc_ref_Constantin2016_115127, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-23,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   NULL, NULL, 
-  NULL, NULL, work_mgga_x,
+  NULL, NULL, work_mgga,
 };

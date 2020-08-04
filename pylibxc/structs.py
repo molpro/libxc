@@ -27,8 +27,8 @@ class xc_func_info_type(ctypes.Structure):
     """
     _fields_ = [
         ("number", ctypes.c_int),
-        ("name", ctypes.c_char_p),
         ("kind", ctypes.c_int),
+        ("name", ctypes.c_char_p),
         ("family", ctypes.c_int),
         ("refs", ctypes.POINTER(func_reference_type)),
         ("flags", ctypes.c_int),
@@ -43,6 +43,93 @@ class xc_func_info_type(ctypes.Structure):
         ("mgga", ctypes.c_void_p),
     ]
 
+
+class xc_dimensions(ctypes.Structure):
+     """
+    Holds dimensions of the several arrays.
+    """
+     _fields_ = [
+         ("rho", ctypes.c_int),
+         ("sigma", ctypes.c_int),
+         ("lapl", ctypes.c_int),
+         ("tau", ctypes.c_int),
+
+         ("zk", ctypes.c_int),
+
+         ("vrho", ctypes.c_int),
+         ("vsigma", ctypes.c_int),
+         ("vlapl", ctypes.c_int),
+         ("vtau", ctypes.c_int), 
+
+         ("v2rho2", ctypes.c_int),
+         ("v2rhosigma", ctypes.c_int),
+         ("v2rholapl", ctypes.c_int),
+         ("v2rhotau", ctypes.c_int),
+         ("v2sigma2", ctypes.c_int),
+         ("v2sigmalapl", ctypes.c_int),
+         ("v2sigmatau", ctypes.c_int),
+         ("v2lapl2", ctypes.c_int),
+         ("v2lapltau", ctypes.c_int),
+         ("v2tau2", ctypes.c_int),
+
+         ("v3rho3", ctypes.c_int),
+         ("v3rho2sigma", ctypes.c_int),
+         ("v3rho2lapl", ctypes.c_int),
+         ("v3rho2tau", ctypes.c_int),
+         ("v3rhosigma2", ctypes.c_int),
+         ("v3rhosigmalapl", ctypes.c_int),
+         ("v3rhosigmatau", ctypes.c_int),
+         ("v3rholapl2", ctypes.c_int),
+         ("v3rholapltau", ctypes.c_int),
+         ("v3rhotau2", ctypes.c_int),
+         ("v3sigma3", ctypes.c_int),
+         ("v3sigma2lapl", ctypes.c_int),
+         ("v3sigma2tau", ctypes.c_int),
+         ("v3sigmalapl2", ctypes.c_int),
+         ("v3sigmalapltau", ctypes.c_int),
+         ("v3sigmatau2", ctypes.c_int),
+         ("v3lapl3", ctypes.c_int),
+         ("v3lapl2tau", ctypes.c_int),
+         ("v3lapltau2", ctypes.c_int),
+         ("v3tau3", ctypes.c_int),
+
+         ("v4rho4", ctypes.c_int),
+         ("v4rho3sigma", ctypes.c_int),
+         ("v4rho3lapl", ctypes.c_int),
+         ("v4rho3tau", ctypes.c_int),
+         ("v4rho2sigma2", ctypes.c_int),
+         ("v4rho2sigmalapl", ctypes.c_int),
+         ("v4rho2sigmatau", ctypes.c_int),
+         ("v4rho2lapl2", ctypes.c_int),
+         ("v4rho2lapltau", ctypes.c_int),
+         ("v4rho2tau2", ctypes.c_int),
+         ("v4rhosigma3", ctypes.c_int),
+         ("v4rhosigma2lapl", ctypes.c_int),
+         ("v4rhosigma2tau", ctypes.c_int),
+         ("v4rhosigmalapl2", ctypes.c_int),
+         ("v4rhosigmalapltau", ctypes.c_int),
+         ("v4rhosigmatau2", ctypes.c_int),
+         ("v4rholapl3", ctypes.c_int),
+         ("v4rholapl2tau", ctypes.c_int),
+         ("v4rholapltau2", ctypes.c_int),
+         ("v4rhotau3", ctypes.c_int),
+         ("v4sigma4", ctypes.c_int),
+         ("v4sigma3lapl", ctypes.c_int),
+         ("v4sigma3tau", ctypes.c_int),
+         ("v4sigma2lapl2", ctypes.c_int),
+         ("v4sigma2lapltau", ctypes.c_int),
+         ("v4sigma2tau2", ctypes.c_int),
+         ("v4sigmalapl3", ctypes.c_int),
+         ("v4sigmalapl2tau", ctypes.c_int),
+         ("v4sigmalapltau2", ctypes.c_int),
+         ("v4sigmatau3", ctypes.c_int),
+         ("v4lapl4", ctypes.c_int),
+         ("v4lapl3tau", ctypes.c_int),
+         ("v4lapl2tau2", ctypes.c_int),
+         ("v4lapltau3", ctypes.c_int),
+         ("v4tau4", ctypes.c_int),
+     ]
+   
 
 class xc_func_type(ctypes.Structure):
     """
@@ -65,37 +152,8 @@ class xc_func_type(ctypes.Structure):
         ("nlc_b", ctypes.c_double),
         ("nlc_C", ctypes.c_double),
 
-        # n terms
-        ("n_rho", ctypes.c_int),
-        ("n_sigma", ctypes.c_int),
-        ("n_tau", ctypes.c_int),
-        ("n_lapl", ctypes.c_int),
-        ("n_zk", ctypes.c_int),
-
-        # v terms
-        ("n_vrho", ctypes.c_int),
-        ("n_vsigma", ctypes.c_int),
-        ("n_vtau", ctypes.c_int),
-        ("n_vlapl", ctypes.c_int),
-
-        # v2 terms
-        ("n_v2rho2", ctypes.c_int),
-        ("n_v2sigma2", ctypes.c_int),
-        ("n_v2tau2", ctypes.c_int),
-        ("n_v2lapl2", ctypes.c_int),
-        ("n_v2rhosigma", ctypes.c_int),
-        ("n_v2rhotau", ctypes.c_int),
-        ("n_v2rholapl", ctypes.c_int),
-        ("n_v2sigmatau", ctypes.c_int),
-        ("n_v2sigmalapl", ctypes.c_int),
-        ("n_v2lapltau", ctypes.c_int),
-
-        # v3 terms
-        ("n_v3rho3", ctypes.c_int),
-        ("n_v3rho2sigma", ctypes.c_int),
-        ("n_v3rhosigma2", ctypes.c_int),
-        ("n_v3sigma3", ctypes.c_int),
-
+        ("dim", xc_dimensions),
+        
         # parameters
         ("params", ctypes.c_void_p),  # void *params;
         ("dens_threshold", ctypes.c_double),

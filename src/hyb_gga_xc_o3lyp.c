@@ -37,15 +37,18 @@ gga_xc_o3lyp_init(xc_func_type *p)
   p->cam_alpha = a;
 }
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_hyb_gga_xc_o3lyp = {
   XC_HYB_GGA_XC_O3LYP,
   XC_EXCHANGE_CORRELATION,
   "O3LYP",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Cohen2001_607, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   gga_xc_o3lyp_init,
   NULL, NULL, NULL, NULL
 };
@@ -71,15 +74,18 @@ gga_xc_x3lyp_init(xc_func_type *p)
   p->cam_alpha = a0;
 }
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_hyb_gga_xc_x3lyp = {
   XC_HYB_GGA_XC_X3LYP,
   XC_EXCHANGE_CORRELATION,
   "X3LYP",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Xu2004_2673, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   gga_xc_x3lyp_init,
   NULL, NULL, NULL, NULL
 };

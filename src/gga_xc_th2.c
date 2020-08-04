@@ -10,20 +10,22 @@
 
 #define XC_GGA_XC_TH2          155 /* Tozer and Handy v. 2 */
 
-#include "maple2c/gga_xc_th2.c"
+#include "decl_gga.h"
+#include "maple2c/gga_exc/gga_xc_th2.c"
+#include "work_gga.c"
 
-#define func maple2c_func
-#include "work_gga_c.c"
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_xc_th2 = {
   XC_GGA_XC_TH2,
   XC_EXCHANGE_CORRELATION,
   "Tozer and Handy v. 2",
   XC_FAMILY_GGA,
   {&xc_ref_Tozer1998_3162, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-17,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   NULL, NULL, 
-  NULL, work_gga_c, NULL
+  NULL, work_gga, NULL
 };

@@ -11,22 +11,23 @@
 
 #define XC_MGGA_X_PKZB          213 /* Perdew, Kurth, Zupan, and Blaha */
 
-#include "maple2c/mgga_x_pkzb.c"
+#include "decl_mgga.h"
+#include "maple2c/mgga_exc/mgga_x_pkzb.c"
+#include "work_mgga.c"
 
-#define func maple2c_func
-#include "work_mgga_x.c"
 
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_mgga_x_pkzb = {
   XC_MGGA_X_PKZB,
   XC_EXCHANGE,
   "Perdew, Kurth, Zupan, and Blaha",
   XC_FAMILY_MGGA,
   {&xc_ref_Perdew1999_2544, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-23,
-  0, NULL, NULL,
-  NULL,
-  NULL, NULL, NULL,
-  work_mgga_x,
+  {0, NULL, NULL, NULL, NULL},
+  NULL, NULL,
+  NULL, NULL, work_mgga,
 };

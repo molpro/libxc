@@ -1,5 +1,6 @@
 /*
  Copyright (C) 2006-2007 M.A.L. Marques
+ Copyright (C) 2019 X. Andrade
 
  This Source Code Form is subject to the terms of the Mozilla Public
  License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -17,7 +18,8 @@
 #endif
 
 extern xc_func_info_type 
-  *xc_lda_known_funct[], 
+  *xc_lda_known_funct[],
+  *xc_hyb_lda_known_funct[],
   *xc_gga_known_funct[],
   *xc_hyb_gga_known_funct[],
   *xc_mgga_known_funct[],
@@ -63,7 +65,7 @@ char *xc_functional_get_name(int number)
     if(xc_functional_keys[ii].number == number) {
       /* return duplicated: caller has the responsibility to dealloc string.
          Do this the old way since strdup and strndup aren't C standard. */
-      p=malloc(strlen(xc_functional_keys[ii].name)+1);
+      p = (char *) libxc_malloc(strlen(xc_functional_keys[ii].name) + 1);
       strcpy(p,xc_functional_keys[ii].name);
       return p;
     }
@@ -82,6 +84,15 @@ int xc_family_from_id(int id, int *family, int *number)
       if(family != NULL) *family = XC_FAMILY_LDA;
       if(number != NULL) *number = ii;
       return XC_FAMILY_LDA;
+    }
+  }
+
+  /* or is it a hybrid LDA? */
+  for(ii=0; xc_hyb_lda_known_funct[ii]!=NULL; ii++){
+    if(xc_hyb_lda_known_funct[ii]->number == id){
+      if(family != NULL) *family = XC_FAMILY_HYB_LDA;
+      if(number != NULL) *number = ii;
+      return XC_FAMILY_HYB_LDA;
     }
   }
 
@@ -178,7 +189,7 @@ xc_func_type *xc_func_alloc()
 {
   xc_func_type *func;
 
-  func = (xc_func_type *) malloc (sizeof (xc_func_type));
+  func = (xc_func_type *) libxc_malloc (sizeof (xc_func_type));
   return func;
 }
 
@@ -201,80 +212,55 @@ int xc_func_init(xc_func_type *func, int functional, int nspin)
   func->cam_omega = func->cam_alpha = func->cam_beta = 0.0;
   func->nlc_b = func->nlc_C = 0.0;
 
+  // we have to make a copy because the *_known_funct arrays live in
+  // host memory (libxc_malloc instead returns memory than can be read
+  // from GPU and CPU).
+  xc_func_info_type * finfo = (xc_func_info_type *) libxc_malloc(sizeof(xc_func_info_type));
+  
   switch(xc_family_from_id(functional, NULL, &number)){
   case(XC_FAMILY_LDA):
-    func->info = xc_lda_known_funct[number];
+    *finfo = *xc_lda_known_funct[number];
+    internal_counters_set_lda(func->nspin, &(func->dim));
+    break;
+
+  case(XC_FAMILY_HYB_LDA):
+    *finfo = *xc_hyb_lda_known_funct[number];
+    internal_counters_set_lda(func->nspin, &(func->dim));
     break;
 
   case(XC_FAMILY_GGA):
-    func->info = xc_gga_known_funct[number];
+    *finfo = *xc_gga_known_funct[number];
+    internal_counters_set_gga(func->nspin, &(func->dim));
     break;
 
   case(XC_FAMILY_HYB_GGA):
-    func->info = xc_hyb_gga_known_funct[number];
+    *finfo = *xc_hyb_gga_known_funct[number];
+    internal_counters_set_gga(func->nspin, &(func->dim));
     break;
 
   case(XC_FAMILY_MGGA):
-    func->info = xc_mgga_known_funct[number];
+    *finfo = *xc_mgga_known_funct[number];
+    internal_counters_set_mgga(func->nspin, &(func->dim));
     break;
 
   case(XC_FAMILY_HYB_MGGA):
-    func->info = xc_hyb_mgga_known_funct[number];
+    *finfo = *xc_hyb_mgga_known_funct[number];
+    internal_counters_set_mgga(func->nspin, &(func->dim));
     break;
 
   default:
     return -2; /* family not found */
   }
 
-  /* setup internal counters */
-  switch(xc_family_from_id(functional, NULL, &number)){
-  case(XC_FAMILY_MGGA):
-  case(XC_FAMILY_HYB_MGGA):
-    func->n_tau  = func->n_vtau = func->nspin;
-    func->n_lapl = func->n_vlapl = func->nspin;
-    if(func->nspin == XC_UNPOLARIZED){
-      func->n_v2tau2 = func->n_v2lapl2 = 1;
-      func->n_v2rhotau = func->n_v2rholapl = func->n_v2lapltau = 1;
-      func->n_v2sigmatau = func->n_v2sigmalapl = 1;
-    }else{
-      func->n_v2tau2 = func->n_v2lapl2 = 3;
-      func->n_v2rhotau = func->n_v2rholapl = func->n_v2lapltau = 4;
-      func->n_v2sigmatau = func->n_v2sigmalapl = 6;
-    }
-
-  case(XC_FAMILY_GGA):
-  case(XC_FAMILY_HYB_GGA):
-    if(func->nspin == XC_UNPOLARIZED){
-      func->n_sigma  = func->n_vsigma = 1;
-      func->n_v2rhosigma  = func->n_v2sigma2 = 1;
-      func->n_v3rho2sigma = func->n_v3rhosigma2 = func->n_v3sigma3 = 1;
-    }else{
-      func->n_sigma      = func->n_vsigma = 3;
-      func->n_v2rhosigma = func->n_v2sigma2 = 6;
-
-      func->n_v3rho2sigma = 9;
-      func->n_v3rhosigma2 = 12;
-      func->n_v3sigma3    = 10;
-    }
-
-  case(XC_FAMILY_LDA):
-    func->n_rho = func->n_vrho = func->nspin;
-    func->n_zk  = 1;
-    if(func->nspin == XC_UNPOLARIZED){
-      func->n_v2rho2 = func->n_v3rho3 = 1;
-    }else{
-      func->n_v2rho2 = 3;
-      func->n_v3rho3 = 4;
-    }
-  }
-
+  func->info = finfo;
+  
   /* see if we need to initialize the functional */
   if(func->info->init != NULL)
     func->info->init(func);
 
   /* see if we need to initialize the external parameters */
-  if(func->info->n_ext_params > 0)
-    func->info->set_ext_params(func, NULL);
+  if(func->info->ext_params.n > 0)
+    func->info->ext_params.set(func, NULL);
 
   func->dens_threshold = func->info->dens_threshold;
 
@@ -297,30 +283,31 @@ void xc_func_end(xc_func_type *func)
 
     for(ii=0; ii<func->n_func_aux; ii++){
       xc_func_end(func->func_aux[ii]);
-      free(func->func_aux[ii]);
+      libxc_free(func->func_aux[ii]);
     }
-    free(func->func_aux);
+    libxc_free(func->func_aux);
     func->n_func_aux = 0;
   }
 
   if(func->mix_coef != NULL){
-    free(func->mix_coef);
+    libxc_free(func->mix_coef);
     func->mix_coef = NULL;
   }
 
   /* deallocate any used parameter */
   if(func->params != NULL){
-    free(func->params);
+    libxc_free(func->params);
     func->params = NULL;
   }
 
+  libxc_free((void *) func->info);
   func->info = NULL;  
 }
 
 /*------------------------------------------------------*/
 void  xc_func_free(xc_func_type *p)
 {
-  free(p);
+  libxc_free(p);
 }
 
 /*------------------------------------------------------*/
@@ -342,12 +329,35 @@ void xc_func_set_dens_threshold(xc_func_type *p, double dens_threshold)
 }
 
 /*------------------------------------------------------*/
-void xc_func_set_ext_params(xc_func_type *p, double *ext_params)
+/* get/set external parameters                          */
+void
+xc_func_set_ext_params(xc_func_type *p, double *ext_params)
 {
-  assert(p->info->n_ext_params > 0);
-  p->info->set_ext_params(p, ext_params);
+  assert(p->info->ext_params.n > 0);
+  p->info->ext_params.set(p, ext_params);
 }
 
+void
+xc_func_set_ext_params_name(xc_func_type *p, const char *name, double par)
+{
+  int ii;
+  double *ext_params;
+
+  assert(p != NULL && p->info->ext_params.n > 0);
+  
+  ext_params = libxc_malloc(p->info->ext_params.n*sizeof(double));
+  for(ii=0; ii<p->info->ext_params.n; ii++){
+    if(strcmp(p->info->ext_params.names[ii], name) == 0)
+      ext_params[ii] = par;
+    else
+      ext_params[ii] = XC_EXT_PARAMS_DEFAULT;
+  }
+  xc_func_set_ext_params(p, ext_params);
+  libxc_free(ext_params);
+}
+
+
+/*------------------------------------------------------*/
 /* returns the mixing coefficient for the hybrid GGAs */
 double xc_hyb_exx_coef(const xc_func_type *p)
 {

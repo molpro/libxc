@@ -10,21 +10,22 @@
 
 #define XC_GGA_K_THAKKAR      523 /* Thakkar 1992 */
 
-#include "maple2c/gga_k_thakkar.c"
+#include "decl_gga.h"
+#include "maple2c/gga_exc/gga_k_thakkar.c"
+#include "work_gga.c"
 
-#define func xc_gga_k_thakkar_enhance
-#define XC_KINETIC_FUNCTIONAL
-#include "work_gga_x.c"
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_k_thakkar = {
   XC_GGA_K_THAKKAR,
   XC_KINETIC,
   "Thakkar 1992",
   XC_FAMILY_GGA,
   {&xc_ref_Thakkar1992_6920, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   5e-26,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   NULL, NULL,
-  NULL, work_gga_k, NULL
+  NULL, work_gga, NULL
 };

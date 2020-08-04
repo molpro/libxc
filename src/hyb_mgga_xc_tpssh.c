@@ -22,15 +22,18 @@ hyb_mgga_xc_tpssh_init(xc_func_type *p)
 }
 
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_hyb_mgga_xc_tpssh = {
   XC_HYB_MGGA_XC_TPSSH,
   XC_EXCHANGE_CORRELATION,
   "TPSSh",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Staroverov2003_12129, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC,
+  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   hyb_mgga_xc_tpssh_init,
   NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */
 };
@@ -47,15 +50,18 @@ hyb_mgga_xc_revtpssh_init(xc_func_type *p)
 }
 
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_hyb_mgga_xc_revtpssh = {
   XC_HYB_MGGA_XC_REVTPSSH,
   XC_EXCHANGE_CORRELATION,
   "revTPSSh",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Csonka2010_3688, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC,
+  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-32,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   hyb_mgga_xc_revtpssh_init,
   NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */
 };

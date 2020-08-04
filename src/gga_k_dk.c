@@ -25,7 +25,7 @@ gga_k_dk_init(xc_func_type *p)
   double ff, *aa, *bb;
 
   assert(p->params == NULL);
-  p->params = malloc(sizeof(gga_k_dk_params));
+  p->params = libxc_malloc(sizeof(gga_k_dk_params));
 
   /* shortcuts for a and b */
   aa  = ((gga_k_dk_params *) (p->params))->aa;
@@ -106,83 +106,86 @@ gga_k_dk_init(xc_func_type *p)
   }
 }
 
-#include "maple2c/gga_k_dk.c"
+#include "decl_gga.h"
+#include "maple2c/gga_exc/gga_k_dk.c"
+#include "work_gga.c"
 
-#define func maple2c_func
-#define XC_KINETIC_FUNCTIONAL
-#include "work_gga_x.c"
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_k_dk = {
   XC_GGA_K_DK,
   XC_KINETIC,
   "DePristo and Kress",
   XC_FAMILY_GGA,
   {&xc_ref_DePristo1987_438, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-25,
-  0, NULL, NULL,
-  gga_k_dk_init,
-  NULL, NULL,
-  work_gga_k,
-  NULL
+  {0, NULL, NULL, NULL, NULL},
+  gga_k_dk_init, NULL,
+  NULL, work_gga, NULL
 };
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_k_perdew = {
   XC_GGA_K_PERDEW,
   XC_KINETIC,
   "Perdew",
   XC_FAMILY_GGA,
   {&xc_ref_Perdew1992_79, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-32,
-  0, NULL, NULL,
-  gga_k_dk_init,
-  NULL, NULL,
-  work_gga_k,
-  NULL
+  {0, NULL, NULL, NULL, NULL},
+  gga_k_dk_init, NULL,
+  NULL, work_gga, NULL
 };
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_k_vsk = {
   XC_GGA_K_VSK,
   XC_KINETIC,
   "Vitos, Skriver, and Kollar",
   XC_FAMILY_GGA,
   {&xc_ref_Vitos1998_12611, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-25,
-  0, NULL, NULL,
-  gga_k_dk_init,
-  NULL, NULL,
-  work_gga_k,
-  NULL
+  {0, NULL, NULL, NULL, NULL},
+  gga_k_dk_init, NULL,
+  NULL, work_gga, NULL
 };
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_k_vjks = {
   XC_GGA_K_VJKS,
   XC_KINETIC,
   "Vitos, Johansson, Kollar, and Skriver",
   XC_FAMILY_GGA,
   {&xc_ref_Vitos2000_052511, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-25,
-  0, NULL, NULL,
-  gga_k_dk_init,
-  NULL, NULL,
-  work_gga_k,
-  NULL
+  {0, NULL, NULL, NULL, NULL},
+  gga_k_dk_init, NULL,
+  NULL, work_gga, NULL
 };
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_k_ernzerhof = {
   XC_GGA_K_ERNZERHOF,
   XC_KINETIC,
   "Ernzerhof",
   XC_FAMILY_GGA,
   {&xc_ref_Ernzerhof2000_59, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-25,
-  0, NULL, NULL,
-  gga_k_dk_init,
-  NULL, NULL,
-  work_gga_k,
-  NULL
+  {0, NULL, NULL, NULL, NULL},
+  gga_k_dk_init, NULL,
+  NULL, work_gga, NULL
 };

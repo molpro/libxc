@@ -10,20 +10,22 @@
 
 #define XC_GGA_C_REGTPSS       83 /* Regularized TPSS correlation (ex-VPBE)             */
 
-#include "maple2c/gga_c_regtpss.c"
+#include "decl_gga.h"
+#include "maple2c/gga_exc/gga_c_regtpss.c"
+#include "work_gga.c"
 
-#define func maple2c_func
-#include "work_gga_c.c"
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_c_regtpss = {
   XC_GGA_C_REGTPSS,
   XC_CORRELATION,
   "regularized TPSS correlation",
   XC_FAMILY_GGA,
   {&xc_ref_Perdew2009_026403, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-16,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   NULL, NULL, 
-  NULL, work_gga_c, NULL
+  NULL, work_gga, NULL
 };

@@ -34,7 +34,7 @@ gga_x_sogga11_init(xc_func_type *p)
   gga_x_sogga11_params *params;
 
   assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(gga_x_sogga11_params));
+  p->params = libxc_malloc(sizeof(gga_x_sogga11_params));
   params = (gga_x_sogga11_params *) (p->params);
 
   switch(p->info->number){
@@ -51,38 +51,39 @@ gga_x_sogga11_init(xc_func_type *p)
   }
 }
 
-#include "maple2c/gga_x_sogga11.c"
+#include "decl_gga.h"
+#include "maple2c/gga_exc/gga_x_sogga11.c"
+#include "work_gga.c"
 
-#define func maple2c_func
-#include "work_gga_x.c"
 
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_x_sogga11 = {
   XC_GGA_X_SOGGA11,
   XC_EXCHANGE,
   "Second-order generalized gradient approximation 2011",
   XC_FAMILY_GGA,
   {&xc_ref_Peverati2011_1991, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-32,
-  0, NULL, NULL,
-  gga_x_sogga11_init, 
-  NULL, NULL,
-  work_gga_x,
-  NULL
+  {0, NULL, NULL, NULL, NULL},
+  gga_x_sogga11_init, NULL,
+  NULL, work_gga, NULL
 };
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_hyb_gga_x_sogga11_x = {
   XC_HYB_GGA_X_SOGGA11_X,
   XC_EXCHANGE,
   "Hybrid based on SOGGA11 form",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Peverati2011_191102, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-32,
-  0, NULL, NULL,
-  gga_x_sogga11_init, 
-  NULL, NULL,
-  work_gga_x,
-  NULL
+  {0, NULL, NULL, NULL, NULL},
+  gga_x_sogga11_init, NULL,
+  NULL, work_gga, NULL
 };

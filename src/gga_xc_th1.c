@@ -1,5 +1,6 @@
 /*
  Copyright (C) 2006-2007 M.A.L. Marques
+ Copyright (C) 2019 X. Andrade
 
  This Source Code Form is subject to the terms of the Mozilla Public
  License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -15,16 +16,16 @@
 #define XC_GGA_XC_TH1          154 /* Tozer and Handy v. 1 */
 
 typedef struct{
-  const double *omega;
+  double omega[21];
 } gga_xc_th1_params;
 
-static const double omega_TH_FL[] = 
+static const double omega_TH_FL[21] = 
   {-0.106141e01, +0.898203e00, -0.134439e01, +0.302369e00, 0.0, 0.0,
     0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
     0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
     0.0, 0.0, 0.0};
 
-static const double omega_TH_FC[] = 
+static const double omega_TH_FC[21] = 
   {-0.864448e+00, +0.565130e+00, -0.127306e+01, +0.309681e+00, -0.287658e+00, +0.588767e+00,
    -0.252700e+00, +0.223563e-01, +0.140131e-01, -0.826608e-01, +0.556080e-01, -0.936227e-02,
     0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -53,104 +54,122 @@ static void
 gga_xc_th1_init(xc_func_type *p)
 {
   gga_xc_th1_params *params;
+  int ii;
 
   assert(p->params == NULL);
-  p->params = malloc(sizeof(gga_xc_th1_params));
+  p->params = libxc_malloc(sizeof(gga_xc_th1_params));
   params = (gga_xc_th1_params *)p->params;
 
-  switch(p->info->number){
-  case XC_GGA_XC_TH_FL:
-    params->omega = omega_TH_FL;
+  for(ii = 0; ii < 21; ii++){
+    switch(p->info->number){
+    case XC_GGA_XC_TH_FL:
+      params->omega[ii] = omega_TH_FL[ii];
     break;
-
-  case XC_GGA_XC_TH_FC:
-    params->omega = omega_TH_FC;
-    break;
-
-  case XC_GGA_XC_TH_FCFO:
-    params->omega = omega_TH_FCFO;
-    break;
-
-  case XC_GGA_XC_TH_FCO:
-    params->omega = omega_TH_FCO; 
-    break;
-
-  case XC_GGA_XC_TH1:
-    params->omega = omega_TH1;
-    break;
-
-  default:
-    fprintf(stderr, "Internal error in gga_xc_th1\n");
-    exit(1);
+    
+    case XC_GGA_XC_TH_FC:
+      params->omega[ii] = omega_TH_FC[ii];
+      break;
+      
+    case XC_GGA_XC_TH_FCFO:
+      params->omega[ii] = omega_TH_FCFO[ii];
+      break;
+      
+    case XC_GGA_XC_TH_FCO:
+      params->omega[ii] = omega_TH_FCO[ii]; 
+      break;
+      
+    case XC_GGA_XC_TH1:
+      params->omega[ii] = omega_TH1[ii];
+      break;
+      
+    default:
+      fprintf(stderr, "Internal error in gga_xc_th1\n");
+      exit(1);
+    }
   }
+  
 }
 
-#include "maple2c/gga_xc_th1.c"
+#include "decl_gga.h"
+#include "maple2c/gga_exc/gga_xc_th1.c"
+#include "work_gga.c"
 
-#define func maple2c_func
-#include "work_gga_c.c"
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_xc_th_fl = {
   XC_GGA_XC_TH_FL,
   XC_EXCHANGE_CORRELATION,
   "Tozer and Handy v. FL",
   XC_FAMILY_GGA,
   {&xc_ref_Tozer1997_183, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-32,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   gga_xc_th1_init, NULL, 
-  NULL, work_gga_c, NULL
+  NULL, work_gga, NULL
 };
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_xc_th_fc = {
   XC_GGA_XC_TH_FC,
   XC_EXCHANGE_CORRELATION,
   "Tozer and Handy v. FC",
   XC_FAMILY_GGA,
   {&xc_ref_Tozer1997_183, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-32,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   gga_xc_th1_init, NULL, 
-  NULL, work_gga_c, NULL
+  NULL, work_gga, NULL
 };
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_xc_th_fcfo = {
   XC_GGA_XC_TH_FCFO,
   XC_EXCHANGE_CORRELATION,
   "Tozer and Handy v. FCFO",
   XC_FAMILY_GGA,
   {&xc_ref_Tozer1997_183, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-32,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   gga_xc_th1_init, NULL, 
-  NULL, work_gga_c, NULL
+  NULL, work_gga, NULL
 };
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_xc_th_fco = {
   XC_GGA_XC_TH_FCO,
   XC_EXCHANGE_CORRELATION,
   "Tozer and Handy v. FCO",
   XC_FAMILY_GGA,
   {&xc_ref_Tozer1997_183, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-32,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   gga_xc_th1_init, NULL, 
-  NULL, work_gga_c, NULL
+  NULL, work_gga, NULL
 };
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_xc_th1 = {
   XC_GGA_XC_TH1,
   XC_EXCHANGE_CORRELATION,
   "Tozer and Handy v. 1",
   XC_FAMILY_GGA,
   {&xc_ref_Tozer1998_2545, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-32,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   gga_xc_th1_init, NULL, 
-  NULL, work_gga_c, NULL
+  NULL, work_gga, NULL
 };

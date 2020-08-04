@@ -10,20 +10,22 @@
 
 #define XC_GGA_X_LV_RPW86 58 /* Berland and Hyldgaard */
 
-#include "maple2c/gga_x_lv_rpw86.c"
+#include "decl_gga.h"
+#include "maple2c/gga_exc/gga_x_lv_rpw86.c"
+#include "work_gga.c"
 
-#define func xc_gga_x_lv_rpw86_enhance
-#include "work_gga_x.c"
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_x_lv_rpw86 = {
   XC_GGA_X_LV_RPW86,
   XC_EXCHANGE,
   "Berland and Hyldgaard",
   XC_FAMILY_GGA,
   {&xc_ref_Berland2014_035412, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
-  1e-24,
-  0, NULL, NULL,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  1e-15,
+  {0, NULL, NULL, NULL, NULL},
   NULL, NULL, 
-  NULL, work_gga_x, NULL
+  NULL, work_gga, NULL
 };

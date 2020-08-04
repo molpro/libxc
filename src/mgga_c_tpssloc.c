@@ -11,21 +11,23 @@
 
 #define XC_MGGA_C_TPSSLOC       247 /* Semilocal dynamical correlation */
 
-#include "maple2c/mgga_c_tpssloc.c"
+#include "decl_mgga.h"
+#include "maple2c/mgga_exc/mgga_c_tpssloc.c"
+#include "work_mgga.c"
 
-#define func maple2c_func
-#include "work_mgga_c.c"
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_mgga_c_tpssloc = {
   XC_MGGA_C_TPSSLOC,
   XC_CORRELATION,
   "Semilocal dynamical correlation",
   XC_FAMILY_MGGA,
   {&xc_ref_Constantin2012_035130, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-9, /* densities smaller than 1e-26 give NaNs */
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   NULL, NULL,
-  NULL, NULL, work_mgga_c
+  NULL, NULL, work_mgga
 };
 

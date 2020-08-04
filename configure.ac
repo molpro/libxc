@@ -1,11 +1,12 @@
 ## Copyright (C) 2002-2006 M. Marques, A. Castro, A. Rubio, G. Bertsch
+## Copyright (C) 2019 X. Andrade
 ##
 ## This Source Code Form is subject to the terms of the Mozilla Public
 ## License, v. 2.0. If a copy of the MPL was not distributed with this
 ## file, You can obtain one at http://mozilla.org/MPL/2.0/.
 ##
 
-AC_INIT([libxc],[4.3.4],[libxc@tddft.org],[libxc],[http://www.tddft.org/programs/Libxc])
+AC_INIT([libxc],[5.0.0],[libxc@tddft.org],[libxc],[http://www.tddft.org/programs/Libxc])
 AC_CONFIG_SRCDIR([src/xc.h])
 AM_INIT_AUTOMAKE
 
@@ -45,6 +46,7 @@ AC_CONFIG_MACRO_DIR([m4])
 # libxc-4.3.2   8:2:3
 # libxc-4.3.3   8:3:3
 # libxc-4.3.4   8:4:3
+# libxc-5.0.0   9:0:0
 # 
 # Note that libtool versioning was not used prior to libxc-2.0.
 # Because of this, we will start counting at 1.
@@ -61,9 +63,9 @@ AC_CONFIG_MACRO_DIR([m4])
 # interfaces have been removed. removal has precedence over adding,
 # so set to 0 if both happened.
 
-XC_CURRENT=8
-XC_REVISION=4
-XC_AGE=3
+XC_CURRENT=9
+XC_REVISION=0
+XC_AGE=0
 
 XC_LT_VERSION="${XC_CURRENT}:${XC_REVISION}:${XC_AGE}"
 AC_SUBST(XC_LT_VERSION)
@@ -87,8 +89,24 @@ AC_DISABLE_SHARED
 LT_PREREQ([2.2])
 LT_INIT
 
+# enable cuda first, since this is required for the compiler selection
+AC_ARG_ENABLE(cuda, AS_HELP_STRING([--enable-cuda], [Cuda support (experimental)]))
+
+if test x"${enable_cuda}" == x"yes" ; then
+  AC_DEFINE(HAVE_CUDA, 1, [defined if cuda support is enabled])
+fi
+
+AM_CONDITIONAL([HAVE_CUDA], [test x"${enable_cuda}" == x"yes"])
+
 # Checks for programs.
 AC_PROG_CC
+
+#we may need to set the linker for the cuda case, so pass that to automake
+if test x"$CCLD" == x ; then
+   CCLD=$CC
+fi
+AC_SUBST(CCLD)
+
 AC_LANG_PREPROC
 AM_PROG_CC_C_O
 AC_C_INLINE
@@ -100,6 +118,9 @@ AC_FUNC_ALLOCA
 # Checks for typedefs, structures, and compiler characteristics.
 AC_CHECK_SIZEOF(void*)
 
+# Need BASH to run tests
+AC_CHECK_PROG([BASH_SHELL],[bash],[yes])
+
 # Check for presence of some C99 libm functions
 AC_CHECK_LIB([m],[cbrt],[AC_DEFINE([HAVE_CBRT],[1],[libm includes cbrt])])
 AC_CHECK_LIB([m],[feenableexcept],[AC_DEFINE([HAVE_FEENABLEEXCEPT],[1],[libm includes feenableexcept])])
@@ -110,7 +131,46 @@ AC_ARG_WITH([custom-fmoddir],
 	    [AC_SUBST([FMODDIR],["$withval"])],
 	    [AC_SUBST([FMODDIR],['${includedir}'])])
 
-dnl build/install fortran bits unless --disable-fortran is used
+# Enable/disable derivatives
+AC_ARG_ENABLE([vxc],
+	      AS_HELP_STRING([--disable-vxc], [don't build first derivatives]),
+	      [ac_cv_build_vxc=$enableval],
+	      [ac_cv_build_vxc=yes])
+if test x"${ac_cv_build_vxc}" == x"no"; then
+  AC_DEFINE(XC_DONT_COMPILE_VXC, 1, [defined if first derivatives are disabled])
+  AC_DEFINE(XC_DONT_COMPILE_FXC, 1, [defined if second derivatives are disabled])
+  AC_DEFINE(XC_DONT_COMPILE_KXC, 1, [defined if third derivatives are disabled])
+  AC_DEFINE(XC_DONT_COMPILE_LXC, 1, [defined if fourth derivatives are disabled])
+fi
+
+AC_ARG_ENABLE([fxc],
+	      AS_HELP_STRING([--disable-fxc], [don't build second derivatives]),
+	      [ac_cv_build_fxc=$enableval],
+	      [ac_cv_build_fxc=yes])
+if test x"${ac_cv_build_fxc}" == x"no"; then
+  AC_DEFINE(XC_DONT_COMPILE_FXC, 1, [defined if second derivatives are disabled])
+  AC_DEFINE(XC_DONT_COMPILE_KXC, 1, [defined if third derivatives are disabled])
+  AC_DEFINE(XC_DONT_COMPILE_LXC, 1, [defined if fourth derivatives are disabled])
+fi
+
+AC_ARG_ENABLE([kxc],
+	      AS_HELP_STRING([--disable-kxc], [don't build third derivatives]),
+	      [ac_cv_build_kxc=$enableval],
+	      [ac_cv_build_kxc=no])
+if test x"${ac_cv_build_kxc}" == x"no"; then
+  AC_DEFINE(XC_DONT_COMPILE_KXC, 1, [defined if third derivatives are disabled])
+  AC_DEFINE(XC_DONT_COMPILE_LXC, 1, [defined if fourth derivatives are disabled])
+fi
+
+AC_ARG_ENABLE([lxc],
+	      AS_HELP_STRING([--disable-lxc], [don't build fourth derivatives]),
+	      [ac_cv_build_lxc=$enableval],
+	      [ac_cv_build_lxc=no])
+if test x"${ac_cv_build_lxc}" == x"no"; then
+  AC_DEFINE(XC_DONT_COMPILE_LXC, 1, [defined if fourth derivatives are disabled])
+fi
+
+# build/install fortran bits unless --disable-fortran is used
 AC_ARG_ENABLE([fortran],
 	      AS_HELP_STRING([--disable-fortran], [don't build/install fortran components]),
 	      [ac_cv_build_fortran=$enableval],
@@ -154,10 +214,9 @@ if test $ac_cv_build_fortran = yes; then
   ACX_CC_FORTRAN_INT
 
   dnl check whether the Fortran compiler supports Fortran 2003 iso_c_binding
-  ACX_FC_ISO_C_BINDING([ac_cv_build_fortran03=yes], [ac_cv_build_fortran03=no,
-    						    AC_MSG_WARN([Could not find Fortran 2003 iso_c_binding. Fortran 2003 interface will not be compiled.])])
+  ACX_FC_ISO_C_BINDING([], [AC_MSG_ERROR([Could not find Fortran 2003 iso_c_binding. Fortran 2003 interface can not be compiled.])])
 
-  AC_LANG_POP([Fortran])
+AC_LANG_POP([Fortran])
 else
   HAVE_FORTRAN=0
 fi
@@ -171,6 +230,12 @@ AC_CONFIG_FILES([Makefile
   xc_version.h
   src/Makefile
   src/maple2c/Makefile
+  src/maple2c/lda_exc/Makefile
+  src/maple2c/lda_vxc/Makefile
+  src/maple2c/gga_exc/Makefile
+  src/maple2c/gga_vxc/Makefile
+  src/maple2c/mgga_exc/Makefile
+  src/maple2c/mgga_vxc/Makefile
   testsuite/Makefile
   testsuite/pytest/Makefile
   build/Makefile
@@ -180,6 +245,12 @@ AC_CONFIG_FILES([Makefile
   build/libxc.spec
   scripts/Makefile
   maple/Makefile
+  maple/lda_exc/Makefile
+  maple/lda_vxc/Makefile
+  maple/gga_exc/Makefile
+  maple/gga_vxc/Makefile
+  maple/mgga_exc/Makefile
+  maple/mgga_vxc/Makefile
   pylibxc/Makefile
   cmake/Makefile
 ])

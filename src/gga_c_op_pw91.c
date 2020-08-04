@@ -11,21 +11,23 @@
 
 #define XC_GGA_C_OP_PW91    262 /* one-parameter progressive functional (PW91 version)  */
 
-#include "maple2c/gga_c_op_pw91.c"
+#include "decl_gga.h"
+#include "maple2c/gga_exc/gga_c_op_pw91.c"
+#include "work_gga.c"
 
-#define func maple2c_func
-#include "work_gga_c.c"
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_c_op_pw91 = {
   XC_GGA_C_OP_PW91,
   XC_CORRELATION,
   "one-parameter progressive functional (PW91 version)",
   XC_FAMILY_GGA,
   {&xc_ref_Tsuneda1999_10664, &xc_ref_Tsuneda1999_5656, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-26,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   NULL, NULL, 
-  NULL, work_gga_c, NULL
+  NULL, work_gga, NULL
 };
 

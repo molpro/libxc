@@ -41,6 +41,9 @@
 /* libm includes cbrt */
 #undef HAVE_CBRT
 
+/* defined if cuda support is enabled */
+#undef HAVE_CUDA
+
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
@@ -123,6 +126,18 @@
 
 /* Version number of package */
 #undef VERSION
+
+/* defined if second derivatives are disabled */
+#undef XC_DONT_COMPILE_FXC
+
+/* defined if third derivatives are disabled */
+#undef XC_DONT_COMPILE_KXC
+
+/* defined if fourth derivatives are disabled */
+#undef XC_DONT_COMPILE_LXC
+
+/* defined if first derivatives are disabled */
+#undef XC_DONT_COMPILE_VXC
 
 /* Define to `__inline__' or `__inline' if that's what the C compiler
    calls it, or to nothing if 'inline' is not supported under any name.  */

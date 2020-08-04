@@ -11,21 +11,22 @@
 
 #define XC_GGA_C_WL  147 /* Wilson & Levy */
 
-#include "maple2c/gga_c_wl.c"
+#include "decl_gga.h"
+#include "maple2c/gga_exc/gga_c_wl.c"
+#include "work_gga.c"
 
-#define func maple2c_func
-#include "work_gga_c.c"
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_c_wl = {
   XC_GGA_C_WL,
   XC_CORRELATION,
   "Wilson & Levy",
   XC_FAMILY_GGA,
   {&xc_ref_Wilson1990_12930, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-12,
-  0, NULL, NULL,
-  NULL, NULL, NULL,
-  work_gga_c,
-  NULL
+  {0, NULL, NULL, NULL, NULL},
+  NULL, NULL,
+  NULL, work_gga, NULL
 };

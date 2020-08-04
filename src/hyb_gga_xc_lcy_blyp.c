@@ -23,22 +23,26 @@ xc_hyb_gga_xc_lcy_blyp_init(xc_func_type *p)
 
   xc_mix_init(p, 2, funcs_id, funcs_coef);
 
-  xc_gga_x_sfat_set_params(p->func_aux[0], XC_GGA_X_B88, gamma);
+  xc_func_set_ext_params(p->func_aux[0], &gamma);
+  
   p->cam_omega = gamma;
   p->cam_alpha = 1.0;
   p->cam_beta  = -1.0;
 }
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_hyb_gga_xc_lcy_blyp = {
   XC_HYB_GGA_XC_LCY_BLYP,
   XC_EXCHANGE_CORRELATION,
   "LCY version of BLYP",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Akinaga2008_348, &xc_ref_Seth2013_2286, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HYB_LCY | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC,
+  XC_FLAGS_3D | XC_FLAGS_HYB_CAMY | XC_FLAGS_I_HAVE_ALL,
   1e-32,
-  0, NULL, NULL,
-  xc_hyb_gga_xc_lcy_blyp_init,
-  NULL, NULL, NULL, NULL
+  {0, NULL, NULL, NULL, NULL},
+  xc_hyb_gga_xc_lcy_blyp_init, NULL,
+  NULL, NULL, NULL
 };
 

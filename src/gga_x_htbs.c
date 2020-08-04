@@ -10,20 +10,22 @@
 
 #define XC_GGA_X_HTBS         191 /* Haas, Tran, Blaha, and Schwarz  */
 
-#include "maple2c/gga_x_htbs.c"
+#include "decl_gga.h"
+#include "maple2c/gga_exc/gga_x_htbs.c"
+#include "work_gga.c"
 
-#define func maple2c_func
-#include "work_gga_x.c"
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_x_htbs = {
   XC_GGA_X_HTBS,
   XC_EXCHANGE,
   "Haas, Tran, Blaha, and Schwarz",
   XC_FAMILY_GGA,
   {&xc_ref_Haas2011_205117, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-16,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   NULL, NULL, 
-  NULL, work_gga_x, NULL
+  NULL, work_gga, NULL
 };

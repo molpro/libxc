@@ -9,13 +9,14 @@
 
 #include "util.h"
 #include "funcs_lda.c"
+#include "funcs_hyb_lda.c"
 
 /* get the lda functional */
-void 
-xc_lda(const xc_func_type *func, int np, const double *rho, 
-	double *zk, double *vrho, double *v2rho2, double *v3rho3)
+void
+xc_lda(const xc_func_type *func, size_t np, const double *rho,
+       double *zk, LDA_OUT_PARAMS_NO_EXC(double *))
 {
-  assert(func != NULL);
+  const xc_dimensions *dim = &(func->dim);
 
   /* sanity check */
   if(zk != NULL && !(func->info->flags & XC_FLAGS_HAVE_EXC)){
@@ -44,128 +45,93 @@ xc_lda(const xc_func_type *func, int np, const double *rho,
 
   /* initialize output */
   if(zk != NULL)
-    memset(zk,     0, np*sizeof(double)*func->n_zk);
+    libxc_memset(zk,     0, np*sizeof(double)*dim->zk);
 
   if(vrho != NULL)
-    memset(vrho,   0, np*sizeof(double)*func->n_vrho);
+    libxc_memset(vrho,   0, np*sizeof(double)*dim->vrho);
 
   if(v2rho2 != NULL)
-    memset(v2rho2, 0, np*sizeof(double)*func->n_v2rho2);
+    libxc_memset(v2rho2, 0, np*sizeof(double)*dim->v2rho2);
 
   if(v3rho3 != NULL)
-    memset(v3rho3, 0, np*sizeof(double)*func->n_v3rho3);
+    libxc_memset(v3rho3, 0, np*sizeof(double)*dim->v3rho3);
 
-
-  assert(func->info!=NULL && func->info->lda!=NULL);
+  if(v4rho4 != NULL)
+    libxc_memset(v4rho4, 0, np*sizeof(double)*dim->v4rho4);
 
   /* call the LDA routines */
-  func->info->lda(func, np, rho, zk, vrho, v2rho2, v3rho3);
+  if(func->info->lda != NULL)
+    func->info->lda(func, np, rho, zk, LDA_OUT_PARAMS_NO_EXC(XC_NOARG));
+
+  if(func->mix_coef != NULL)
+    xc_mix_func(func, np, rho, NULL, NULL, NULL, zk, vrho, NULL, NULL, NULL,
+                v2rho2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+                v3rho3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+                NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+                v4rho4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+                NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+                NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+                NULL, NULL, NULL, NULL, NULL);
 }
 
 
 /* specializations */
 void
-xc_lda_exc(const xc_func_type *p, int np, const double *rho, double *zk)
+xc_lda_exc(const xc_func_type *p, size_t np, const double *rho, double *zk)
 {
-  xc_lda(p, np, rho, zk, NULL, NULL, NULL);
+  xc_lda(p, np, rho, zk, NULL, NULL, NULL, NULL);
 }
 
 void
-xc_lda_exc_vxc(const xc_func_type *p, int np, const double *rho, double *zk, double *vrho)
+xc_lda_exc_vxc(const xc_func_type *p, size_t np, const double *rho, double *zk, double *vrho)
 {
-  xc_lda(p, np, rho, zk, vrho, NULL, NULL);
+  xc_lda(p, np, rho, zk, vrho, NULL, NULL, NULL);
 }
 
 void
-xc_lda_vxc(const xc_func_type *p, int np, const double *rho, double *vrho)
+xc_lda_exc_vxc_fxc(const xc_func_type *p, size_t np, const double *rho, double *zk, double *vrho, double *v2rho2)
 {
-  xc_lda(p, np, rho, NULL, vrho, NULL, NULL);
+  xc_lda(p, np, rho, zk, vrho, v2rho2, NULL, NULL);
 }
 
 void
-xc_lda_fxc(const xc_func_type *p, int np, const double *rho, double *v2rho2)
+xc_lda_vxc_fxc(const xc_func_type *p, size_t np, const double *rho, double *vrho, double *v2rho2)
 {
-  xc_lda(p, np, rho, NULL, NULL, v2rho2, NULL);
+  xc_lda(p, np, rho, NULL, vrho, v2rho2, NULL, NULL);
 }
 
 void
-xc_lda_kxc(const xc_func_type *p, int np, const double *rho, double *v3rho3)
+xc_lda_exc_vxc_fxc_kxc(const xc_func_type *p, size_t np, const double *rho, double *zk, double *vrho, double *v2rho2, double *v3rho3)
 {
-  xc_lda(p, np, rho, NULL, NULL, NULL, v3rho3);
+  xc_lda(p, np, rho, zk, vrho, v2rho2, v3rho3, NULL);
 }
-
-
-#define DELTA_RHO 1e-6
-
-/* get the xc kernel through finite differences */
-void 
-xc_lda_fxc_fd(const xc_func_type *func, int np, const double *rho, double *v2rho2)
-{
-  int i, ip;
-
-  assert(func != NULL);
-
-  for(ip=0; ip<np; ip++){
-    for(i=0; i<func->nspin; i++){
-      double rho2[2], vc1[2], vc2[2];
-      int j, js;
-      
-      j  = (i+1) % 2;
-      js = (i==0) ? 0 : 2;
-      
-      rho2[i] = rho[i] + DELTA_RHO;
-      rho2[j] = (func->nspin == XC_POLARIZED) ? rho[j] : 0.0;
-      xc_lda_vxc(func, 1, rho2, vc1);
-      
-      if(rho[i]<2.0*DELTA_RHO){ /* we have to use a forward difference */
-	xc_lda_vxc(func, 1, rho, vc2);
-	
-	v2rho2[js] = (vc1[i] - vc2[i])/(DELTA_RHO);
-	if(func->nspin == XC_POLARIZED && i==0)
-	  v2rho2[1] = (vc1[j] - vc2[j])/(DELTA_RHO);
-	
-      }else{                    /* centered difference (more precise)  */
-	rho2[i] = rho[i] - DELTA_RHO;
-	xc_lda_vxc(func, 1, rho2, vc2);
-      
-	v2rho2[js] = (vc1[i] - vc2[i])/(2.0*DELTA_RHO);
-	if(func->nspin == XC_POLARIZED && i==0)
-	  v2rho2[1] = (vc1[j] - vc2[j])/(2.0*DELTA_RHO);
-      }
-    }
-
-    rho    += func->n_rho;
-    v2rho2 += func->n_v2rho2;
-  } /* for(ip) */
-}
-
 
 void
-xc_lda_kxc_fd(const xc_func_type *func, int np, const double *rho, double *v3rho3)
+xc_lda_vxc_fxc_kxc(const xc_func_type *p, size_t np, const double *rho, double *vrho, double *v2rho2, double *v3rho3)
 {
-  /* Kxc, this is a third order tensor with respect to the densities */
-  int ip, i, j, n;
+  xc_lda(p, np, rho, NULL, vrho, v2rho2, v3rho3, NULL);
+}
 
-  assert(func != NULL);
+void
+xc_lda_vxc(const xc_func_type *p, size_t np, const double *rho, double *vrho)
+{
+  xc_lda(p, np, rho, NULL, vrho, NULL, NULL, NULL);
+}
 
-  for(ip=0; ip<np; ip++){
-    for(i=0; i<func->nspin; i++){
-      double rho2[2], vc1[2], vc2[2], vc3[2];
+void
+xc_lda_fxc(const xc_func_type *p, size_t np, const double *rho, double *v2rho2)
+{
+  xc_lda(p, np, rho, NULL, NULL, v2rho2, NULL, NULL);
+}
 
-      for(n=0; n<func->nspin; n++) rho2[n] = rho[n];
-      xc_lda_vxc(func, 1, rho, vc2);
+void
+xc_lda_kxc(const xc_func_type *p, size_t np, const double *rho, double *v3rho3)
+{
+  xc_lda(p, np, rho, NULL, NULL, NULL, v3rho3, NULL);
+}
 
-      rho2[i] += DELTA_RHO;
-      xc_lda_vxc(func, 1, rho2, vc1);
-	
-      rho2[i] -= 2.0*DELTA_RHO;
-      xc_lda_vxc(func, 1, rho2, vc3);    
-    
-      for(j=0; j<func->nspin; j++)
-	v3rho3[i*func->nspin + j] = (vc1[j] - 2.0*vc2[j] + vc3[j])/(DELTA_RHO*DELTA_RHO);
-    }
-    
-    rho    += func->n_rho;
-    v3rho3 += func->n_v3rho3;
-  } /* for(ip) */
+void
+xc_lda_lxc(const xc_func_type *p, size_t np, const double *rho, double *v4rho4)
+{
+  xc_lda(p, np, rho, NULL, NULL, NULL, NULL, v4rho4);
 }

@@ -20,41 +20,34 @@ static void
 mgga_c_bc95_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(mgga_c_bc95_params));
-
-  xc_mgga_c_bc95_set_params(p, 0.038, 0.0031);
+  p->params = libxc_malloc(sizeof(mgga_c_bc95_params));
 }
 
+#define BC95_N_PAR 2
+static const char  *bc95_names[BC95_N_PAR]  = {"_css", "_copp"};
+static const char  *bc95_desc[BC95_N_PAR]   = {
+  "Parallel spin",
+  "Opposite spin"
+};
+static const double bc95_values[BC95_N_PAR] = {0.038, 0.0031};
 
-void 
-xc_mgga_c_bc95_set_params(xc_func_type *p, double css, double copp)
-{
-  mgga_c_bc95_params *params;
+#include "decl_mgga.h"
+#include "maple2c/mgga_exc/mgga_c_bc95.c"
+#include "work_mgga.c"
 
-  assert(p != NULL && p->params != NULL);
-  params = (mgga_c_bc95_params *) (p->params);
-
-  params->css  = css;
-  params->copp = copp;
-}
-
-
-#include "maple2c/mgga_c_bc95.c"
-
-#define func maple2c_func
-#include "work_mgga_c.c"
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_mgga_c_bc95 = {
   XC_MGGA_C_BC95,
   XC_CORRELATION,
   "Becke correlation 95",
   XC_FAMILY_MGGA,
   {&xc_ref_Becke1996_1040, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-23,
-  0, NULL, NULL,
-  mgga_c_bc95_init,
-  NULL, NULL, NULL,
-  work_mgga_c,
+  {BC95_N_PAR, bc95_names, bc95_desc, bc95_values, set_ext_params_cpy},
+  mgga_c_bc95_init, NULL,
+  NULL, NULL, work_mgga,
 };
 

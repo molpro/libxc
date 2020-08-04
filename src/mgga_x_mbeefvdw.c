@@ -11,20 +11,22 @@
 
 #define XC_MGGA_X_MBEEFVDW       250 /* mBEEF-vdW exchange */
 
-#include "maple2c/mgga_x_mbeefvdw.c"
+#include "decl_mgga.h"
+#include "maple2c/mgga_exc/mgga_x_mbeefvdw.c"
+#include "work_mgga.c"
 
-#define func maple2c_func
-#include "work_mgga_x.c"
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_mgga_x_mbeefvdw = {
   XC_MGGA_X_MBEEFVDW,
   XC_EXCHANGE,
   "mBEEF-vdW exchange",
   XC_FAMILY_MGGA,
   {&xc_ref_Lundgaard2016_235162, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-10,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   NULL, NULL, 
-  NULL, NULL, work_mgga_x,
+  NULL, NULL, work_mgga,
 };

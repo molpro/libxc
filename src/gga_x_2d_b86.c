@@ -8,24 +8,25 @@
 
 #include "util.h"
 
-#define XC_GGA_X_2D_B86          128 /* Becke 86 Xalpha,beta,gamma                      */
+#define XC_GGA_X_2D_B86          128 /* Becke 86 Xalpha, beta, gamma                    */
 
-#include "maple2c/gga_x_2d_b86.c"
+#include "decl_gga.h"
+#include "maple2c/gga_exc/gga_x_2d_b86.c"
+#include "work_gga.c"
 
-#define func maple2c_func
-#define XC_DIMENSIONS 2
-#include "work_gga_x.c"
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_x_2d_b86 = {
   XC_GGA_X_2D_B86,
   XC_EXCHANGE,
   "Becke 86 in 2D",
   XC_FAMILY_GGA,
   {&xc_ref_Vilhena2014, NULL, NULL, NULL, NULL},
-  XC_FLAGS_2D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_2D | MAPLE2C_FLAGS,
   1e-18,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   NULL, NULL, 
-  NULL, work_gga_x, NULL
+  NULL, work_gga, NULL
 };
 

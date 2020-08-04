@@ -26,7 +26,7 @@ lda_c_wigner_init(xc_func_type *p)
   lda_c_wigner_params *params;
 
   assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(lda_c_wigner_params));
+  p->params = libxc_malloc(sizeof(lda_c_wigner_params));
   params = (lda_c_wigner_params *) (p->params);
 
   switch(p->info->number){
@@ -64,98 +64,118 @@ lda_c_wigner_init(xc_func_type *p)
   }
 }
 
-#include "maple2c/lda_c_wigner.c"
-
-#define func maple2c_func
+#include "decl_lda.h"
+#include "maple2c/lda_exc/lda_c_wigner.c"
 #include "work_lda.c"
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_lda_c_wigner = {
   XC_LDA_C_WIGNER,
   XC_CORRELATION,
   "Wigner",
   XC_FAMILY_LDA,
   {&xc_ref_Wigner1938_678, &xc_ref_Stewart1995_4337, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-24,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   lda_c_wigner_init, NULL,
   work_lda, NULL, NULL
 };
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_lda_xc_lp_a = {
   XC_LDA_XC_LP_A,
   XC_EXCHANGE_CORRELATION,
   "Lee-Parr reparametrization A",
   XC_FAMILY_LDA,
   {&xc_ref_Lee1990_193, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-24,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   lda_c_wigner_init, NULL,
   work_lda, NULL, NULL
 };
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_lda_xc_lp_b = {
   XC_LDA_XC_LP_B,
   XC_EXCHANGE_CORRELATION,
   "Lee-Parr reparametrization B",
   XC_FAMILY_LDA,
   {&xc_ref_Lee1990_193, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-24,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   lda_c_wigner_init, NULL,
   work_lda, NULL, NULL
 };
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_lda_c_mcweeny = {
   XC_LDA_C_MCWEENY,
   XC_CORRELATION,
   "McWeeny 76",
   XC_FAMILY_LDA,
   {&xc_ref_McWeeny1976_3, &xc_ref_Brual1978_1177, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-24,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   lda_c_wigner_init, NULL,
   work_lda, NULL, NULL
 };
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_lda_c_br78 = {
   XC_LDA_C_BR78,
   XC_CORRELATION,
   "Brual & Rothstein 78",
   XC_FAMILY_LDA,
   {&xc_ref_Brual1978_1177, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-24,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   lda_c_wigner_init, NULL,
   work_lda, NULL, NULL
 };
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_lda_c_ow_lyp = {
   XC_LDA_C_OW_LYP,
   XC_CORRELATION,
   "Wigner with corresponding LYP parameters",
   XC_FAMILY_LDA,
   {&xc_ref_Stewart1995_4337, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-24,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   lda_c_wigner_init, NULL,
   work_lda, NULL, NULL
 };
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_lda_c_ow = {
   XC_LDA_C_OW,
   XC_CORRELATION,
   "Optimized Wigner",
   XC_FAMILY_LDA,
   {&xc_ref_Stewart1995_4337, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-24,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   lda_c_wigner_init, NULL,
   work_lda, NULL, NULL
 };

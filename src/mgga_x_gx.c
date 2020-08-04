@@ -11,20 +11,38 @@
 
 #define XC_MGGA_X_GX          575 /* GX functional of Loos */
 
-#include "maple2c/mgga_x_gx.c"
+typedef struct{
+  double c0, c1, alphainf;
+} mgga_x_gx_params;
 
-#define func maple2c_func
-#include "work_mgga_x.c"
+static void
+mgga_x_gx_init(xc_func_type *p)
+{
+  assert(p!=NULL && p->params == NULL);
+  p->params = libxc_malloc(sizeof(mgga_x_gx_params));
+}
 
+#include "decl_mgga.h"
+#include "maple2c/mgga_exc/mgga_x_gx.c"
+#include "work_mgga.c"
+
+#define GX_N_PAR 3
+static const char  *gx_names[GX_N_PAR]  = {"_c0", "_c1", "_alphainf"};
+static const char  *gx_desc[GX_N_PAR]   = {"c0", "c1", "alphainf"};
+static const double gx_values[GX_N_PAR] = {0.827411L, -0.643560L, 0.852};
+
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_mgga_x_gx = {
   XC_MGGA_X_GX,
   XC_EXCHANGE,
   "GX functional of Loos",
   XC_FAMILY_MGGA,
   {&xc_ref_Loos2017_114108, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-20,
-  0, NULL, NULL,
-  NULL, NULL,
-  NULL, NULL, work_mgga_x,
+  {GX_N_PAR, gx_names, gx_desc, gx_values, set_ext_params_cpy},
+  mgga_x_gx_init, NULL,
+  NULL, NULL, work_mgga,
 };

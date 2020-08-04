@@ -17,21 +17,23 @@ hyb_mgga_xc_b98_init(xc_func_type *p)
   p->cam_alpha = 0.1985;
 }
 
-#include "maple2c/mgga_xc_b98.c"
+#include "decl_mgga.h"
+#include "maple2c/mgga_exc/mgga_xc_b98.c"
+#include "work_mgga.c"
 
-#define func maple2c_func
-#include "work_mgga_c.c"
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_hyb_mgga_xc_b98 = {
   XC_HYB_MGGA_XC_B98,
   XC_EXCHANGE_CORRELATION,
   "Becke 98",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Becke1998_2092, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_NEEDS_LAPLACIAN | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC,
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_LAPLACIAN | MAPLE2C_FLAGS,
   1e-23,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   hyb_mgga_xc_b98_init, NULL,
-  NULL, NULL, work_mgga_c,
+  NULL, NULL, work_mgga,
 };
 

@@ -88,6 +88,7 @@ system "cd $dir && latex $$.tex && bibtex $$.aux && latex $$.tex && latex $$.tex
    "Journal of Computational Methods in Science and Engineering" => "J. Comput. Methods Sci. Eng.",
    "Journal of the Physical Society of Japan" => "J. Phys. Soc. Jpn.",
    "Physics Letters A" => "Phys. Lett. A",
+   "Journal of the American Chemical Society" => "J. Am. Chem. Soc.",
    "Journal of Molecular Structure: THEOCHEM" => "J. Mol. Struct.: THEOCHEM",
    "Computational and Theoretical Chemistry" => "Comput. Theor. Chem.",
    "Journal of Photochemistry and Photobiology A: Chemistry" => "J. Photochem. Photobiol., A",
@@ -115,7 +116,7 @@ while($_=<BBL>){
 
       $item =~ s/\\bibf*namefont\s*\{(.*?)\}/$1/g;
       $item =~ s/\\bibinfo\s*\{.*?\}\s*\{(.*?)\}/$1/g;
-      $item =~ s/\\bibinfo\s*\{editor \{(.*?)\}(.*?)\}/$1$2/g; # result of nested bibinfos for book with editor
+      $item =~ s/\\bibinfo\s*\{editor\s+\{(.*?)\}(.*?)\}/$1$2/g; # result of nested bibinfos for book with editor
       $item =~ s/\\bibfield\s*\{.*?\}\s*\{(.*?)\}/$1/g;
       $item =~ s/\\href.*?\{.*?\}\s*\{(.*?)\}/$1/g;
       $item =~ s/,\\ \\Eprint.*?\{.*?\}\s*\{(http:\/\/.*?)\}\s*//g; # wipe URL that is not arxiv
@@ -124,6 +125,7 @@ while($_=<BBL>){
 
       $item =~ s/\\textbf\s*\{(.*?)\}/$1/g;
       $item =~ s/\\emph\s*\{(.*?)\}/$1/g;
+      $item =~ s/\\enquote\s*\{(.*?)\}/$1/g;
 
       $item =~ s/\\ / /g;
       $item =~ s/~/ /g;

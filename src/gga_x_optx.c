@@ -19,39 +19,34 @@ static void
 gga_x_optx_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(gga_x_optx_params));
-
-  xc_gga_x_optx_set_params(p, 1.05151, 1.43169/X_FACTOR_C, 0.006);
+  p->params = libxc_malloc(sizeof(gga_x_optx_params));
 }
 
+#define OPTX_N_PAR 3
+static const char  *optx_names[OPTX_N_PAR]  = {"_a", "_b", "_gamma"};
+static const char  *optx_desc[OPTX_N_PAR]   = {
+  "a",
+  "b",
+  "gamma"};
+static const double optx_values[OPTX_N_PAR] =
+  {1.05151, 1.43169/X_FACTOR_C, 0.006};
 
-void 
-xc_gga_x_optx_set_params(xc_func_type *p, double a, double b, double gamma)
-{
-  gga_x_optx_params *params;
+#include "decl_gga.h"
+#include "maple2c/gga_exc/gga_x_optx.c"
+#include "work_gga.c"
 
-  assert(p != NULL && p->params != NULL);
-  params = (gga_x_optx_params *) (p->params);
-
-  params->a     = a;
-  params->b     = b;
-  params->gamma = gamma;
-}
-
-#include "maple2c/gga_x_optx.c"
-
-#define func maple2c_func
-#include "work_gga_x.c"
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_x_optx = {
   XC_GGA_X_OPTX,
   XC_EXCHANGE,
   "Handy & Cohen OPTX 01",
   XC_FAMILY_GGA,
   {&xc_ref_Handy2001_403, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-22,
-  0, NULL, NULL,
+  {OPTX_N_PAR, optx_names, optx_desc, optx_values, set_ext_params_cpy},
   gga_x_optx_init, NULL, 
-  NULL, work_gga_x, NULL
+  NULL, work_gga, NULL
 };

@@ -8,98 +8,60 @@
 
 #include "util.h"
 
-#define XC_GGA_X_PW86         108 /* Perdew & Wang 86 */
-#define XC_GGA_X_RPW86        144 /* refitted Perdew & Wang 86 */
-#define XC_GGA_K_FR_PW86      515 /* Fuentealba & Reyes (PW86 version) */
+#define XC_GGA_X_PW86  108 /* Perdew & Wang 86 */
+#define XC_GGA_X_RPW86 144 /* refitted Perdew & Wang 86 */
 
-typedef struct{
+typedef struct {
   double aa, bb, cc;
 } gga_x_pw86_params;
 
+#define N_PAR 3
+static const char *names[N_PAR] = {"_aa", "_bb", "_cc"};
+static const char *desc[N_PAR] = {"Coefficient of s^2 term",
+                                  "Coefficient of s^4 term",
+                                  "Coefficient of s^6 term"};
 
-static const gga_x_pw86_params par_pw86 = {
-  1.296, 14.0, 0.2
-};
+static const double par_pw86[3] = {1.296, 14.0, 0.2};
 
-static const gga_x_pw86_params par_rpw86 = {
-  15.0*0.1234, 17.33, 0.163,
-};
+static const double par_rpw86[3] = {15.0 * 0.1234, 17.33, 0.163};
 
-static const gga_x_pw86_params par_fr_pw86 = {
-  2.208, 9.27, 0.2
-};
-
-static void 
-gga_x_pw86_init(xc_func_type *p)
-{
-  gga_x_pw86_params *params;
-
-  assert(p!=NULL && p->params == NULL);
-  p->params = malloc(sizeof(gga_x_pw86_params));
-  params = (gga_x_pw86_params *) (p->params);
-
-  switch(p->info->number){
-  case XC_GGA_X_PW86: 
-    memcpy(params, &par_pw86, sizeof(gga_x_pw86_params));
-    break;
-  case XC_GGA_X_RPW86:
-    memcpy(params, &par_rpw86, sizeof(gga_x_pw86_params));
-    break;
-  case XC_GGA_K_FR_PW86:
-    memcpy(params, &par_fr_pw86, sizeof(gga_x_pw86_params));
-    break;
-  default:
-    fprintf(stderr, "Internal error in gga_x_pw86\n");
-    exit(1);
-  }
+static void gga_x_pw86_init(xc_func_type *p) {
+  assert(p != NULL && p->params == NULL);
+  p->params = libxc_malloc(sizeof(gga_x_pw86_params));
 }
 
-#include "maple2c/gga_x_pw86.c"
+#include "decl_gga.h"
+#include "maple2c/gga_exc/gga_x_pw86.c"
+#include "work_gga.c"
 
-#define func maple2c_func
-#include "work_gga_x.c"
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_x_pw86 = {
   XC_GGA_X_PW86,
   XC_EXCHANGE,
   "Perdew & Wang 86",
   XC_FAMILY_GGA,
   {&xc_ref_Perdew1986_8800, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-24,
-  0, NULL, NULL,
-  gga_x_pw86_init, NULL, NULL,
-  work_gga_x,
-  NULL
+  {N_PAR, names, desc, par_pw86, set_ext_params_cpy},
+  gga_x_pw86_init, NULL,
+  NULL, work_gga, NULL
 };
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_x_rpw86 = {
   XC_GGA_X_RPW86,
   XC_EXCHANGE,
   "Refitted Perdew & Wang 86",
   XC_FAMILY_GGA,
   {&xc_ref_Murray2009_2754, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-24,
-  0, NULL, NULL,
-  gga_x_pw86_init, NULL, NULL,
-  work_gga_x,
-  NULL
-};
-
-#define XC_KINETIC_FUNCTIONAL
-#include "work_gga_x.c"
-
-const xc_func_info_type xc_func_info_gga_k_fr_pw86 = {
-  XC_GGA_K_FR_PW86,
-  XC_KINETIC,
-  "Fuentealba & Reyes (PW86 version)",
-  XC_FAMILY_GGA,
-  {&xc_ref_Fuentealba1995_31, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
-  1e-32,
-  0, NULL, NULL,
-  gga_x_pw86_init, NULL, NULL,
-  work_gga_k,
-  NULL
+  {N_PAR, names, desc, par_rpw86, set_ext_params_cpy},
+  gga_x_pw86_init, NULL,
+  NULL, work_gga, NULL
 };

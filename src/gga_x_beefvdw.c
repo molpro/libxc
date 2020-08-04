@@ -12,23 +12,25 @@
 #define XC_GGA_X_BEEFVDW          285 /* BEEF-vdW exchange */
 #define XC_GGA_XC_BEEFVDW         286 /* BEEF-vdW exchange-correlation */
 
-#include "maple2c/gga_x_beefvdw.c"
+#include "decl_gga.h"
+#include "maple2c/gga_exc/gga_x_beefvdw.c"
+#include "work_gga.c"
 
-#define func maple2c_func
-#include "work_gga_x.c"
 
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_x_beefvdw = {
   XC_GGA_X_BEEFVDW,
   XC_EXCHANGE,
   "BEEF-vdW exchange",
   XC_FAMILY_GGA,
   {&xc_ref_Wellendorff2012_235149, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-24,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   NULL, NULL, 
-  NULL, work_gga_x, NULL,
+  NULL, work_gga, NULL,
 };
 
 
@@ -41,15 +43,18 @@ gga_xc_beefvdw_init(xc_func_type *p)
   xc_mix_init(p, 3, funcs_id, funcs_coef);
 }
 
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_gga_xc_beefvdw = {
   XC_GGA_XC_BEEFVDW,
   XC_EXCHANGE_CORRELATION,
   "BEEF-vdW exchange-correlation",
   XC_FAMILY_GGA,
   {&xc_ref_Wellendorff2012_235149, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-12,
-  0, NULL, NULL,
+  {0, NULL, NULL, NULL, NULL},
   gga_xc_beefvdw_init, NULL, 
   NULL, NULL, NULL,
 };

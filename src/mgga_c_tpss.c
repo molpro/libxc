@@ -10,63 +10,62 @@
 #include "util.h"
 
 #define XC_MGGA_C_TPSS          231 /* Tao, Perdew, Staroverov & Scuseria correlation */
+#define XC_MGGA_C_TM            251 /* Tao and Mo 2016 correlation */
 
 typedef struct{
   double beta, d;
   double C0_c[4];
 } mgga_c_tpss_params;
 
-
 static void 
 mgga_c_tpss_init(xc_func_type *p)
 {
-
   assert(p != NULL && p->params == NULL);
-  p->params = malloc(sizeof(mgga_c_tpss_params));
-
-  switch(p->info->number){
-  case XC_MGGA_C_TPSS:
-    xc_mgga_c_tpss_set_params(p, 0.06672455060314922, 2.8, 0.53, 0.87, 0.50, 2.26);
-    break;
-  default:
-    fprintf(stderr, "Internal error in mgga_c_tpss\n");
-    exit(1);
-  }
+  p->params = libxc_malloc(sizeof(mgga_c_tpss_params));
 }
 
-void
-xc_mgga_c_tpss_set_params
-     (xc_func_type *p, double beta, double d, double C0_0, double C0_1, double C0_2, double C0_3)
-{
-  mgga_c_tpss_params *params;
+#define TPSS_N_PAR 6
+static const char  *tpss_names[TPSS_N_PAR]  = {"_beta", "_d", "_C0_c0", "_C0_c1", "_C0_c2", "_C0_c3"};
+static const char  *tpss_desc[TPSS_N_PAR]   = {"beta", "d", "C0_c0", "C0_c1", "C0_c2", "C0_c3"};
+static const double tpss_values[TPSS_N_PAR] = {
+  0.06672455060314922, 2.8, 0.53, 0.87, 0.50, 2.26
+};
+static const double tm_values[TPSS_N_PAR]   = {
+  0.06672455060314922, 2.8, 0.0, 0.1, 0.32, 0.0
+};
 
-  assert(p != NULL && p->params != NULL);
-  params = (mgga_c_tpss_params *) (p->params);
+#include "decl_mgga.h"
+#include "maple2c/mgga_exc/mgga_c_tpss.c"
+#include "work_mgga.c"
 
-  params->beta    = beta;
-  params->d       = d;
-  params->C0_c[0] = C0_0;
-  params->C0_c[1] = C0_1;
-  params->C0_c[2] = C0_2;
-  params->C0_c[3] = C0_3;
-}
-
-#include "maple2c/mgga_c_tpss.c"
-
-#define func maple2c_func
-#include "work_mgga_c.c"
-
-
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_mgga_c_tpss = {
   XC_MGGA_C_TPSS,
   XC_CORRELATION,
   "Tao, Perdew, Staroverov & Scuseria",
   XC_FAMILY_MGGA,
   {&xc_ref_Tao2003_146401, &xc_ref_Perdew2004_6898, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-23, /* densities smaller than 1e-26 give NaNs */
-  0, NULL, NULL,
-  mgga_c_tpss_init,
-  NULL, NULL, NULL,
-  work_mgga_c,
+  {TPSS_N_PAR, tpss_names, tpss_desc, tpss_values, set_ext_params_cpy},
+  mgga_c_tpss_init, NULL,
+  NULL, NULL, work_mgga,
+};
+
+#ifdef __cplusplus
+extern "C"
+#endif
+const xc_func_info_type xc_func_info_mgga_c_tm = {
+  XC_MGGA_C_TM,
+  XC_CORRELATION,
+  "Tao and Mo 2016 correlation",
+  XC_FAMILY_MGGA,
+  {&xc_ref_Tao2016_073001, NULL, NULL, NULL, NULL},
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  1e-23, /* densities smaller than 1e-26 give NaNs */
+  {TPSS_N_PAR, tpss_names, tpss_desc, tm_values, set_ext_params_cpy},
+  mgga_c_tpss_init, NULL,
+  NULL, NULL, work_mgga,
 };

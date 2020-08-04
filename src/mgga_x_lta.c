@@ -8,25 +8,58 @@
 
 #include "util.h"
 
-/* Local tau approximation */
-
 #define XC_MGGA_X_LTA          201 /* Local tau approximation of Ernzerhof & Scuseria */
+#define XC_MGGA_X_TLDA         685 /* LDA-type exchange with tau-dependent potential */
 
-#include "maple2c/mgga_x_lta.c"
+typedef struct{
+  double power;
+} mgga_x_lta_params;
 
-#define func maple2c_func
-#include "work_mgga_x.c"
+static void 
+mgga_x_lta_init(xc_func_type *p)
+{
+  assert(p!=NULL && p->params == NULL);
+  p->params = libxc_malloc(sizeof(mgga_x_lta_params));
+}
 
+#define LTA_N_PAR 1
+static const char  *lta_names[LTA_N_PAR]   = {"_power"};
+static const char  *lta_desc[LTA_N_PAR]    = {"power of t"};
+static const double lta_values[LTA_N_PAR]  = {4.0/5.0};
+static const double tlda_values[LTA_N_PAR] = {1.0/5.0};
+
+#include "decl_mgga.h"
+#include "maple2c/mgga_exc/mgga_x_lta.c"
+#include "work_mgga.c"
+
+#ifdef __cplusplus
+extern "C"
+#endif
 const xc_func_info_type xc_func_info_mgga_x_lta = {
   XC_MGGA_X_LTA,
   XC_EXCHANGE,
   "Local tau approximation",
   XC_FAMILY_MGGA,
   {&xc_ref_Ernzerhof1999_911, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | XC_FLAGS_HAVE_FXC,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1.0e-23,
-  0, NULL, NULL,
-  NULL, NULL,
-  NULL, NULL,        /* this is not an LDA                   */
-  work_mgga_x,
+  {LTA_N_PAR, lta_names, lta_desc, lta_values, set_ext_params_cpy},
+  mgga_x_lta_init, NULL,
+  NULL, NULL, work_mgga,
+};
+
+#ifdef __cplusplus
+extern "C"
+#endif
+const xc_func_info_type xc_func_info_mgga_x_tlda = {
+  XC_MGGA_X_TLDA,
+  XC_EXCHANGE,
+  "LDA-type exchange with tau-dependent potential",
+  XC_FAMILY_MGGA,
+  {&xc_ref_Eich2014_224107, NULL, NULL, NULL, NULL},
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  1.0e-23,
+  {LTA_N_PAR, lta_names, lta_desc, tlda_values, set_ext_params_cpy},
+  mgga_x_lta_init, NULL,
+  NULL, NULL, work_mgga,
 };
