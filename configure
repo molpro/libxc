@@ -12434,13 +12434,13 @@ if test "${enable_cuda+set}" = set; then :
 fi
 
 
-if test x"${enable_cuda}" == x"yes" ; then
+if test x"${enable_cuda}" = x"yes" ; then
 
 $as_echo "#define HAVE_CUDA 1" >>confdefs.h
 
 fi
 
- if test x"${enable_cuda}" == x"yes"; then
+ if test x"${enable_cuda}" = x"yes"; then
   HAVE_CUDA_TRUE=
   HAVE_CUDA_FALSE='#'
 else
@@ -13178,7 +13178,7 @@ fi
 
 
 #we may need to set the linker for the cuda case, so pass that to automake
-if test x"$CCLD" == x ; then
+if test x"$CCLD" = x ; then
    CCLD=$CC
 fi
 
@@ -13718,7 +13718,7 @@ else
   ac_cv_build_vxc=yes
 fi
 
-if test x"${ac_cv_build_vxc}" == x"no"; then
+if test x"${ac_cv_build_vxc}" = x"no"; then
 
 $as_echo "#define XC_DONT_COMPILE_VXC 1" >>confdefs.h
 
@@ -13740,7 +13740,7 @@ else
   ac_cv_build_fxc=yes
 fi
 
-if test x"${ac_cv_build_fxc}" == x"no"; then
+if test x"${ac_cv_build_fxc}" = x"no"; then
 
 $as_echo "#define XC_DONT_COMPILE_FXC 1" >>confdefs.h
 
@@ -13759,7 +13759,7 @@ else
   ac_cv_build_kxc=no
 fi
 
-if test x"${ac_cv_build_kxc}" == x"no"; then
+if test x"${ac_cv_build_kxc}" = x"no"; then
 
 $as_echo "#define XC_DONT_COMPILE_KXC 1" >>confdefs.h
 
@@ -13775,7 +13775,7 @@ else
   ac_cv_build_lxc=no
 fi
 
-if test x"${ac_cv_build_lxc}" == x"no"; then
+if test x"${ac_cv_build_lxc}" = x"no"; then
 
 $as_echo "#define XC_DONT_COMPILE_LXC 1" >>confdefs.h
 
