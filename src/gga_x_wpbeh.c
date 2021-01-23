@@ -27,13 +27,19 @@
 
    Also the whole mess with the rescaling of s is explained in
 
-   *) TM Henderson, AF Izmaylov, G Scalmani, and GE Scuseria, 
+   *) TM Henderson, AF Izmaylov, G Scalmani, and GE Scuseria,
       J. Chem. Phys. 131, 044108 (2009)
 */
 
 #include "decl_gga.h"
 #include "maple2c/gga_exc/gga_x_wpbeh.c"
 #include "work_gga.c"
+
+static void
+xc_gga_x_wpbeh_init(xc_func_type *p)
+{
+  xc_hyb_init_hybrid(p, 0.0);
+}
 
 static const char  *omega_names[]  = {"_omega"};
 static const char  *omega_desc[]   = {"screening parameter"};
@@ -50,8 +56,8 @@ const xc_func_info_type xc_func_info_gga_x_wpbeh = {
   XC_FAMILY_GGA,
   {&xc_ref_Heyd2003_8207, &xc_ref_Heyd2003_8207_err, &xc_ref_Ernzerhof1998_3313, &xc_ref_Heyd2004_7274, &xc_ref_Henderson2009_044108},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
-  1e-32,
+  1e-14,
   {1, omega_names, omega_desc, omega_values, set_ext_params_cpy_omega},
-  NULL, NULL, 
+  xc_gga_x_wpbeh_init, NULL,
   NULL, work_gga, NULL
 };

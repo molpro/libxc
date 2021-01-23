@@ -28,7 +28,7 @@ const xc_func_info_type xc_func_info_gga_c_zvpbeloc = {
   XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-10,
   {0, NULL, NULL, NULL, NULL},
-  NULL, NULL, 
+  NULL, NULL,
   NULL, work_gga, NULL
 };
 
@@ -39,7 +39,7 @@ xc_hyb_gga_xc_apbe0_init(xc_func_type *p)
   static double funcs_coef[2] = {0.75, 1.0};
 
   xc_mix_init(p, 2, funcs_id, funcs_coef);
-  p->cam_alpha = 0.25;
+  xc_hyb_init_hybrid(p, 0.25);
 }
 
 
@@ -55,7 +55,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_apbe0 = {
   XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-10,
   {0, NULL, NULL, NULL, NULL},
-  xc_hyb_gga_xc_apbe0_init, NULL, 
+  xc_hyb_gga_xc_apbe0_init, NULL,
   NULL, NULL, NULL
 };
 
@@ -66,7 +66,7 @@ xc_hyb_gga_xc_hapbe_init(xc_func_type *p)
   static double funcs_coef[3] = {0.80, 0.80, 0.20};
 
   xc_mix_init(p, 3, funcs_id, funcs_coef);
-  p->cam_alpha = 0.20;
+  xc_hyb_init_hybrid(p, 0.20);
 }
 
 
@@ -82,6 +82,6 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_hapbe = {
   XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-10,
   {0, NULL, NULL, NULL, NULL},
-  xc_hyb_gga_xc_hapbe_init, NULL, 
+  xc_hyb_gga_xc_hapbe_init, NULL,
   NULL, NULL, NULL
 };

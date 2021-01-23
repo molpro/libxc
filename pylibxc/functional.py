@@ -74,7 +74,11 @@ core.xc_func_info_get_ext_params_default_value.restype = ctypes.c_double
 # Setters
 core.xc_func_set_ext_params.argtypes = (_xc_func_p, _ndptr)
 
-core.xc_func_set_dens_threshold.argtypes = (_xc_func_p, ctypes.c_double)
+# Setters for thresholds
+core.xc_func_set_dens_threshold.argtypes  = (_xc_func_p, ctypes.c_double)
+core.xc_func_set_zeta_threshold.argtypes  = (_xc_func_p, ctypes.c_double)
+core.xc_func_set_sigma_threshold.argtypes = (_xc_func_p, ctypes.c_double)
+core.xc_func_set_tau_threshold.argtypes   = (_xc_func_p, ctypes.c_double)
 
 
 # Bind computers
@@ -114,6 +118,14 @@ core.xc_mgga_vxc.argtypes = _build_comute_argtype(4, 4)
 core.xc_mgga_fxc.argtypes = _build_comute_argtype(4, 10)
 core.xc_mgga_kxc.argtypes = _build_comute_argtype(4, 20)
 core.xc_mgga_kxc.argtypes = _build_comute_argtype(4, 35)
+
+# hybrid functions
+core.xc_hyb_exx_coef.argtypes = (_xc_func_p, )
+core.xc_hyb_exx_coef.restype  = ctypes.c_double
+
+core.xc_hyb_cam_coef.argtypes = (_xc_func_p, ctypes.POINTER(ctypes.c_double),
+                                 ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_double))
+
 
 ### Build LibXCFunctional class
 
@@ -179,13 +191,13 @@ class LibXCFunctional(object):
         if isinstance(func_name, str):
             func_id = util.xc_functional_get_number(func_name)
             if func_id == -1:
-                raise KeyError("LibXC Functional name '%s' not found." % func_name)
-        elif isinstance(func_name, int):
+                raise KeyError("LibXCFunctional: name '%s' not found." % func_name)
+        elif isinstance(func_name, (int, np.integer)):
             func_id = func_name
             if util.xc_functional_get_name(func_name) is None:
-                raise KeyError("LibXC Functional ID '%d' not found." % func_name)
+                raise KeyError("LibXCFunctional: ID '%d' not found." % func_name)
         else:
-            raise TypeError("func_name must either be a string or int.")
+            raise TypeError("LibXCFunctional: func_name must either be a string or int. Got {}".format(func_name))
 
         self._xc_func_name = util.xc_functional_get_name(func_id)
 
@@ -197,17 +209,17 @@ class LibXCFunctional(object):
             elif spin == "unpolarized":
                 self._spin = 1
             else:
-                raise KeyError("Spin must either be 'polarized' or 'unpolarized' if represented by a string.")
+                raise KeyError("LibXCFunctional: spin must either be 'polarized' or 'unpolarized' if represented by a string. Got {}".format(spin))
         else:
             self._spin = spin
 
         if self._spin not in [1, 2]:
-            raise KeyError("Spin must either be 1 or 2 if represented by a integer.")
+            raise KeyError("LibXCFunctional: spin must either be 1 or 2 if represented by a integer. Got {}".format(self._spin))
 
         # Build the LibXC functional
         self.xc_func = core.xc_func_alloc()
         self.xc_func_size_names = [x for x in dir(self.xc_func.contents.dim) if not "_" in x]
-        
+
         # Set all int attributes to zero (not all set to zero in libxc)
         for attr in self.xc_func_size_names:
             setattr(self.xc_func.contents, attr, 0)
@@ -221,7 +233,7 @@ class LibXCFunctional(object):
         self.xc_func_sizes = {}
         for attr in self.xc_func_size_names:
             self.xc_func_sizes[attr] = getattr(self.xc_func.contents.dim, attr)
-            
+
         # Unpack functional info
         self.xc_func_info = core.xc_func_get_info(self.xc_func)
         self._number = core.xc_func_info_get_number(self.xc_func_info)
@@ -381,18 +393,22 @@ class LibXCFunctional(object):
         Returns the amount of global exchange to include.
         """
 
-        if self._cam_alpha is False:
-            raise ValueError("Can only be called on Hybrid functionals.")
+        if self._family not in [flags.XC_FAMILY_HYB_LDA, flags.XC_FAMILY_HYB_GGA, flags.XC_FAMILY_HYB_MGGA]:
+            raise ValueError("get_hyb_exx_coef can only be called on hybrid functionals.")
+        if self._have_cam:
+            raise ValueError("get_hyb_exx_coef cannot be called on range-separated functionals.")
 
         return self._cam_alpha
 
     def get_cam_coef(self):
         """
-        Returns the (omega, alpha, beta) quantites
+        Returns the (omega, alpha, beta) quantities
         """
 
-        if self._cam_omega is False:
-            raise ValueError("Can only be called on CAM functionals.")
+        if self._family not in [flags.XC_FAMILY_HYB_LDA, flags.XC_FAMILY_HYB_GGA, flags.XC_FAMILY_HYB_MGGA]:
+            raise ValueError("get_cam_coef can only be called on hybrid functionals.")
+        if not self._have_cam:
+            raise ValueError("get_cam_coef can only be called on range-separated functionals.")
 
         return (self._cam_omega, self._cam_alpha, self._cam_beta)
 
@@ -402,7 +418,7 @@ class LibXCFunctional(object):
         """
 
         if self._nlc_b is False:
-            raise ValueError("Can only be called on -V functionals.")
+            raise ValueError("get_vv10_coeff can only be called on -V functionals.")
 
         return (self._nlc_b, self._nlc_C)
 
@@ -410,7 +426,7 @@ class LibXCFunctional(object):
 
     def get_ext_param_names(self):
         """
-        Gets the description of all external parameters
+        Gets the names of all external parameters
         """
         num_param = core.xc_func_info_get_n_ext_params(self.xc_func_info)
 
@@ -423,7 +439,7 @@ class LibXCFunctional(object):
 
     def get_ext_param_descriptions(self):
         """
-        Gets the description of all external parameters
+        Gets the descriptions of all external parameters
         """
         num_param = core.xc_func_info_get_n_ext_params(self.xc_func_info)
 
@@ -436,7 +452,7 @@ class LibXCFunctional(object):
 
     def get_ext_param_default_values(self):
         """
-        Gets the default value of all external parameters.
+        Gets the default values of all external parameters.
         """
         num_param = core.xc_func_info_get_n_ext_params(self.xc_func_info)
 
@@ -453,24 +469,56 @@ class LibXCFunctional(object):
         """
         num_param = core.xc_func_info_get_n_ext_params(self.xc_func_info)
         if num_param == 0:
-            raise ValueError("The LibXCFunctional '%s' has no extermal parameters to set." % self.get_name())
+            raise ValueError("LibXCFunctional '%s' has no external parameters to set." % self.get_name())
 
         if len(ext_params) != num_param:
             raise ValueError(
-                "The length of the input external parameters (%d) does not match the length of the Functionals external parameters (%d)."
+                "The length of the input external parameters (%d) does not match the length of the functional's external parameters (%d)."
                 % (len(ext_params), num_param))
 
         core.xc_func_set_ext_params(self.xc_func, np.asarray(ext_params, dtype=np.double))
 
     def set_dens_threshold(self, dens_threshold):
         """
-        Sets the density threshold in which densities will not longer be computer.
+        Sets the density threshold below which the functional will not be evaluated.
         """
 
         if dens_threshold < 0:
             raise ValueError("The density threshold cannot be smaller than 0.")
 
         core.xc_func_set_dens_threshold(self.xc_func, ctypes.c_double(dens_threshold))
+
+    def set_zeta_threshold(self, zeta_threshold):
+        """
+        Sets the spin polarization threshold below which components will not be evaluated.
+        """
+
+        if zeta_threshold < 0:
+            raise ValueError("The spin polarization threshold cannot be smaller than 0.")
+
+        core.xc_func_set_zeta_threshold(self.xc_func, ctypes.c_double(zeta_threshold))
+
+    def set_sigma_threshold(self, sigma_threshold):
+        """Sets the smallest value allowed for sigma = \sqrt(\gamma). Smaller
+        values than this get overwritten in the evaluation.
+
+        """
+
+        if sigma_threshold < 0:
+            raise ValueError("The sigma threshold cannot be smaller than 0.")
+
+        core.xc_func_set_sigma_threshold(self.xc_func, ctypes.c_double(sigma_threshold))
+
+    def set_tau_threshold(self, tau_threshold):
+        """Sets the smallest value allowed for tau. Smaller values than this
+        get overwritten in the evaluation.
+
+        """
+
+        if tau_threshold < 0:
+            raise ValueError("The tau threshold cannot be smaller than 0.")
+
+        core.xc_func_set_tau_threshold(self.xc_func, ctypes.c_double(tau_threshold))
 
     def compute(self, inp, output=None, do_exc=True, do_vxc=True, do_fxc=False, do_kxc=False, do_lxc=False):
         """
@@ -526,7 +574,7 @@ class LibXCFunctional(object):
                          v4sigmalapltau2, v4sigmatau3, v4lapl4, v4lapl3tau,
                          v4lapl2tau2, v4lapltau3, v4tau4
 
-            For unpolarized functional the spin pieces are summed together. 
+            For unpolarized functional the spin pieces are summed together.
             However, for polarized functionals the following order will be used for output quantities:
             (The last index is the fastest)
 
@@ -590,13 +638,13 @@ class LibXCFunctional(object):
         if not self._have_exc and do_exc:
             raise ValueError("Functional '%s' does not have EXC capabilities." % self.get_name())
         if not self._have_vxc and do_vxc:
-            raise ValueError("Functional '%s' does not have VXC capabilities." % self.get_name())
+            raise ValueError("Functional '%s' does not have VXC capabilities built in." % self.get_name())
         if not self._have_fxc and do_fxc:
-            raise ValueError("Functional '%s' does not have FXC capabilities." % self.get_name())
+            raise ValueError("Functional '%s' does not have FXC capabilities built in." % self.get_name())
         if not self._have_kxc and do_kxc:
-            raise ValueError("Functional '%s' does not have KXC capabilities." % self.get_name())
+            raise ValueError("Functional '%s' does not have KXC capabilities built in." % self.get_name())
         if not self._have_lxc and do_lxc:
-            raise ValueError("Functional '%s' does not have LXC capabilities." % self.get_name())
+            raise ValueError("Functional '%s' does not have LXC capabilities built in." % self.get_name())
 
         # Parse input arrays
         if isinstance(inp, np.ndarray):
@@ -678,7 +726,7 @@ class LibXCFunctional(object):
             else:
                 input_labels = ["rho", "sigma", "tau"]
             input_num_args = 4
-            
+
             output_labels = [
                 "zk",                                                                # 1, 1
                 "vrho", "vsigma", "vlapl", "vtau",                                   # 4, 5
@@ -699,7 +747,7 @@ class LibXCFunctional(object):
                 "v4sigmalapltau2", "v4sigmatau3", "v4lapl4", "v4lapl3tau",
                 "v4lapl2tau2", "v4lapltau3", "v4tau4"
             ]
-            
+
             # Build input args
             output = _check_arrays(output, output_labels[0:1],
                             self.xc_func_sizes, npoints, do_exc)

@@ -14,6 +14,15 @@
   params = (lda_k_gds08_params * )(p->params);
 *)
 
+gds08_fs := (rs, z) -> (1 + z)/2 *(
+  + params_a_A
+  + params_a_B*log(2*n_spin(rs, z))
+  + params_a_C*log(2*n_spin(rs, z))^2
+):
+
 # Eq. (12)
-f := (rs, zeta) -> params_a_A + params_a_B*log(n_total(rs))
-  + params_a_C*log(n_total(rs))^2:
+gds08_f := (rs, z) ->
+  + my_piecewise3(screen_dens(rs,  z), 0, gds08_fs(rs, z_thr( z)))
+  + my_piecewise3(screen_dens(rs, -z), 0, gds08_fs(rs, z_thr(-z))):
+
+f := (rs, z) -> gds08_f(rs, z):

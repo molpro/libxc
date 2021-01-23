@@ -14,7 +14,7 @@
 static void
 mgga_x_dldf_init(xc_func_type *p)
 {
-  p->cam_alpha   = 0.6144129;
+  xc_hyb_init_hybrid(p, 0.6144129);
 }
 
 #include "decl_mgga.h"
@@ -31,7 +31,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_dldf = {
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Pernal2009_263201, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
-  1.0e-22,
+  1e-15,
   {0, NULL, NULL, NULL, NULL},
   mgga_x_dldf_init, NULL,
   NULL, NULL, work_mgga,

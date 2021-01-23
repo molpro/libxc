@@ -1,5 +1,6 @@
 (*
  Copyright (C) 2017 M.A.L. Marques
+               2020 Susi Lehtola
 
  This Source Code Form is subject to the terms of the Mozilla Public
  License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -7,33 +8,34 @@
 *)
 
 (* type: gga_exc *)
+(* prefix:
+  gga_c_p86_params *params;
+
+  assert(p->params != NULL);
+  params = (gga_c_p86_params * )(p->params);
+*)
 
 $define lda_c_pz_params
 $include "lda_c_pz.mpl"
 
-malpha := 0.023266:
-mbeta  := 7.389e-6:
-mgamma := 8.723:
-mdelta := 0.472:
-aa     := 0.001667:
-bb     := 0.002568:
-ftilde := 1.745*0.11:
-
 (* Equation (4) *)
-DD := z  -> sqrt((1 + z)^(5/3) + (1 - z)^(5/3))/sqrt(2):
+p86_DD := z  -> sqrt(opz_pow_n(z,5/3) + opz_pow_n(-z,5/3))/sqrt(2):
 
 (* Equation (6) *)
-CC := rs -> 
-  + aa 
-  + (bb + malpha*rs + mbeta*rs^2)/(1 + mgamma*rs + mdelta*rs^2 + 1.0e4*mbeta*rs^3):
-CCinf := aa + bb:
+p86_CC := rs ->
+  + params_a_aa
+  + (params_a_bb + params_a_malpha*rs + params_a_mbeta*rs^2)/(1 + params_a_mgamma*rs + params_a_mdelta*rs^2 + 1.0e4*params_a_mbeta*rs^3):
+p86_CCinf := params_a_aa + params_a_bb:
 
 (* Equation (9) *)
-x1   := (rs, xt) -> xt/sqrt(rs/RS_FACTOR):
-mPhi := (rs, xt) -> ftilde*(CCinf/CC(rs))*x1(rs, xt):
+p86_x1   := (rs, xt) -> xt/sqrt(rs/RS_FACTOR):
+p86_mPhi := (rs, xt) -> params_a_ftilde*(p86_CCinf/p86_CC(rs))*p86_x1(rs, xt):
 
 (* Equation (8) *)
-H := (rs, z, xt) -> x1(rs, xt)^2*exp(-mPhi(rs, xt))*CC(rs)/DD(z):
+p86_H := (rs, z, xt) -> p86_x1(rs, xt)^2*exp(-p86_mPhi(rs, xt))*p86_CC(rs)/p86_DD(z):
+
+f_p86 := (rs, z, xt, xs0, xs1) ->
+  f_pz(rs, z) + p86_H(rs, z, xt):
 
 f := (rs, z, xt, xs0, xs1) ->
-  f_pz(rs, z) + H(rs, z, xt):
+  f_p86(rs, z, xt, xs0, xs1):

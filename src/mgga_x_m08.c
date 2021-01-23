@@ -43,6 +43,8 @@ mgga_x_m08_init(xc_func_type *p)
 {
   assert(p->params == NULL);
   p->params = libxc_malloc(sizeof(mgga_x_m08_params));
+
+  xc_hyb_init_hybrid(p, 0.0);
 }
 
 #include "decl_mgga.h"
@@ -60,7 +62,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_m08_hx = {
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Zhao2008_1849, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
-  1e-20,
+  1e-15,
   {N_PAR, names, desc, par_m08_hx, set_ext_params_cpy_exx},
   mgga_x_m08_init, NULL,
   NULL, NULL, work_mgga,
@@ -76,7 +78,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_m08_so = {
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Zhao2008_1849, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
-  1e-20,
+  1e-15,
   {N_PAR, names, desc, par_m08_so, set_ext_params_cpy_exx},
   mgga_x_m08_init, NULL,
   NULL, NULL, work_mgga,

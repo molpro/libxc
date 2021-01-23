@@ -25,9 +25,9 @@ const xc_func_info_type xc_func_info_mgga_c_kcis = {
   XC_FAMILY_MGGA,
   {&xc_ref_Rey1998_581, &xc_ref_Krieger1999_463, &xc_ref_Krieger2001_48, &xc_ref_Kurth1999_889, &xc_ref_Toulouse2002_10465},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
-  1e-24,
+  1e-14,
   {0, NULL, NULL, NULL, NULL},
-  NULL, NULL, 
+  NULL, NULL,
   NULL, NULL, work_mgga
 };
 
@@ -39,7 +39,7 @@ xc_hyb_mgga_xc_b0kcis_init(xc_func_type *p)
   static double funcs_coef[2] = {1.0 - 0.25, 1.0};
 
   xc_mix_init(p, 2, funcs_id, funcs_coef);
-  p->cam_alpha = 0.25;
+  xc_hyb_init_hybrid(p, 0.25);
 }
 
 #ifdef __cplusplus
@@ -52,8 +52,8 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_b0kcis = {
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Toulouse2002_10465, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
-  1e-15,
+  1e-14,
   {0, NULL, NULL, NULL, NULL},
-  xc_hyb_mgga_xc_b0kcis_init, NULL, 
+  xc_hyb_mgga_xc_b0kcis_init, NULL,
   NULL, NULL, work_mgga
 };

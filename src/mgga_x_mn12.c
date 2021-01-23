@@ -172,6 +172,11 @@ mgga_x_mn12_init(xc_func_type *p)
 {
   assert(p->params == NULL);
   p->params = libxc_malloc(sizeof(mgga_x_mn12_params));
+
+  if(p->info->number == XC_HYB_MGGA_X_MN12_SX)
+    xc_hyb_init_cam(p, 0.0, 0.0, 0.0);
+  else if(p->info->number == XC_HYB_MGGA_X_MN15)
+    xc_hyb_init_hybrid(p, 0.0);
 }
 
 #include "decl_mgga.h"
@@ -188,7 +193,7 @@ const xc_func_info_type xc_func_info_mgga_x_mn12_l = {
   XC_FAMILY_MGGA,
   {&xc_ref_Peverati2012_13171, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
-  1e-23,
+  1e-15,
   {N_PAR_L, names_l, desc_l, par_mn12_l, set_ext_params_cpy},
   mgga_x_mn12_init, NULL,
   NULL, NULL, work_mgga,
@@ -204,7 +209,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_mn12_sx = {
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Peverati2012_16187, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_HYB_CAM | MAPLE2C_FLAGS,
-  1e-32,
+  1e-15,
   {N_PAR_C, names_c, desc_c, par_mn12_sx, set_ext_params_cpy_cam},
   mgga_x_mn12_init, NULL,
   NULL, NULL, work_mgga
@@ -220,7 +225,7 @@ const xc_func_info_type xc_func_info_mgga_x_mn15_l = {
   XC_FAMILY_MGGA,
   {&xc_ref_Yu2016_1280, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
-  1e-23,
+  1e-15,
   {N_PAR_L, names_l, desc_l, par_mn15_l, set_ext_params_cpy},
   mgga_x_mn12_init, NULL,
   NULL, NULL, work_mgga,
@@ -236,7 +241,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_mn15 = {
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Yu2016_5032, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
-  1e-23,
+  1e-15,
   {N_PAR_H, names_h, desc_h, par_mn15, set_ext_params_cpy_exx},
   mgga_x_mn12_init, NULL,
   NULL, NULL, work_mgga,

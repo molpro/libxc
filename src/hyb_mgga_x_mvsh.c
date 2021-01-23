@@ -17,7 +17,7 @@ hyb_mgga_x_mvsh_init(xc_func_type *p)
   static double funcs_coef[1] = {0.75};
 
   xc_mix_init(p, 1, funcs_id, funcs_coef);
-  p->cam_alpha = 0.25;
+  xc_hyb_init_hybrid(p, 0.25);
 }
 
 
@@ -31,7 +31,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_mvsh = {
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Sun2015_685, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
-  1e-32,
+  1e-15,
   {0, NULL, NULL, NULL, NULL},
   hyb_mgga_x_mvsh_init, NULL,
   NULL, NULL, NULL /* this is taken care of by the generic routine */

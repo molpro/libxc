@@ -1,17 +1,33 @@
 ## Copyright (C) 2002-2006 M. Marques, A. Castro, A. Rubio, G. Bertsch
-## Copyright (C) 2019 X. Andrade
+##               2019 X. Andrade
+##               2020 Susi Lehtola
 ##
 ## This Source Code Form is subject to the terms of the Mozilla Public
 ## License, v. 2.0. If a copy of the MPL was not distributed with this
 ## file, You can obtain one at http://mozilla.org/MPL/2.0/.
 ##
 
-AC_INIT([libxc],[5.0.0],[libxc@tddft.org],[libxc],[http://www.tddft.org/programs/Libxc])
+AC_INIT([libxc],[5.1.0],[libxc@tddft.org],[libxc],[http://www.tddft.org/programs/Libxc])
 AC_CONFIG_SRCDIR([src/xc.h])
 AM_INIT_AUTOMAKE
 
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
+
+# Check if libm needs to be explicitly linked
+AC_SEARCH_LIBS([sinh], [m])
+AC_SEARCH_LIBS([atan2], [m])
+AC_SEARCH_LIBS([tanh], [m])
+AC_SEARCH_LIBS([cosh], [m])
+AC_SEARCH_LIBS([sin], [m])
+AC_SEARCH_LIBS([atan], [m])
+AC_SEARCH_LIBS([exp], [m])
+AC_SEARCH_LIBS([cos], [m])
+AC_SEARCH_LIBS([log], [m])
+AC_SEARCH_LIBS([pow], [m])
+AC_SEARCH_LIBS([round], [m])
+AC_SEARCH_LIBS([sqrt], [m])
+AC_SEARCH_LIBS([erf], [m])
 
 # Library versioning (C:R:A == current:revision:age)
 # See the libtool manual for an explanation of the numbers
@@ -47,6 +63,8 @@ AC_CONFIG_MACRO_DIR([m4])
 # libxc-4.3.3   8:3:3
 # libxc-4.3.4   8:4:3
 # libxc-5.0.0   9:0:0
+# libxc-5.1.0  10:0:1
+# libxc-6.0.0  11:0:0
 # 
 # Note that libtool versioning was not used prior to libxc-2.0.
 # Because of this, we will start counting at 1.
@@ -63,9 +81,9 @@ AC_CONFIG_MACRO_DIR([m4])
 # interfaces have been removed. removal has precedence over adding,
 # so set to 0 if both happened.
 
-XC_CURRENT=9
+XC_CURRENT=10
 XC_REVISION=0
-XC_AGE=0
+XC_AGE=1
 
 XC_LT_VERSION="${XC_CURRENT}:${XC_REVISION}:${XC_AGE}"
 AC_SUBST(XC_LT_VERSION)
@@ -92,17 +110,17 @@ LT_INIT
 # enable cuda first, since this is required for the compiler selection
 AC_ARG_ENABLE(cuda, AS_HELP_STRING([--enable-cuda], [Cuda support (experimental)]))
 
-if test x"${enable_cuda}" == x"yes" ; then
+if test x"${enable_cuda}" = x"yes" ; then
   AC_DEFINE(HAVE_CUDA, 1, [defined if cuda support is enabled])
 fi
 
-AM_CONDITIONAL([HAVE_CUDA], [test x"${enable_cuda}" == x"yes"])
+AM_CONDITIONAL([HAVE_CUDA], [test x"${enable_cuda}" = x"yes"])
 
 # Checks for programs.
 AC_PROG_CC
 
 #we may need to set the linker for the cuda case, so pass that to automake
-if test x"$CCLD" == x ; then
+if test x"$CCLD" = x ; then
    CCLD=$CC
 fi
 AC_SUBST(CCLD)
@@ -136,7 +154,7 @@ AC_ARG_ENABLE([vxc],
 	      AS_HELP_STRING([--disable-vxc], [don't build first derivatives]),
 	      [ac_cv_build_vxc=$enableval],
 	      [ac_cv_build_vxc=yes])
-if test x"${ac_cv_build_vxc}" == x"no"; then
+if test x"${ac_cv_build_vxc}" = x"no"; then
   AC_DEFINE(XC_DONT_COMPILE_VXC, 1, [defined if first derivatives are disabled])
   AC_DEFINE(XC_DONT_COMPILE_FXC, 1, [defined if second derivatives are disabled])
   AC_DEFINE(XC_DONT_COMPILE_KXC, 1, [defined if third derivatives are disabled])
@@ -147,7 +165,7 @@ AC_ARG_ENABLE([fxc],
 	      AS_HELP_STRING([--disable-fxc], [don't build second derivatives]),
 	      [ac_cv_build_fxc=$enableval],
 	      [ac_cv_build_fxc=yes])
-if test x"${ac_cv_build_fxc}" == x"no"; then
+if test x"${ac_cv_build_fxc}" = x"no"; then
   AC_DEFINE(XC_DONT_COMPILE_FXC, 1, [defined if second derivatives are disabled])
   AC_DEFINE(XC_DONT_COMPILE_KXC, 1, [defined if third derivatives are disabled])
   AC_DEFINE(XC_DONT_COMPILE_LXC, 1, [defined if fourth derivatives are disabled])
@@ -157,7 +175,7 @@ AC_ARG_ENABLE([kxc],
 	      AS_HELP_STRING([--disable-kxc], [don't build third derivatives]),
 	      [ac_cv_build_kxc=$enableval],
 	      [ac_cv_build_kxc=no])
-if test x"${ac_cv_build_kxc}" == x"no"; then
+if test x"${ac_cv_build_kxc}" = x"no"; then
   AC_DEFINE(XC_DONT_COMPILE_KXC, 1, [defined if third derivatives are disabled])
   AC_DEFINE(XC_DONT_COMPILE_LXC, 1, [defined if fourth derivatives are disabled])
 fi
@@ -166,7 +184,7 @@ AC_ARG_ENABLE([lxc],
 	      AS_HELP_STRING([--disable-lxc], [don't build fourth derivatives]),
 	      [ac_cv_build_lxc=$enableval],
 	      [ac_cv_build_lxc=no])
-if test x"${ac_cv_build_lxc}" == x"no"; then
+if test x"${ac_cv_build_lxc}" = x"no"; then
   AC_DEFINE(XC_DONT_COMPILE_LXC, 1, [defined if fourth derivatives are disabled])
 fi
 
@@ -238,11 +256,10 @@ AC_CONFIG_FILES([Makefile
   src/maple2c/mgga_vxc/Makefile
   testsuite/Makefile
   testsuite/pytest/Makefile
-  build/Makefile
-  build/libxc.pc
-  build/libxcf90.pc
-  build/libxcf03.pc
-  build/libxc.spec
+  pkgconfig/Makefile
+  pkgconfig/libxc.pc
+  pkgconfig/libxcf90.pc
+  pkgconfig/libxcf03.pc
   scripts/Makefile
   maple/Makefile
   maple/lda_exc/Makefile

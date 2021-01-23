@@ -44,7 +44,7 @@ const xc_func_info_type xc_func_info_gga_x_cap = {
   XC_FAMILY_GGA,
   {&xc_ref_Carmona2015_054105, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
-  1e-24,
+  1e-15,
   {CAP_N_PAR, cap_names, cap_desc, cap_values, set_ext_params_cpy},
   gga_x_cap_init, NULL,
   NULL, work_gga, NULL
@@ -61,7 +61,7 @@ xc_hyb_gga_xc_cap0_init(xc_func_type *p)
 
   xc_mix_init(p, 2, funcs_id, funcs_coef);
   xc_func_set_ext_params(p->func_aux[1], par_c_pbe);
-  p->cam_alpha = 0.75;
+  xc_hyb_init_hybrid(p, 0.75);
 }
 
 #ifdef __cplusplus
@@ -74,7 +74,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_cap0 = {
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Carmona2016_120, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
-  1e-32,
+  1e-15,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_gga_xc_cap0_init, NULL,
   NULL, NULL, NULL

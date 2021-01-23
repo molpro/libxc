@@ -12,7 +12,7 @@
 /* expint_E1 calculates the exponential integral, E1(X), for positive
    argument X and the Cauchy principal value for negative X.  If
    principal values are used everywhere, then, for all X,
-   
+
      E1(X) = -Ei(-X)
    or
      Ei(X) = -E1(-X).
@@ -100,8 +100,8 @@ GPU_FUNCTION double xc_expint_e1_impl(double x, const int scale){
 
   double e1 = 0.0;
 
-  /* this is a workaround */
-  x = min(x, xmax);
+  /* this is a workaround not to have argument errors */
+  if(! scale) x = m_min(x, xmax);
 
   if(x <= -10.0){
     const double s = 1.0/x * ( scale ? 1.0 : exp(-x) );
@@ -130,7 +130,7 @@ GPU_FUNCTION double xc_expint_e1_impl(double x, const int scale){
   fprintf(stderr, "Argument %14.10le is larger than xmax=%14.10le in expint_e1\n", x, xmax);
 #endif
   }
-  
+
   return e1;
 }
 

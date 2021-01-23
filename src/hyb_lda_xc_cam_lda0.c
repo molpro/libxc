@@ -39,9 +39,8 @@ xc_hyb_lda_xc_cam_lda0_init(xc_func_type *p)
 
   /* Set parameters */
   xc_func_set_ext_params(p->func_aux[1], &omega);
-  p->cam_omega = omega;
-  p->cam_alpha = alpha;
-  p->cam_beta  = beta;
+
+  xc_hyb_init_cam(p, alpha, beta, omega);
 }
 
 #ifdef __cplusplus
@@ -54,7 +53,7 @@ const xc_func_info_type xc_func_info_hyb_lda_xc_cam_lda0 = {
   XC_FAMILY_HYB_LDA,
   {&xc_ref_Mosquera2016_1605, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_HYB_CAM | XC_FLAGS_I_HAVE_ALL,
-  1e-32,
+  1e-15,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_lda_xc_cam_lda0_init, NULL,
   NULL, NULL, NULL

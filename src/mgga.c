@@ -14,7 +14,7 @@
 void
 xc_mgga(const xc_func_type *func, size_t np,
         const double *rho, const double *sigma, const double *lapl, const double *tau,
-        double *zk, MGGA_OUT_PARAMS_NO_EXC(double *))
+        double *zk MGGA_OUT_PARAMS_NO_EXC(XC_COMMA double *, ))
 {
   assert(func != NULL);
   const xc_dimensions *dim = &(func->dim);
@@ -44,6 +44,11 @@ xc_mgga(const xc_func_type *func, size_t np,
     exit(1);
   }
 
+  if(v4rho4 != NULL && !(func->info->flags & XC_FLAGS_HAVE_LXC)){
+    fprintf(stderr, "Functional '%s' does not provide an implementation of lxc\n",
+            func->info->name);
+    exit(1);
+  }
 
   /* initialize output to zero */
   if(zk != NULL)
@@ -57,8 +62,8 @@ xc_mgga(const xc_func_type *func, size_t np,
 
     libxc_memset(vrho,   0, dim->vrho  *np*sizeof(double));
     libxc_memset(vsigma, 0, dim->vsigma*np*sizeof(double));
-    if(func->info->flags & XC_FLAGS_NEEDS_LAPLACIAN)
-       libxc_memset(vlapl,  0, dim->vlapl *np*sizeof(double));
+    if(vlapl != NULL) /* This is important for deorbitalization */
+      libxc_memset(vlapl,  0, dim->vlapl *np*sizeof(double));
     libxc_memset(vtau,   0, dim->vtau  *np*sizeof(double));
   }
 
@@ -83,7 +88,7 @@ xc_mgga(const xc_func_type *func, size_t np,
     libxc_memset(v2sigmatau, 0, dim->v2sigmatau *np*sizeof(double));
     libxc_memset(v2tau2,     0, dim->v2tau2     *np*sizeof(double));
 
-    if(func->info->flags & XC_FLAGS_NEEDS_LAPLACIAN){
+    if(v2lapl2 != NULL) {  /* This is important for deorbitalization */
       libxc_memset(v2rholapl,   0, dim->v2rholapl  *np*sizeof(double));
       libxc_memset(v2sigmalapl, 0, dim->v2sigmalapl*np*sizeof(double));
       libxc_memset(v2lapl2,     0, dim->v2lapl2    *np*sizeof(double));
@@ -125,7 +130,7 @@ xc_mgga(const xc_func_type *func, size_t np,
     libxc_memset(v3sigmatau2,   0, dim->v3sigmatau2  *np*sizeof(double));
     libxc_memset(v3tau3,        0, dim->v3tau3       *np*sizeof(double));
 
-    if(func->info->flags & XC_FLAGS_NEEDS_LAPLACIAN){
+    if(v3lapl3 != NULL) {  /* This is important for deorbitalization */
       libxc_memset(v3rho2lapl,     0, dim->v3rho2lapl    *np*sizeof(double));
       libxc_memset(v3rhosigmalapl, 0, dim->v3rhosigmalapl*np*sizeof(double));
       libxc_memset(v3rholapl2,     0, dim->v3rholapl2    *np*sizeof(double));
@@ -194,7 +199,7 @@ xc_mgga(const xc_func_type *func, size_t np,
     libxc_memset(v4sigmatau3,    0, dim->v4sigmatau3   *np*sizeof(double));
     libxc_memset(v4tau4,         0, dim->v4tau4        *np*sizeof(double));
 
-    if(func->info->flags & XC_FLAGS_NEEDS_LAPLACIAN){
+    if(v4lapl4 != NULL) {  /* This is important for deorbitalization */
       libxc_memset(v4rho3lapl,        0, dim->v4rho3lapl       *np*sizeof(double));
       libxc_memset(v4rho2sigmalapl,   0, dim->v4rho2sigmalapl  *np*sizeof(double));
       libxc_memset(v4rho2lapl2,       0, dim->v4rho2lapl2      *np*sizeof(double));
@@ -220,11 +225,12 @@ xc_mgga(const xc_func_type *func, size_t np,
 
   /* call functional */
   if(func->info->mgga != NULL)
-    func->info->mgga(func, np, rho, sigma, lapl, tau, zk, MGGA_OUT_PARAMS_NO_EXC(XC_NOARG));
+    func->info->mgga(func, np, rho, sigma, lapl, tau,
+                     zk MGGA_OUT_PARAMS_NO_EXC(XC_COMMA, ));
 
   if(func->mix_coef != NULL)
     xc_mix_func(func, np, rho, sigma, lapl, tau,
-                zk, MGGA_OUT_PARAMS_NO_EXC(XC_NOARG));
+                zk MGGA_OUT_PARAMS_NO_EXC(XC_COMMA, ));
 }
 
 /* specializations */

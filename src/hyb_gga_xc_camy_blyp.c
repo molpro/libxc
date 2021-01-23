@@ -21,13 +21,13 @@ xc_hyb_gga_xc_camy_blyp_init(xc_func_type *p)
      HF exchange, which in the original reference is alpha+beta.
   */
   double alpha, beta, omega;
-  
+
   alpha = 1.00;
   beta  =-0.80;
   omega = 0.44;	/* we use omega for gamma here, 'cause
                    both denote dampening parameters for
                    range related interactions */
-  
+
   funcs_coef[0] = 1.0 - alpha;
   funcs_coef[1] =-beta;
   funcs_coef[2] = 1.0;
@@ -36,9 +36,7 @@ xc_hyb_gga_xc_camy_blyp_init(xc_func_type *p)
 
   xc_func_set_ext_params(p->func_aux[1], &omega);
 
-  p->cam_omega = omega;
-  p->cam_alpha = alpha;
-  p->cam_beta  = beta;
+  xc_hyb_init_camy(p, alpha, beta, omega);
 }
 
 #ifdef __cplusplus
@@ -51,7 +49,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_camy_blyp = {
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Akinaga2008_348, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_HYB_CAMY | XC_FLAGS_I_HAVE_ALL,
-  1e-32,
+  1e-15,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_gga_xc_camy_blyp_init, NULL,
   NULL, NULL, NULL

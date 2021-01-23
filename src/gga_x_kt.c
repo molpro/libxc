@@ -17,7 +17,7 @@ typedef struct{
   double gamma, delta;
 } gga_x_kt_params;
 
-static void 
+static void
 gga_x_kt_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
@@ -33,7 +33,7 @@ static const char  *kt_names[KT_N_PAR]  = {"_gamma", "_delta"};
 static const char  *kt_desc[KT_N_PAR]   = {
   "gamma",
   "delta"};
-static const double kt_values[KT_N_PAR] = 
+static const double kt_values[KT_N_PAR] =
   {-0.006, 0.1};
 
 #ifdef __cplusplus
@@ -46,9 +46,9 @@ const xc_func_info_type xc_func_info_gga_x_kt1 = {
   XC_FAMILY_GGA,
   {&xc_ref_Keal2003_3015, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
-  1e-32,
+  1e-15,
   {KT_N_PAR, kt_names, kt_desc, kt_values, set_ext_params_cpy},
-  gga_x_kt_init, NULL, 
+  gga_x_kt_init, NULL,
   NULL, work_gga, NULL
 };
 
@@ -59,7 +59,7 @@ gga_xc_kt1_init(xc_func_type *p)
   static int   funcs_id  [2] = {XC_GGA_X_KT1, XC_LDA_C_VWN};
   static double funcs_coef[2] = {1.0, 1.0};
 
-  xc_mix_init(p, 2, funcs_id, funcs_coef);  
+  xc_mix_init(p, 2, funcs_id, funcs_coef);
 }
 
 #ifdef __cplusplus
@@ -72,9 +72,9 @@ const xc_func_info_type xc_func_info_gga_xc_kt1 = {
   XC_FAMILY_GGA,
   {&xc_ref_Keal2003_3015, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
-  1e-24,
+  1e-15,
   {0, NULL, NULL, NULL, NULL},
-  gga_xc_kt1_init, NULL, 
+  gga_xc_kt1_init, NULL,
   NULL, NULL, NULL
 };
 
@@ -85,7 +85,7 @@ gga_xc_kt2_init(xc_func_type *p)
   static int   funcs_id  [3] = {XC_LDA_X, XC_GGA_X_KT1, XC_LDA_C_VWN};
   static double funcs_coef[3] = {1.07173 - 1.0, 1.0, 0.576727};
 
-  xc_mix_init(p, 3, funcs_id, funcs_coef);  
+  xc_mix_init(p, 3, funcs_id, funcs_coef);
 }
 
 #ifdef __cplusplus
@@ -98,9 +98,9 @@ const xc_func_info_type xc_func_info_gga_xc_kt2 = {
   XC_FAMILY_GGA,
   {&xc_ref_Keal2003_3015, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
-  1e-24,
+  1e-15,
   {0, NULL, NULL, NULL, NULL},
-  gga_xc_kt2_init, NULL, 
+  gga_xc_kt2_init, NULL,
   NULL, NULL, NULL
 };
 
@@ -112,21 +112,23 @@ gga_xc_kt3_init(xc_func_type *p)
   double funcs_coef[4];
 
   /* Equation (2) */
-  static const double
-    alpha = 1.092,
-    beta  = 0.864409,
-    par_kt[2] = {-0.004, 0.1},
-    eps   = -0.925452,
-    a1    = 1.05151, /* these are the OPTX coefficients */
-    a2    = 1.43169;
+  static const double alpha = 1.092; /* full E_x^Dirac */
+  static const double beta  = 0.864409; /* full E_c^LYP */
+  static const double par_kt[2] = {-0.004, 0.1}; /* parameters gamma and delta of KT1 gradient term */
+  static const double eps = +0.925452; /* gradient part of E_x^OPTX; changed to include the minus sign! */
 
-  funcs_coef[0] = alpha - eps*a1/a2;
-  funcs_coef[1] = beta;
-  funcs_coef[2] = 1.0;
-  funcs_coef[3] = eps/a2;
+  /* The OPTX part is given in terms of the OPTX gradient part */
+  static const double a_optx = 1.05151; /* Coefficient of LDA term in OPTX */
+  static const double b_optx = 1.43169; ///X_FACTOR_C; /* Coefficient of GGA term in OPTX */
+
+  /* Total LDA weight: substract doubly counted part in KT1 and OPTX */
+  funcs_coef[0] = alpha - eps*a_optx/b_optx - 1.0;
+  funcs_coef[1] = beta; /* LYP */
+  funcs_coef[2] = 1.0; /* KT1; gamma is already included by the parameter! */
+  funcs_coef[3] = eps/b_optx; /* OPTX */
 
   xc_mix_init(p, 4, funcs_id, funcs_coef);
-  set_ext_params_cpy(p->func_aux[2], par_kt);
+  set_ext_params_cpy(p->func_aux[2], par_kt); /* kt parameters */
 }
 
 #ifdef __cplusplus
@@ -139,8 +141,8 @@ const xc_func_info_type xc_func_info_gga_xc_kt3 = {
   XC_FAMILY_GGA,
   {&xc_ref_Keal2004_5654, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
-  1e-24,
+  1e-15,
   {0, NULL, NULL, NULL, NULL},
-  gga_xc_kt3_init, NULL, 
+  gga_xc_kt3_init, NULL,
   NULL, NULL, NULL
 };

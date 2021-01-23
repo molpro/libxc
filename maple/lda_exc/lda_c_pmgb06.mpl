@@ -30,7 +30,7 @@ pmgb_gc0 := rs -> pmgb_g0(rs) - 1/2:
 
 # Eq. (14)
 pmgb_phi := (n, z) ->
-         ((1 + z)^(n/3) + (1 - z)^(n/3))/2:
+         (opz_pow_n(z,n/3) + opz_pow_n(-z,n/3))/2:
 
 # Eq. (22)
 pmgb_Q_a := 5.84605:
@@ -57,23 +57,18 @@ pmgb_D2 := (rs) -> (-0.388*rs + 0.676*rs^2)*exp(-0.547*rs)/rs^2:
 # Eq. (34)
 pmgb_D3 := (rs) -> (-4.95*rs + rs^2)*exp(-0.31*rs)/rs^3:
 
-if evalb(Polarization = "ferr") then
-  pmgb_cc4 := (rs, z) -> pmgb_gpp1(rs) - pmgb_phi(8, 1)/(5*alpha^2*rs^2):
-  pmgb_cc5 := (rs, z) -> pmgb_gpp1(rs):
-else
-  # Eq. (28)
-  pmgb_cc4 := (rs, z) ->
-         + ((1 + z)^2/4) * pmgb_gpp1(rs*(2/(1 + z))^(1/3))
-         + ((1 - z)^2/4) * pmgb_gpp1(rs*(2/(1 - z))^(1/3))
-         + (1 - z^2) * pmgb_D2(rs)
-         - pmgb_phi(8, z)/(5*alpha^2*rs^2):
+# Eq. (28)
+pmgb_cc4 := (rs, z) ->
+       + (opz_pow_n( z,2)/4) * pmgb_gpp1(rs*(2/(1 + z))^(1/3))
+       + (opz_pow_n(-z,2)/4) * pmgb_gpp1(rs*(2/(1 - z))^(1/3))
+       + (1 - z^2) * pmgb_D2(rs)
+       - pmgb_phi(8, z)/(5*alpha^2*rs^2):
 
-  # Eq. (29)
-  pmgb_cc5 := (rs, z) ->
-         + ((1 + z)^2/4) * pmgb_gpp1(rs*(2/(1 + z))^(1/3))
-         + ((1 - z)^2/4) * pmgb_gpp1(rs*(2/(1 - z))^(1/3))
-         + (1 - z^2) * pmgb_D3(rs):
-fi:
+# Eq. (29)
+pmgb_cc5 := (rs, z) ->
+       + (opz_pow_n( z,2)/4) * pmgb_gpp1(rs*(2/(1 + z))^(1/3))
+       + (opz_pow_n(-z,2)/4) * pmgb_gpp1(rs*(2/(1 - z))^(1/3))
+       + (1 - z^2) * pmgb_D3(rs):
 
 # Eq. (30)
 pmgb_C2 := (rs, z) ->
@@ -82,7 +77,7 @@ pmgb_C2 := (rs, z) ->
 pmgb_C3 := (rs, z) ->
         -(1 - z^2)*pmgb_g0(rs)/(sqrt(2*Pi)*rs^3):
 
-pmgb_C4 := (rs, z) -> 
+pmgb_C4 := (rs, z) ->
         -9*pmgb_cc4(rs, z)/(64*rs^3):
 
 pmgb_C5 := (rs, z) ->
@@ -106,12 +101,12 @@ pmgb_a5 := (rs, z) ->
 
 # Eq. (26)
 pmgb_ec_LR := (rs, z) -> (
-           + pmgb_phi(2, z)^3*pmgb_Q(p_a_cam_omega*sqrt(rs)/pmgb_phi(2, z))
-           + pmgb_a1(rs, z)*p_a_cam_omega^3
-           + pmgb_a2(rs, z)*p_a_cam_omega^4
-           + pmgb_a3(rs, z)*p_a_cam_omega^5
-           + pmgb_a4(rs, z)*p_a_cam_omega^6
-           + pmgb_a5(rs, z)*p_a_cam_omega^8
-           )/(1 + pmgb_b0(rs)^2*p_a_cam_omega^2)^4:
+           + pmgb_phi(2, z)^3*pmgb_Q(p_a_hyb_omega_0_*sqrt(rs)/pmgb_phi(2, z))
+           + pmgb_a1(rs, z)*p_a_hyb_omega_0_^3
+           + pmgb_a2(rs, z)*p_a_hyb_omega_0_^4
+           + pmgb_a3(rs, z)*p_a_hyb_omega_0_^5
+           + pmgb_a4(rs, z)*p_a_hyb_omega_0_^6
+           + pmgb_a5(rs, z)*p_a_hyb_omega_0_^8
+           )/(1 + pmgb_b0(rs)^2*p_a_hyb_omega_0_^2)^4:
 
 f := (rs, z) -> pmgb_ec_LR(rs, z):

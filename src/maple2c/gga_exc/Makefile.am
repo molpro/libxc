@@ -20,7 +20,7 @@ gga_c_lm.c         gga_c_zpbeint.c   gga_x_am05.c        gga_x_htbs.c        gga
 gga_c_lyp.c        gga_c_zvpbeint.c  gga_x_b86.c         gga_x_ityh.c        gga_x_s12.c       \
 gga_c_op_b88.c     gga_c_zvpbeloc.c  gga_x_b88.c         gga_x_kt.c          gga_x_sfat.c      \
 gga_c_op_g96.c     gga_k_apbe.c      gga_x_bayesian.c    gga_x_lag.c         gga_x_sfat_pbe.c  \
-gga_c_op_pbe.c     gga_k_apbeint.c   gga_x_beefvdw.c     gga_x_lb.c          gga_x_sg4.c       \
+gga_c_op_pbe.c     gga_k_apbeint.c   gga_x_beefvdw.c     gga_x_sg4.c       \
 gga_c_op_pw91.c    gga_k_dk.c        gga_x_bpccac.c      gga_x_lg93.c        gga_x_sogga11.c   \
 gga_c_optc.c       gga_k_exp4.c      gga_x_c09x.c        gga_x_lspbe.c       gga_x_ssb_sw.c    \
 gga_c_op_xalpha.c  gga_k_lc94.c      gga_x_cap.c         gga_x_lsrpbe.c      gga_x_vmt84.c     \
@@ -28,5 +28,6 @@ gga_c_p86.c        gga_k_llp.c       gga_xc_b97.c        gga_x_lv_rpw86.c    gga
 gga_c_pbe.c        gga_k_meyer.c     gga_x_chachiyo.c    gga_x_mpbe.c        gga_x_wc.c        \
 gga_c_pbeloc.c     gga_k_mpbe.c      gga_xc_th1.c        gga_x_n12.c         gga_x_wpbeh.c     \
 gga_c_pbe_vwn.c    gga_k_ol1.c       gga_xc_th2.c        gga_x_ncap.c        hyb_gga_xc_wb97.c \
-gga_c_pw91.c       gga_k_ol2.c       gga_xc_th3.c        gga_x_ol2.c         gga_x_lcgau.c
-
+gga_c_pw91.c       gga_k_ol2.c       gga_xc_th3.c        gga_x_ol2.c              \
+gga_k_lkt.c        gga_k_lgap.c      gga_k_vt84f.c       gga_k_lgap_ge.c     gga_c_ccdf.c      \
+gga_k_rational_p.c gga_k_pg.c        gga_c_p86vwn.c      gga_x_ityh_optx.c   gga_x_ityh_pbe.c

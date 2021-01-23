@@ -14,7 +14,7 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 ################################### Options ####################################
 include(psi4OptionsTools)
 option_with_default(CMAKE_BUILD_TYPE "Build type" Release)
-option_with_print(BUILD_SHARED_LIBS "Build final library as shared, not static" OFF)
+option_with_print(BUILD_SHARED_LIBS "Build final library as shared, not static. For Windows, also add CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=ON" OFF)
 option_with_print(BUILD_TESTING "Compile the testing infrastructure" ON)
 option_with_default(BUILD_FPIC "Libraries will be compiled with position independent code" ON)
 if((${BUILD_SHARED_LIBS}) AND NOT ${BUILD_FPIC})
@@ -22,9 +22,14 @@ if((${BUILD_SHARED_LIBS}) AND NOT ${BUILD_FPIC})
 endif()
 option_with_default(NAMESPACE_INSTALL_INCLUDEDIR "Location within CMAKE_INSTALL_INCLUDEDIR to which headers are installed. Psi4 wants namespace (e.g., /libxc)" /)
 option_with_print(ENABLE_GENERIC "Enable mostly static linking in shared library" OFF)
-option_with_flags(ENABLE_XHOST "Enable processor-specific optimization" ON
-  "-xHost" "-march=native")
 option_with_print(ENABLE_FORTRAN "Build Fortran 2003 interface" OFF)
+
+# GCC appears to be catching -xHost as "-x Host" which breaks the detection
+if(CMAKE_C_COMPILER_ID MATCHES Intel)
+  option_with_flags(ENABLE_XHOST "Enable processor-specific optimization" ON "-xHost" "-march=native" "/arch:AVX2")
+else()
+  option_with_flags(ENABLE_XHOST "Enable processor-specific optimization" ON  "-march=native" "-xHost" "/arch:AVX2")
+endif()
 
 option_with_print(DISABLE_VXC "Don't compile first derivative code" OFF)
 option_with_print(DISABLE_FXC "Don't compile second derivative code" OFF)
@@ -122,6 +127,7 @@ set(raw_sources_list
   func_info.c
   func_reference.c
   functionals.c
+  hybrids.c
   gga.c
   gga_c_acgga.c
   gga_c_acggap.c
@@ -142,6 +148,7 @@ set(raw_sources_list
   gga_c_op_xalpha.c
   gga_c_optc.c
   gga_c_p86.c
+  gga_c_p86vwn.c
   gga_c_pbe.c
   gga_c_pbe_vwn.c
   gga_c_pbeloc.c
@@ -160,6 +167,8 @@ set(raw_sources_list
   gga_c_zvpbeint.c
   gga_c_zvpbeloc.c
   gga_k_dk.c
+  gga_k_pg.c
+  gga_k_rational_p.c
   gga_k_meyer.c
   gga_k_ol1.c
   gga_k_ol2.c
@@ -184,6 +193,8 @@ set(raw_sources_list
   gga_k_apbe.c
   gga_k_apbeint.c
   gga_k_lc94.c
+  gga_k_lkt.c
+  gga_k_vt84f.c
   gga_x_bayesian.c
   gga_x_beefvdw.c
   gga_x_bpccac.c
@@ -201,6 +212,8 @@ set(raw_sources_list
   gga_x_hjs_b88_v2.c
   gga_x_htbs.c
   gga_x_ityh.c
+  gga_x_ityh_optx.c
+  gga_x_ityh_pbe.c
   gga_x_kt.c
   gga_x_lag.c
   gga_x_lb.c
@@ -233,7 +246,6 @@ set(raw_sources_list
   gga_x_wc.c
   gga_x_wpbeh.c
   gga_x_fd_lb94.c
-  gga_x_lcgau.c
   gga_xc_1w.c
   gga_xc_b97.c
   gga_xc_edf1.c
@@ -242,10 +254,12 @@ set(raw_sources_list
   gga_xc_th2.c
   gga_xc_th3.c
   gga_xc_vv10.c
+  gga_k_lgap.c
+  gga_k_lgap_ge.c
+  gga_c_ccdf.c
   hyb_gga_xc_b1wc.c
   hyb_gga_xc_b3lyp.c
   hyb_gga_xc_cam_b3lyp.c
-  hyb_gga_xc_cam_qtp.c
   hyb_gga_xc_camy_b3lyp.c
   hyb_gga_xc_camy_blyp.c
   hyb_gga_xc_edf2.c
@@ -266,6 +280,7 @@ set(raw_sources_list
   hyb_mgga_xc_wb97mv.c
   hyb_mgga_x_js18.c
   hyb_mgga_x_pjs18.c
+  hyb_gga_xc_cam_o3lyp.c
   integrate.c
   lda.c
   lda_c_1d_csc.c
@@ -310,9 +325,11 @@ set(raw_sources_list
   lda_x_sloc.c
   mgga.c
   mgga_c_b88.c
+  mgga_c_b94.c
   mgga_c_bc95.c
   mgga_c_cs.c
   mgga_c_kcis.c
+  mgga_c_kcisk.c
   mgga_xc_lp90.c
   mgga_c_m05.c
   mgga_c_m06l.c
@@ -327,6 +344,9 @@ set(raw_sources_list
   mgga_c_tpssloc.c
   mgga_c_vsxc.c
   mgga_k_pc07.c
+  mgga_k_csk.c
+  mgga_k_csk_loc.c
+  mgga_k_pgslb.c
   mgga_x_2d_prhg07.c
   mgga_x_2d_prp10.c
   mgga_x_br89.c
@@ -334,6 +354,7 @@ set(raw_sources_list
   mgga_x_tb09.c
   mgga_x_gvt4.c
   mgga_x_gx.c
+  mgga_x_jk.c
   mgga_x_lta.c
   mgga_x_m06l.c
   mgga_x_m08.c
@@ -375,7 +396,19 @@ set(raw_sources_list
   mgga_x_mbrxc_bg.c
   mgga_x_task.c
   mgga_x_mggac.c
+  mgga_x_th.c
+  mgga_x_mbr.c
+  mgga_c_ltapw.c
+  mgga_x_r2scan.c
+  mgga_c_r2scan.c
+  mgga_k_lk.c
+  mgga_k_rda.c
+  mgga_k_gea2.c
+  mgga_k_gea4.c
+  mgga_x_r2scanl.c
+  mgga_c_r2scanl.c
   mix_func.c
+  deorbitalize_func.c
   references.c
   special_functions.c
   math_brent.c
@@ -386,8 +419,11 @@ set(raw_sources_list
 set(src_prefix "src/")
 string(REGEX REPLACE "([^;]+)" "${src_prefix}\\1" sources_list "${raw_sources_list}")
 
-set(raw_sources_list_f90
+set(raw_sources_list_f03
   src/libxc_master.F90
+  )
+set(raw_sources_list_f90
+  src/libxc_master_f90.F90
   )
 
 # when headers namespaced, xc_version include in xc.h needs to be local, not
@@ -410,9 +446,16 @@ endif()
 
 if(ENABLE_FORTRAN)
   enable_language(Fortran)
+  configure_file(cmake/libxcf03.pc.in libxcf03.pc @ONLY)
+  configure_file(cmake/libxcf90.pc.in libxcf90.pc @ONLY)
+  add_library(xcf03 ${raw_sources_list_f03})
+  target_link_libraries(xcf03 xc)
+  set_target_properties(xcf03 PROPERTIES POSITION_INDEPENDENT_CODE ${BUILD_FPIC}
+    SOVERSION ${${PROJECT_NAME}_SOMAJOR})
   add_library(xcf90 ${raw_sources_list_f90})
   target_link_libraries(xcf90 xc)
-  set_target_properties(xcf90 PROPERTIES POSITION_INDEPENDENT_CODE ${BUILD_FPIC})
+  set_target_properties(xcf90 PROPERTIES POSITION_INDEPENDENT_CODE ${BUILD_FPIC}
+    SOVERSION ${${PROJECT_NAME}_SOMAJOR})
 endif()
 
 # run get_funcs.pl to generate headers for xc inclusion
@@ -460,19 +503,32 @@ install(FILES ${PROJECT_BINARY_DIR}/${src_prefix}/xc.h
   ${PROJECT_BINARY_DIR}/xc_version.h
   ${PROJECT_SOURCE_DIR}/${src_prefix}/xc_funcs_removed.h
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}${NAMESPACE_INSTALL_INCLUDEDIR})
-install(TARGETS xc xc-info xc-threshold
-  EXPORT "${PN}Targets"
+install(TARGETS xc-info
+  OPTIONAL
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(TARGETS xc
+  EXPORT c_interface
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
 if(ENABLE_FORTRAN)
-  install(TARGETS xcf90
-    EXPORT "${PN}Targets"
+  install(TARGETS xc xcf03 xcf90
+    EXPORT f_interface
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+  install(FILES "${PROJECT_BINARY_DIR}/xc_f03_lib_m.mod"
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}${NAMESPACE_INSTALL_INCLUDEDIR})
   install(FILES "${PROJECT_BINARY_DIR}/xc_f90_lib_m.mod"
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}${NAMESPACE_INSTALL_INCLUDEDIR})
+  if(NOT MSVC)
+    install(FILES ${PROJECT_BINARY_DIR}/libxcf03.pc
+                  ${PROJECT_BINARY_DIR}/libxcf90.pc
+      DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig/)
+  endif()
 endif()
 
 # <<<  Export Interface  >>>
@@ -490,13 +546,27 @@ configure_package_config_file(cmake/${PN}Config.cmake.in
   INSTALL_DESTINATION ${CMAKECONFIG_INSTALL_DIR})
 write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/${PN}ConfigVersion.cmake
   VERSION ${${PN}_VERSION}
-  COMPATIBILITY AnyNewerVersion)
+  COMPATIBILITY SameMajorVersion)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PN}Config.cmake
   ${CMAKE_CURRENT_BINARY_DIR}/${PN}ConfigVersion.cmake
   DESTINATION ${CMAKECONFIG_INSTALL_DIR})
-install(EXPORT "${PN}Targets"
+install(EXPORT c_interface
   NAMESPACE "${PN}::"
+  FILE "${PN}Targets-C.cmake"
   DESTINATION ${CMAKECONFIG_INSTALL_DIR})
 
-install(FILES ${PROJECT_BINARY_DIR}/libxc.pc
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig/)
+if(ENABLE_FORTRAN)
+    install(EXPORT f_interface
+      NAMESPACE "${PN}::"
+      FILE "${PN}Targets-Fortran.cmake"
+      DESTINATION ${CMAKECONFIG_INSTALL_DIR})
+endif()
+
+export(EXPORT c_interface
+    NAMESPACE "${PN}::"
+    FILE "${PROJECT_BINARY_DIR}/${PN}Targets.cmake")
+
+if(NOT MSVC)
+  install(FILES ${PROJECT_BINARY_DIR}/libxc.pc
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig/)
+endif()

@@ -15,7 +15,7 @@
 /* Buffer size */
 #define BUFSIZE 4096
 
-/* Max amount of columns in data */
+/* Maximum number of columns in data */
 #define MAXCOL 100
 /* Legend entry length */
 #define LEGLEN 20
@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
   /* Sizes of input and reference */
   int nin, nref;
 
-  /* Amount of columns read in */
+  /* Number of columns read in */
   int cin, cref;
 
   /* Input buffer */
@@ -75,6 +75,11 @@ int main(int argc, char **argv) {
   double maxdiff[MAXCOL];
   double l_err;
 
+  /* Input tolerance */
+  double tol;
+  /* Verbose operation? */
+  int verbose;
+
   if(argc!=4 && argc!=5) {
     printf("Usage: %s file reference tolerance (verbose)\n",argv[0]);
     return 1;
@@ -93,6 +98,10 @@ int main(int argc, char **argv) {
     exit(1);
   }
 
+  /* Set tolerance and verbosity */
+  tol=atof(argv[3]);
+  verbose=(argc==5) ? atoi(argv[4]) : 0;
+
   /* Read first line: functional id and file length */
   in_line();
   if(sscanf(buf,"%i %i",&fidin,&nin)!=2) {
@@ -102,7 +111,7 @@ int main(int argc, char **argv) {
 
   ref_line();
   if(sscanf(buf,"%i %i",&fidref,&nref)!=2) {
-    fprintf(stderr,"Error reading func_id and file size from input file.\n");
+    fprintf(stderr,"Error reading func_id and file size from reference file.\n");
     error_exit();
   }
   
@@ -145,7 +154,7 @@ int main(int argc, char **argv) {
 
   /* Compare legends */
   if(cin != cref) {
-    fprintf(stderr,"Amount if columns doesn't match: input %i, reference %i.\n",cin,cref);
+    fprintf(stderr,"Number of columns doesn't match: input %i, reference %i.\n",cin,cref);
     error_exit();
   }
   for(i=0;i<cin;i++)
@@ -195,7 +204,7 @@ int main(int argc, char **argv) {
       l_err = error(din[j], dref[j]);
       if(l_err > maxdiff[j])
 	      maxdiff[j] = l_err;
-      if(l_err > atof(argv[3])){
+      if(l_err > tol){
         fprintf(stderr, "\n%i %i %14.10le %14.10le %le\n", 
                 i+2, j, din[j], dref[j], error(din[j], dref[j]));
       }
@@ -206,7 +215,7 @@ int main(int argc, char **argv) {
   fclose(in);
   fclose(ref);
 
-  if(argc==5 && atoi(argv[4])) {
+  if(verbose) {
     /* Verbose operation */
     for(i=0;i<cin;i++)
       printf(" %13s",legin[i]);
@@ -217,7 +226,6 @@ int main(int argc, char **argv) {
 
   } else {
     /* Silent operation */
-    const double tol=atof(argv[3]);
     double max=0.0;
     for(j=0;j<cin;j++)
       if(maxdiff[j]>max)

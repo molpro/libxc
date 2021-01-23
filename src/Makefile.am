@@ -37,7 +37,7 @@ lib_LTLIBRARIES = libxc.la
 
 libxc_la_FUNC_SOURCES = \
 	special_functions.c bessel.c expint_e1.c faddeeva.c integrate.c		\
-	math_brent.c util.c mix_func.c func_info.c functionals.c	\
+	math_brent.c util.c mix_func.c deorbitalize_func.c func_info.c functionals.c hybrids.c \
 	version.c func_reference.c \
 	lda.c \
 	lda_x.c lda_x_2d.c lda_c_wigner.c lda_c_gombas.c lda_c_rpa.c	\
@@ -81,18 +81,22 @@ libxc_la_FUNC_SOURCES = \
 	gga_c_op_g96.c gga_c_op_pw91.c gga_x_pbetrans.c			\
 	gga_k_apbeint.c gga_x_chachiyo.c gga_k_gds08.c gga_k_exp4.c	\
 	hyb_gga_xc_pbeh.c hyb_gga_xc_b1wc.c hyb_gga_xc_hse.c		\
-	hyb_gga_xc_cam_b3lyp.c hyb_gga_xc_cam_qtp.c gga_k_lc94.c	\
+	hyb_gga_xc_cam_b3lyp.c  gga_k_lc94.c	                        \
 	gga_c_zvpbeloc.c hyb_gga_xc_camy_blyp.c				\
 	hyb_gga_xc_camy_b3lyp.c hyb_gga_xc_lcy_pbe.c			\
 	hyb_gga_xc_lcy_blyp.c gga_xc_vv10.c hyb_gga_xc_edf2.c		\
 	gga_k_pw86.c gga_k_mpbe.c gga_k_apbe.c gga_x_fd_lb94.c		\
 	gga_x_ncap.c gga_c_chachiyo.c hyb_gga_xc_lc_blyp.c		\
-	gga_c_pbe_vwn.c gga_x_s12.c gga_x_lcgau.c \
+	gga_c_pbe_vwn.c gga_x_s12.c   \
+	gga_k_lkt.c gga_k_lgap.c gga_k_vt84f.c   \
+	gga_k_lgap_ge.c	gga_c_ccdf.c gga_k_rational_p.c gga_k_pg.c      \
+	gga_c_p86vwn.c gga_x_ityh_optx.c hyb_gga_xc_cam_o3lyp.c \
+	gga_x_ityh_pbe.c \
 	mgga.c \
 	mgga_x_lta.c mgga_x_tpss.c mgga_x_br89.c mgga_x_gvt4.c		\
-	mgga_x_m06l.c mgga_x_tau_hcth.c mgga_x_2d_prhg07.c mgga_x_2d_prp10.c	\
-	mgga_x_pkzb.c hyb_mgga_x_m05.c mgga_x_m08.c mgga_x_ms.c		\
-	mgga_x_mn12.c mgga_c_vsxc.c mgga_c_pkzb.c		\
+	mgga_x_m06l.c mgga_x_tau_hcth.c mgga_x_2d_prhg07.c		\
+	mgga_x_2d_prp10.c mgga_x_pkzb.c hyb_mgga_x_m05.c mgga_x_m08.c	\
+	mgga_x_ms.c mgga_x_mn12.c mgga_c_vsxc.c mgga_c_pkzb.c		\
 	mgga_c_bc95.c mgga_c_m08.c mgga_xc_cc06.c mgga_c_cs.c		\
 	mgga_xc_otpss_d.c mgga_xc_zlp.c hyb_mgga_xc_b88b95.c		\
 	mgga_x_mbeef.c mgga_xc_b97mv.c mgga_x_scan.c mgga_c_scan.c	\
@@ -107,17 +111,26 @@ libxc_la_FUNC_SOURCES = \
 	mgga_x_rtpss.c mgga_x_msb.c mgga_x_mvsb.c mgga_x_regtpss.c	\
 	mgga_x_rscan.c mgga_c_rscan.c mgga_x_2d_js17.c mgga_x_tb09.c	\
 	mgga_x_edmgga.c mgga_x_gdme.c mgga_x_rlda.c mgga_x_revtm.c	\
-	mgga_x_scanl.c mgga_c_scanl.c hyb_mgga_x_js18.c hyb_mgga_x_pjs18.c \
-	mgga_x_mbrxh_bg.c mgga_x_mbrxc_bg.c mgga_x_task.c mgga_x_mggac.c
+	mgga_x_scanl.c mgga_c_scanl.c hyb_mgga_x_js18.c			\
+	hyb_mgga_x_pjs18.c mgga_x_mbrxh_bg.c mgga_x_mbrxc_bg.c		\
+	mgga_x_task.c mgga_x_mggac.c mgga_x_th.c mgga_x_mbr.c		\
+	mgga_c_ltapw.c mgga_x_jk.c mgga_x_r2scan.c mgga_c_r2scan.c      \
+	mgga_c_b94.c mgga_k_lk.c mgga_k_rda.c mgga_k_gea2.c             \
+	mgga_k_gea4.c mgga_k_csk.c mgga_k_csk_loc.c mgga_x_r2scanl.c    \
+        mgga_c_r2scanl.c mgga_k_pgslb.c mgga_c_kcisk.c
 
 libxc_la_SOURCES = references.c $(libxc_la_FUNC_SOURCES)
 libxc_la_LDFLAGS = -version-info $(XC_LT_VERSION)
 
 if COMPILE_FORTRAN
-  lib_LTLIBRARIES += libxcf90.la
+  lib_LTLIBRARIES += libxcf03.la libxcf90.la
 
+  nodist_libxcf03_la_SOURCES = libxcf03.f90
   nodist_libxcf90_la_SOURCES = libxcf90.f90
 
+  # libtool stuff
+  libxcf03_la_LDFLAGS = -version-info $(XC_LT_VERSION)
+  libxcf03_la_LIBADD = libxc.la
   # libtool stuff
   libxcf90_la_LDFLAGS = -version-info $(XC_LT_VERSION)
   libxcf90_la_LIBADD = libxc.la
@@ -127,7 +140,7 @@ noinst_HEADERS = \
 	string_f.h references.h util.h \
 	decl_lda.h decl_gga.h decl_mgga.h \
   work_lda.c work_gga.c work_mgga.c \
-	libxc_master.F90
+	libxc_master.F90 libxc_master_f90.F90
 include_HEADERS = xc.h xc_funcs_removed.h
 nodist_include_HEADERS = xc_funcs.h xc_funcs_worker.h
 
@@ -141,39 +154,50 @@ if COMPILE_FORTRAN
 
 # Double precision modules are always compiled
 if F90_MOD_UPPERCASE
+  XCF03LIBMODS = XC_F03_LIB_M.@ax_cv_f90_modext@
   XCF90LIBMODS = XC_F90_LIB_M.@ax_cv_f90_modext@
 else
+  XCF03LIBMODS = xc_f03_lib_m.@ax_cv_f90_modext@
   XCF90LIBMODS = xc_f90_lib_m.@ax_cv_f90_modext@
 endif
-fmod_DATA += $(XCF90LIBMODS)
+fmod_DATA += $(XCF03LIBMODS) $(XCF90LIBMODS)
 
 endif # COMPILE_FORTRAN
 
 
 CLEANFILES = *~ *.bak *.mod *.il *.d *.pc* ifc* funcs_*.c funcs.h \
-  libxc_inc.f90 libxcf90.f90 xc_funcs.h xc_funcs_worker.h \
+  libxc_inc.f90 libxcf03.f90 libxcf90.f90 xc_funcs.h xc_funcs_worker.h \
   xc_f_inc.c libxc_docs.txt
 
 xc_f.o : xc_f_inc.c
 
 xc_funcs.h xc_funcs_worker.h libxc_inc.f90 \
-funcs_lda.c funcs_hyb_lda.c funcs_gga.c funcs_hyb_gga.c \
-funcs_mgga.c funcs_hyb_mgga.c funcs_key.c: $(srcdir)/../scripts/get_funcs.pl
+funcs_lda.c funcs_gga.c funcs_mgga.c funcs_key.c: $(srcdir)/../scripts/get_funcs.pl
 	$(srcdir)/../scripts/get_funcs.pl $(srcdir) $(top_builddir)/src
 
 references.h references.c: $(srcdir)/../scripts/get_references.pl $(srcdir)/../libxc.bib
 	(cd $(top_builddir)/src && $(srcdir)/../scripts/get_references.pl $(srcdir)/../libxc.bib)
 
-LTPREF = $(subst xc_f.lo,,$(firstword $(am_libxcf90_la_OBJECTS)))
+LTPREF = $(subst xc_f.lo,,$(firstword $(am_libxcf03_la_OBJECTS)))
 # Surprisingly, libtool/automake do not seem to provide a macro or variable for what the object names will be,
-# so we have to extract it ourselves. LTPREF=libxcf90_la-, or blank for older libtool/automake versions.
+# so we have to extract it ourselves. LTPREF=libxcf03_la-, or blank for older libtool/automake versions.
 # Produces these warnings on some systems. Does not seem to matter.
-#src/Makefile.am:140: subst xc_f.lo,,$(firstword $(am_libxcf90_la_OBJECTS: non-POSIX variable name
+#src/Makefile.am:140: subst xc_f.lo,,$(firstword $(am_libxcf03_la_OBJECTS: non-POSIX variable name
 #src/Makefile.am:140: (probably a GNU make extension)
 
+LTPREF03 = $(subst libxcf03.lo,,$(firstword $(nodist_libxcf03_la_OBJECTS)))
+libxcf03.f90 : libxc_master.F90 libxc_inc.f90
+	@FCCPP@ @CPPFLAGS@ $(AM_CPPFLAGS) -I$(top_builddir)/src $(srcdir)/libxc_master.F90 > $(top_builddir)/src/libxcf03.f90
+	@if [ "@F90_ACCEPTS_LINE_NUMBERS@" = "no" ]; then \
+		grep -v "^#" $(top_builddir)/src/libxcf03.f90 > $(top_builddir)/src/libxcf03.f91; \
+		mv -f $(top_builddir)/src/libxcf03.f91 $(top_builddir)/src/libxcf03.f90; \
+	fi
+
+$(XCF03LIBMODS) : $(LTPREF03)libxcf03.lo
+
 LTPREF90 = $(subst libxcf90.lo,,$(firstword $(nodist_libxcf90_la_OBJECTS)))
-libxcf90.f90 : libxc_master.F90 libxc_inc.f90
-	@FCCPP@ @CPPFLAGS@ $(AM_CPPFLAGS) -I$(top_builddir)/src $(srcdir)/libxc_master.F90 > $(top_builddir)/src/libxcf90.f90
+libxcf90.f90 : libxc_master_f90.F90 libxc_inc.f90
+	@FCCPP@ @CPPFLAGS@ $(AM_CPPFLAGS) -I$(top_builddir)/src $(srcdir)/libxc_master_f90.F90 > $(top_builddir)/src/libxcf90.f90
 	@if [ "@F90_ACCEPTS_LINE_NUMBERS@" = "no" ]; then \
 		grep -v "^#" $(top_builddir)/src/libxcf90.f90 > $(top_builddir)/src/libxcf90.f91; \
 		mv -f $(top_builddir)/src/libxcf90.f91 $(top_builddir)/src/libxcf90.f90; \

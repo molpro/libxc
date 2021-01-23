@@ -10,6 +10,10 @@
 #include <ctype.h>
 #include "util.h"
 
+#define is_mgga(id)   ((id) == XC_FAMILY_MGGA || (id) == XC_FAMILY_HYB_MGGA)
+#define is_gga(id)    ((id) == XC_FAMILY_GGA || (id) == XC_FAMILY_HYB_GGA || is_mgga(id))
+#define is_lda(id)    ((id) == XC_FAMILY_LDA || (id) == XC_FAMILY_HYB_LDA ||  is_gga(id))
+
 int main(int argc, char **argv)
 {
   int i, func_id, error, npar;
@@ -20,6 +24,12 @@ int main(int argc, char **argv)
     printf("Usage: %s [ func_id | func_name ]\n",argv[0]);
     return 1;
   }
+
+  /* Print libxc information */
+  printf("libxc version %s\n",xc_version_string());
+  printf("%s\n", xc_reference());
+  printf("doi: %s\n", xc_reference_doi());
+  printf("\n");
 
   /* Is functional defined by a string constant? */
   if(isalpha(argv[1][0]))
@@ -95,6 +105,14 @@ int main(int argc, char **argv)
   if(func.info->flags & XC_FLAGS_HAVE_KXC)
     printf("  *) fourth derivative\n");
 
+  printf("\nDefault thresholds:\n");
+  printf("density: %e\n",func.dens_threshold);
+  printf("   zeta: %e\n",func.zeta_threshold);
+  if(is_gga(func.info->family))
+    printf("  sigma: %e\n",func.sigma_threshold);
+  if(is_mgga(func.info->family))
+    printf("    tau: %e\n",func.tau_threshold);
+  
   /* Query parameters */
   npar = xc_func_info_get_n_ext_params(func.info);
   if(npar > 0) {

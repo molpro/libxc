@@ -14,9 +14,8 @@
 static void
 hyb_mgga_xc_wb97mv_init(xc_func_type *p)
 {
-  p->cam_omega =  0.3;
-  p->cam_alpha =  1.0;
-  p->cam_beta  = -(1.0 - 0.15);
+  xc_hyb_init_cam(p, 1.0, -(1.0 - 0.15), 0.3);
+
   p->nlc_b = 6.0;
   p->nlc_C = 0.01;
 }
@@ -34,7 +33,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_wb97m_v = {
   "wB97M-V exchange-correlation functional",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Mardirossian2016_214110, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_VV10 | XC_FLAGS_HYB_CAM | MAPLE2C_FLAGS,
+  XC_FLAGS_3D | XC_FLAGS_HYB_CAM | XC_FLAGS_VV10 | MAPLE2C_FLAGS,
   1e-13,
   {0, NULL, NULL, NULL, NULL},
   hyb_mgga_xc_wb97mv_init, NULL,

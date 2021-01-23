@@ -26,6 +26,9 @@ gga_x_s12_init(xc_func_type *p)
   params = (gga_x_s12_params *) (p->params);
 
   params->bx  = 1.0; /* we initialize it here */
+
+  if(p->info->number == XC_HYB_GGA_X_S12H)
+    xc_hyb_init_hybrid(p, 0.0);
 }
 
 #define S12G_N_PAR 5
@@ -55,7 +58,7 @@ static const double s12h_values[S12H_N_PAR] = {
   1.02543951, 1.757-1.02543951, 0.00761554, 0.00211063, 0.00604672, 0.25
 };
 
-static void 
+static void
 s12h_set_ext_params(xc_func_type *p, const double *ext_params)
 {
   gga_x_s12_params *params;
@@ -68,10 +71,9 @@ s12h_set_ext_params(xc_func_type *p, const double *ext_params)
   params->C    = get_ext_param(p, ext_params, 2);
   params->D    = get_ext_param(p, ext_params, 3);
   params->E    = get_ext_param(p, ext_params, 4);
+
   p->cam_alpha = get_ext_param(p, ext_params, 5);
   params->bx   = 1.0 - p->cam_alpha;
-  p->cam_beta  = 0.0;
-  p->cam_omega = 0.0;
 }
 
 #include "decl_gga.h"
@@ -88,9 +90,9 @@ const xc_func_info_type xc_func_info_gga_x_s12g = {
   XC_FAMILY_GGA,
   {&xc_ref_Swart2013_166, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
-  1e-32,
+  1e-15,
   {S12G_N_PAR, s12g_names, s12g_desc, s12g_values, set_ext_params_cpy},
-  gga_x_s12_init, NULL, 
+  gga_x_s12_init, NULL,
   NULL, work_gga, NULL
 };
 
@@ -104,8 +106,8 @@ const xc_func_info_type xc_func_info_hyb_gga_x_s12h = {
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Swart2013_166, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
-  1e-32,
+  1e-15,
   {S12H_N_PAR, s12h_names, s12h_desc, s12h_values, s12h_set_ext_params},
-  gga_x_s12_init, NULL, 
+  gga_x_s12_init, NULL,
   NULL, work_gga, NULL
 };

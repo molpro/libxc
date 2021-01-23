@@ -28,7 +28,7 @@ xc_hyb_mgga_xc_b88b95_init(xc_func_type *p)
   static double funcs_coef[2] = {1.0 - 0.28, 1.0};
 
   xc_mix_init(p, 2, funcs_id, funcs_coef);
-  p->cam_alpha = 0.28;
+  xc_hyb_init_hybrid(p, 0.28);
 }
 
 #ifdef __cplusplus
@@ -41,7 +41,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_b88b95 = {
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Becke1996_1040, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
-  1e-32,
+  1e-15,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_mgga_xc_b88b95_init,
   NULL, NULL, NULL, NULL,
@@ -56,7 +56,7 @@ xc_hyb_mgga_xc_b86b95_init(xc_func_type *p)
   static double funcs_coef[2] = {1.0 - 0.28, 1.0};
 
   xc_mix_init(p, 2, funcs_id, funcs_coef);
-  p->cam_alpha = 0.28;
+  xc_hyb_init_hybrid(p, 0.28);
 }
 
 #ifdef __cplusplus
@@ -69,7 +69,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_b86b95 = {
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Becke1996_1040, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
-  1e-32,
+  1e-14,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_mgga_xc_b86b95_init,
   NULL, NULL, NULL, NULL,
@@ -84,7 +84,7 @@ xc_hyb_mgga_xc_pw86b95_init(xc_func_type *p)
   static double funcs_coef[2] = {1.0 - 0.29, 1.0};
 
   xc_mix_init(p, 2, funcs_id, funcs_coef);
-  p->cam_alpha = 0.29;
+  xc_hyb_init_hybrid(p, 0.29);
 }
 
 #ifdef __cplusplus
@@ -97,7 +97,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_pw86b95 = {
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Becke1996_1040, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
-  1e-32,
+  1e-14,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_mgga_xc_pw86b95_init,
   NULL, NULL, NULL, NULL,
@@ -112,7 +112,7 @@ xc_hyb_mgga_xc_bb1k_init(xc_func_type *p)
   static double funcs_coef[2] = {1.0 - 0.42, 1.0};
 
   xc_mix_init(p, 2, funcs_id, funcs_coef);
-  p->cam_alpha = 0.42;
+  xc_hyb_init_hybrid(p, 0.42);
 }
 
 #ifdef __cplusplus
@@ -125,7 +125,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_bb1k = {
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Zhao2004_2715, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
-  1e-32,
+  1e-14,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_mgga_xc_bb1k_init,
   NULL, NULL, NULL, NULL,
@@ -140,7 +140,7 @@ xc_hyb_mgga_xc_mpw1b95_init(xc_func_type *p)
   static double funcs_coef[2] = {1.0 - 0.31, 1.0};
 
   xc_mix_init(p, 2, funcs_id, funcs_coef);
-  p->cam_alpha = 0.31;
+  xc_hyb_init_hybrid(p, 0.31);
 }
 
 #ifdef __cplusplus
@@ -153,7 +153,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_mpw1b95 = {
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Zhao2004_6908, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
-  1e-32,
+  1e-14,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_mgga_xc_mpw1b95_init,
   NULL, NULL, NULL, NULL,
@@ -168,7 +168,7 @@ xc_hyb_mgga_xc_mpwb1k_init(xc_func_type *p)
   static double funcs_coef[2] = {1.0 - 0.44, 1.0};
 
   xc_mix_init(p, 2, funcs_id, funcs_coef);
-  p->cam_alpha = 0.44;
+  xc_hyb_init_hybrid(p, 0.44);
 }
 
 #ifdef __cplusplus
@@ -181,7 +181,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_mpwb1k = {
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Zhao2004_6908, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
-  1e-32,
+  1e-14,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_mgga_xc_mpwb1k_init,
   NULL, NULL, NULL, NULL,
@@ -202,7 +202,7 @@ xc_hyb_mgga_xc_x1b95_init(xc_func_type *p)
   funcs_coef[2] = 1.0;
 
   xc_mix_init(p, 3, funcs_id, funcs_coef);
-  p->cam_alpha = a0;
+  xc_hyb_init_hybrid(p, a0);
 }
 
 #ifdef __cplusplus
@@ -215,7 +215,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_x1b95 = {
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Zhao2004_6908, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
-  1e-32,
+  1e-14,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_mgga_xc_x1b95_init,
   NULL, NULL, NULL, NULL,
@@ -236,7 +236,7 @@ xc_hyb_mgga_xc_xb1k_init(xc_func_type *p)
   funcs_coef[2] = 1.0;
 
   xc_mix_init(p, 3, funcs_id, funcs_coef);
-  p->cam_alpha = a0;
+  xc_hyb_init_hybrid(p, a0);
 }
 
 #ifdef __cplusplus
@@ -249,7 +249,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_xb1k = {
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Zhao2004_6908, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
-  1e-32,
+  1e-14,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_mgga_xc_xb1k_init,
   NULL, NULL, NULL, NULL,
@@ -265,11 +265,12 @@ xc_hyb_mgga_xc_pw6b95_init(xc_func_type *p)
 
   static double par_x_pw91[] = {0.00538, 1.7382/(X2S*X2S), 3.8901};
   static double par_c_bc95[] = {0.03668, 0.00262};
-  
+
   xc_mix_init(p, 2, funcs_id, funcs_coef);
   xc_func_set_ext_params(p->func_aux[0], par_x_pw91);
   xc_func_set_ext_params(p->func_aux[1], par_c_bc95);
-  p->cam_alpha = 0.28;
+
+  xc_hyb_init_hybrid(p, 0.28);
 }
 
 #ifdef __cplusplus
@@ -282,7 +283,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_pw6b95 = {
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Zhao2005_5656, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
-  1e-32,
+  1e-14,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_mgga_xc_pw6b95_init,
   NULL, NULL, NULL, NULL,
@@ -298,11 +299,12 @@ xc_hyb_mgga_xc_pwb6k_init(xc_func_type *p)
 
   static double par_x_pw91[] = {0.00539, 1.7077/(X2S*X2S), 4.0876};
   static double par_c_bc95[] = {0.04120, 0.00353};
-  
+
   xc_mix_init(p, 2, funcs_id, funcs_coef);
   xc_func_set_ext_params(p->func_aux[0], par_x_pw91);
   xc_func_set_ext_params(p->func_aux[1], par_c_bc95);
-  p->cam_alpha = 0.46;
+
+  xc_hyb_init_hybrid(p, 0.46);
 }
 
 #ifdef __cplusplus
@@ -315,7 +317,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_pwb6k = {
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Zhao2005_5656, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
-  1e-32,
+  1e-14,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_mgga_xc_pwb6k_init,
   NULL, NULL, NULL, NULL,
@@ -342,8 +344,8 @@ const xc_func_info_type xc_func_info_mgga_xc_tpsslyp1w = {
   XC_FAMILY_MGGA,
   {&xc_ref_Dahlke2005_15677, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
-  1e-23,
+  1e-14,
   {0, NULL, NULL, NULL, NULL},
-  mgga_xc_tpsslyp1w_init, 
+  mgga_xc_tpsslyp1w_init,
   NULL, NULL, NULL, NULL
 };

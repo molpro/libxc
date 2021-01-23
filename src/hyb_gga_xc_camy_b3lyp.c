@@ -33,14 +33,12 @@ xc_hyb_gga_xc_camy_b3lyp_init(xc_func_type *p)
   funcs_coef[1] = -beta;
   funcs_coef[2] = 1.0 - ac;
   funcs_coef[3] = ac;
-  
+
   xc_mix_init(p, 4, funcs_id, funcs_coef);
 
   xc_func_set_ext_params(p->func_aux[1], &omega);
-  
-  p->cam_omega = omega;
-  p->cam_alpha = alpha;
-  p->cam_beta  = beta;
+
+  xc_hyb_init_camy(p, alpha, beta, omega);
 }
 
 #ifdef __cplusplus
@@ -53,41 +51,40 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_camy_b3lyp = {
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Seth2012_901, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_HYB_CAMY | XC_FLAGS_I_HAVE_ALL,
-  1e-32,
+  1e-15,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_gga_xc_camy_b3lyp_init, NULL,
   NULL, NULL, NULL
 };
 
-#define CAM_N_PAR 4
-static const char  *cam_names[CAM_N_PAR]  = {"_alpha", "_beta", "_omega_HF", "_omega_PBE"};
+#define CAM_N_PAR 3
+static const char  *cam_names[CAM_N_PAR]  = {"_alpha", "_beta", "_omega"};
 static const char  *cam_desc[CAM_N_PAR]   = {
-  "Mixing parameter",
-  "Mixing parameter in the SR",
-  "Screening parameter for HF",
-  "Screening parameter for PBE"
+  "Fraction of exact exchange",
+  "Fraction of short-range exchange",
+  "Range separation parameter"
 };
-static const double cam_values[CAM_N_PAR] = {0.2, 0.8, 0.7, 0.7};
+static const double cam_values[CAM_N_PAR] = {0.2, 0.8, 0.7};
 
 static void
 cam_set_ext_params(xc_func_type *p, const double *ext_params)
 {
-  double alpha, beta, omega_HF, omega_PBE;
+  double alpha, beta, omega;
 
   assert(p != NULL);
 
   alpha     = get_ext_param(p, ext_params, 0);
   beta      = get_ext_param(p, ext_params, 1);
-  omega_HF  = get_ext_param(p, ext_params, 2);
-  omega_PBE = get_ext_param(p, ext_params, 3);
+  omega     = get_ext_param(p, ext_params, 2);
 
   p->mix_coef[0] = 1.0 - alpha;
   p->mix_coef[1] = -beta;
 
+  p->cam_omega = omega;
   p->cam_alpha = alpha;
   p->cam_beta  = beta;
-  p->cam_omega = omega_HF;
-  xc_func_set_ext_params(p->func_aux[1], &omega_PBE);
+
+  xc_func_set_ext_params(p->func_aux[1], &omega);
 }
 
 static void
@@ -97,6 +94,7 @@ hyb_gga_xc_camy_pbeh_init(xc_func_type *p)
   static double funcs_coef[3] = {0.2, 0.8, 1.0};
 
   xc_mix_init(p, 3, funcs_id, funcs_coef);
+  xc_hyb_init_camy(p, 0.0, 0.0, 0.0);
 }
 
 #ifdef __cplusplus
@@ -109,7 +107,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_camy_pbeh = {
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Chen2018_073803, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_HYB_CAMY | XC_FLAGS_I_HAVE_ALL,
-  1e-32,
+  1e-15,
   {CAM_N_PAR, cam_names, cam_desc, cam_values, cam_set_ext_params},
   hyb_gga_xc_camy_pbeh_init,
   NULL, NULL, NULL, NULL

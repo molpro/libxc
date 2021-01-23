@@ -14,9 +14,7 @@
 static void
 hyb_mgga_x_pjs18_init(xc_func_type *p)
 {
-  p->cam_omega =  0.33;
-  p->cam_alpha =  1.0;
-  p->cam_beta  = -1.0;
+  xc_hyb_init_cam(p, 1.0, -1.0, 0.33);
 }
 
 #include "decl_mgga.h"
@@ -33,7 +31,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_pjs18 = {
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Patra2018_8991, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_HYB_CAM | MAPLE2C_FLAGS,
-  1e-32,
+  1e-14,
   {0, NULL, NULL, NULL, NULL},
   hyb_mgga_x_pjs18_init, NULL,
   NULL, NULL, work_mgga

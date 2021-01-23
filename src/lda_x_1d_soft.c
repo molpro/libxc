@@ -15,7 +15,7 @@ typedef struct{
   double beta;         /* screening parameter beta */
 } lda_x_1d_exponential_params;
 
-static void 
+static void
 lda_x_1d_exponential_init(xc_func_type *p)
 {
   assert(p->params == NULL);
@@ -32,7 +32,7 @@ GPU_FUNCTION
 static void func1(double *x, int n, void *dummy)
 {
   int ii;
-  
+
   for(ii=0; ii<n; ii++)
     x[ii] = FT_inter(x[ii]);
 }
@@ -41,7 +41,7 @@ GPU_FUNCTION
 static void func2(double *x, int n, void *dummy)
 {
   int ii;
-  
+
   for(ii=0; ii<n; ii++)
     x[ii] = x[ii]*FT_inter(x[ii]);
 }
@@ -64,7 +64,7 @@ const xc_func_info_type xc_func_info_lda_x_1d_soft = {
   XC_FAMILY_LDA,
   {&xc_ref_Helbig2011_032503, NULL, NULL, NULL, NULL},
   XC_FLAGS_1D | MAPLE2C_FLAGS,
-  1e-26,
+  1e-14,
   {1, soft1d_names, soft1d_desc, soft1d_values, set_ext_params_cpy},
   lda_x_1d_exponential_init, NULL,
   work_lda, NULL, NULL

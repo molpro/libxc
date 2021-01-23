@@ -105,7 +105,7 @@
 
 /* this is the piecewise function used in maple */
 #define my_piecewise3(c, x1, x2) ((c) ? (x1) : (x2))
-#define my_piecewise5(c1, x1, c2, x2, x3) ((c) ? (x1) : ((c2) ? (x2) : (x3)))
+#define my_piecewise5(c1, x1, c2, x2, x3) ((c1) ? (x1) : ((c2) ? (x2) : (x3)))
 
 #define M_SQRTPI        1.772453850905516027298167483341145182798L
 #define M_CBRTPI        1.464591887561523263020142527263790391739L
@@ -119,11 +119,11 @@
 #define M_CBRT9         2.080083823051904114530056824357885386338L
 
 /* Very useful macros */
-#ifndef min
-#define min(x,y)  (((x)<(y)) ? (x) : (y))
+#ifndef m_min
+#define m_min(x,y)  (((x)<(y)) ? (x) : (y))
 #endif
-#ifndef max
-#define max(x,y)  (((x)<(y)) ? (y) : (x))
+#ifndef m_max
+#define m_max(x,y)  (((x)<(y)) ? (y) : (x))
 #endif
 
 /* some useful constants */
@@ -228,46 +228,79 @@ GPU_FUNCTION void xc_rho2dzeta(int nspin, const double *rho, double *d, double *
 
 void internal_counters_set_lda (int nspin, xc_dimensions *dim);
 GPU_FUNCTION void internal_counters_lda_random
-(const xc_dimensions *dim, int ip, int offset, const double **rho, double **zk, LDA_OUT_PARAMS_NO_EXC(double **));
+(const xc_dimensions *dim, int ip, int offset,
+ const double **rho,
+ double **zk LDA_OUT_PARAMS_NO_EXC(XC_COMMA double **, XC_NOARG));
 GPU_FUNCTION void internal_counters_lda_next
-(const xc_dimensions *dim, int offset, const double **rho, double **zk, LDA_OUT_PARAMS_NO_EXC(double **));
+(const xc_dimensions *dim, int offset,
+ const double **rho,
+ double **zk LDA_OUT_PARAMS_NO_EXC(XC_COMMA double **, XC_NOARG));
 GPU_FUNCTION void internal_counters_lda_prev
-(const xc_dimensions *dim, int offset, const double **rho, double **zk, LDA_OUT_PARAMS_NO_EXC(double **));
+(const xc_dimensions *dim, int offset,
+ const double **rho,
+ double **zk LDA_OUT_PARAMS_NO_EXC(XC_COMMA double **, XC_NOARG));
 
 void internal_counters_set_gga (int nspin, xc_dimensions *dim);
 GPU_FUNCTION void internal_counters_gga_random
-(const xc_dimensions *dim, int pos, int offset, const double **rho, const double **sigma,
- double **zk, GGA_OUT_PARAMS_NO_EXC(double **));
+(const xc_dimensions *dim, int pos, int offset,
+ const double **rho, const double **sigma,
+ double **zk GGA_OUT_PARAMS_NO_EXC(XC_COMMA double **, ));
 GPU_FUNCTION void internal_counters_gga_next
-(const xc_dimensions *dim, int offset, const double **rho, const double **sigma,
- double **zk, GGA_OUT_PARAMS_NO_EXC(double **));
+(const xc_dimensions *dim, int offset,
+ const double **rho, const double **sigma,
+ double **zk GGA_OUT_PARAMS_NO_EXC(XC_COMMA double **, ));
 GPU_FUNCTION void internal_counters_gga_prev
-(const xc_dimensions *dim, int offset, const double **rho, const double **sigma,
- double **zk, GGA_OUT_PARAMS_NO_EXC(double **));
+(const xc_dimensions *dim, int offset,
+ const double **rho, const double **sigma,
+ double **zk GGA_OUT_PARAMS_NO_EXC(XC_COMMA double **, ));
 
 void internal_counters_set_mgga(int nspin, xc_dimensions *dim);
-
 GPU_FUNCTION void internal_counters_mgga_random
 (const xc_dimensions *dim, const int pos, int offset,
  const double **rho, const double **sigma, const double **lapl, const double **tau,
- double **zk, MGGA_OUT_PARAMS_NO_EXC(double **));
-
+ double **zk MGGA_OUT_PARAMS_NO_EXC(XC_COMMA double **, ));
 GPU_FUNCTION void internal_counters_mgga_next
 (const xc_dimensions *dim, int offset,
  const double **rho, const double **sigma, const double **lapl, const double **tau,
- double **zk, MGGA_OUT_PARAMS_NO_EXC(double **));
-
+ double **zk MGGA_OUT_PARAMS_NO_EXC(XC_COMMA double **, ));
 GPU_FUNCTION void internal_counters_mgga_prev
 (const xc_dimensions *dim, int offset,
  const double **rho, const double **sigma, const double **lapl, const double **tau,
- double **zk, MGGA_OUT_PARAMS_NO_EXC(double **));
+ double **zk MGGA_OUT_PARAMS_NO_EXC(XC_COMMA double **, ));
+
+/* Functionals that are defined as deorbitalized */
+void xc_mgga_vars_allocate_all
+  (int family, size_t np, const xc_dimensions *dim,
+   int do_zk, int do_vrho, int do_v2rho2, int do_v3rho3, int do_v4rho4,
+   double **zk MGGA_OUT_PARAMS_NO_EXC(XC_COMMA double **, ));
+void xc_mgga_vars_free_all
+  (double *zk MGGA_OUT_PARAMS_NO_EXC(XC_COMMA double *, ));
+void xc_mgga_evaluate_functional
+  (const xc_func_type *func, size_t np,
+   const double *rho, const double *sigma, const double *lapl, const double *tau,
+   double *zk MGGA_OUT_PARAMS_NO_EXC(XC_COMMA double *, ));
+void xc_deorbitalize_init
+  (xc_func_type *p, int mgga_id, int ked_id);
+void xc_deorbitalize_func
+  (const xc_func_type *func, size_t np,
+   const double *rho, const double *sigma, const double *lapl, const double *tau,
+   double *zk MGGA_OUT_PARAMS_NO_EXC(XC_COMMA double *, ));
 
 /* Functionals that are defined as mixtures of others */
 void xc_mix_init(xc_func_type *p, int n_funcs, const int *funcs_id, const double *mix_coef);
 void xc_mix_func
   (const xc_func_type *func, size_t np,
    const double *rho, const double *sigma, const double *lapl, const double *tau,
-   double *zk, MGGA_OUT_PARAMS_NO_EXC(double *));
+   double *zk MGGA_OUT_PARAMS_NO_EXC(XC_COMMA double *, ));
+
+/* Hybrid functional intializers. The order of arguments is the same
+   as in the external parameter setters.
+ */
+void xc_hyb_init_hybrid(xc_func_type *p, double alpha);
+void xc_hyb_init_sr  (xc_func_type *p, double beta, double omega);
+void xc_hyb_init_cam (xc_func_type *p, double alpha, double beta, double omega);
+void xc_hyb_init_camy(xc_func_type *p, double alpha, double beta, double omega);
+void xc_hyb_init_camg(xc_func_type *p, double alpha, double beta, double omega);
 
 /* Some useful functions */
 const char *get_kind(const xc_func_type *func);
@@ -277,6 +310,7 @@ void set_ext_params_cpy  (xc_func_type *p, const double *ext_params);
 void set_ext_params_cpy_omega(xc_func_type *p, const double *ext_params);
 void set_ext_params_cpy_exx(xc_func_type *p, const double *ext_params);
 void set_ext_params_cpy_cam(xc_func_type *p, const double *ext_params);
+void set_ext_params_cpy_cam_sr(xc_func_type *p, const double *ext_params);
 
 GPU_FUNCTION
 double xc_mgga_x_br89_get_x(double Q);

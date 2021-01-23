@@ -143,7 +143,7 @@ class xc_func_type(ctypes.Structure):
         ("xc_func_type", ctypes.c_void_p),
         ("mix_coef", ctypes.POINTER(ctypes.c_double)),
 
-        # CAM
+        # Hybrids
         ("cam_omega", ctypes.c_double),
         ("cam_alpha", ctypes.c_double),
         ("cam_beta", ctypes.c_double),

@@ -24,10 +24,8 @@ xc_hyb_gga_xc_lcy_pbe_init(xc_func_type *p)
   xc_mix_init(p, 2, funcs_id, funcs_coef);
 
   xc_func_set_ext_params(p->func_aux[0], &gamma);
-  
-  p->cam_omega = gamma;
-  p->cam_alpha = 1.0;
-  p->cam_beta  = -1.0;
+
+  xc_hyb_init_camy(p, 1.0, -1.0, gamma);
 }
 
 #ifdef __cplusplus
@@ -40,7 +38,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_lcy_pbe = {
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Seth2012_901, &xc_ref_Seth2013_2286, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_HYB_CAMY | XC_FLAGS_I_HAVE_ALL,
-  1e-32,
+  1e-15,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_gga_xc_lcy_pbe_init, NULL,
   NULL, NULL, NULL

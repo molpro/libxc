@@ -34,7 +34,7 @@ pbeh_set_ext_params(xc_func_type *p, const double *ext_params)
   beta = get_ext_param(p, ext_params, 0);
 
   p->mix_coef[0] = 1.0 - beta;
-  p->cam_alpha  = beta;
+  p->cam_alpha = beta;
 }
 
 
@@ -44,9 +44,10 @@ hyb_gga_xc_pbeh_init(xc_func_type *p)
   static int   funcs_id  [2] = {XC_GGA_X_PBE, XC_GGA_C_PBE};
   static double funcs_coef[2] = {0.0, 1.0};
 
-  /* Note that the value of funcs_coef[0] and cam_alpha will be set
+  /* Note that the value of funcs_coef[0] and hyb_coeff will be set
       by set_ext_params */
   xc_mix_init(p, 2, funcs_id, funcs_coef);
+  xc_hyb_init_hybrid(p, 0.0);
 }
 
 
@@ -60,7 +61,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_pbeh = {
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Adamo1999_6158, &xc_ref_Ernzerhof1999_5029, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
-  1e-32,
+  1e-15,
   {PBEH_N_PAR, pbeh_names, pbeh_desc, pbeh_values, pbeh_set_ext_params},
   hyb_gga_xc_pbeh_init,
   NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */
@@ -72,9 +73,10 @@ hyb_gga_xc_pbe0_13_init(xc_func_type *p)
   static int   funcs_id  [2] = {XC_GGA_X_PBE, XC_GGA_C_PBE};
   static double funcs_coef[2] = {0.0, 1.0};
 
-  /* Note that the value of funcs_coef[0] and cam_alpha will be set
+  /* Note that the value of funcs_coef[0] and hyb_coeff will be set
       by set_ext_params */
   xc_mix_init(p, 2, funcs_id, funcs_coef);
+  xc_hyb_init_hybrid(p, 0.0);
 }
 
 #ifdef __cplusplus
@@ -87,7 +89,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_pbe0_13 = {
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Cortona2012_086101, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
-  1e-32,
+  1e-15,
   {PBEH_N_PAR, pbeh_names, pbeh_desc, pbeh_13_values, pbeh_set_ext_params},
   hyb_gga_xc_pbe0_13_init,
   NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */
@@ -100,9 +102,10 @@ hyb_gga_xc_hpbeint_init(xc_func_type *p)
   static int   funcs_id  [2] = {XC_GGA_X_PBEINT, XC_GGA_C_PBEINT};
   static double funcs_coef[2] = {0.0, 1.0};
 
-  /* Note that the value of funcs_coef[0] and cam_alpha will be set
+  /* Note that the value of funcs_coef[0] and hyb_coeff will be set
       by set_ext_params */
   xc_mix_init(p, 2, funcs_id, funcs_coef);
+  xc_hyb_init_hybrid(p, 0.0);
 }
 
 #ifdef __cplusplus
@@ -115,7 +118,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_hpbeint = {
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Fabiano2013_673, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL | XC_FLAGS_DEVELOPMENT,
-  1e-32,
+  1e-15,
   {PBEH_N_PAR, pbeh_names, pbeh_desc, pbeh_int_values, pbeh_set_ext_params},
   hyb_gga_xc_hpbeint_init,
   NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */
@@ -128,9 +131,10 @@ hyb_gga_xc_pbemol0_init(xc_func_type *p)
   static int   funcs_id  [2] = {XC_GGA_X_PBE_MOL, XC_GGA_C_PBE_MOL};
   static double funcs_coef[2] = {0.0, 1.0};
 
-  /* Note that the value of funcs_coef[0] and cam_alpha will be set
+  /* Note that the value of funcs_coef[0] and hyb_coeff will be set
       by set_ext_params */
   xc_mix_init(p, 2, funcs_id, funcs_coef);
+  xc_hyb_init_hybrid(p, 0.0);
 }
 
 #ifdef __cplusplus
@@ -143,7 +147,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_pbe_mol0 = {
   XC_FAMILY_HYB_GGA,
   {&xc_ref_delCampo2012_104108, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
-  1e-32,
+  1e-15,
   {PBEH_N_PAR, pbeh_names, pbeh_desc, pbeh_values, pbeh_set_ext_params},
   hyb_gga_xc_pbemol0_init,
   NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */
@@ -159,6 +163,7 @@ hyb_gga_xc_pbesol0_init(xc_func_type *p)
   /* Note that the value of funcs_coef[0] and cam_alpha will be set
       by set_ext_params */
   xc_mix_init(p, 2, funcs_id, funcs_coef);
+  xc_hyb_init_hybrid(p, 0.0);
 }
 
 #ifdef __cplusplus
@@ -171,7 +176,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_pbe_sol0 = {
   XC_FAMILY_HYB_GGA,
   {&xc_ref_delCampo2012_104108, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
-  1e-32,
+  1e-15,
   {PBEH_N_PAR, pbeh_names, pbeh_desc, pbeh_values, pbeh_set_ext_params},
   hyb_gga_xc_pbesol0_init,
   NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */
@@ -191,6 +196,8 @@ hyb_gga_xc_pbeb0_init(xc_func_type *p)
       by set_ext_params */
   xc_mix_init(p, 2, funcs_id, funcs_coef);
   xc_func_set_ext_params(p->func_aux[1], par_c_pbe);
+
+  xc_hyb_init_hybrid(p, 0.0);
 }
 
 #ifdef __cplusplus
@@ -203,7 +210,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_pbeb0 = {
   XC_FAMILY_HYB_GGA,
   {&xc_ref_delCampo2012_104108, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
-  1e-32,
+  1e-15,
   {PBEH_N_PAR, pbeh_names, pbeh_desc, pbeh_values, pbeh_set_ext_params},
   hyb_gga_xc_pbeb0_init,
   NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */
@@ -218,11 +225,13 @@ hyb_gga_xc_pbemolb0_init(xc_func_type *p)
 
   /* 0.06288 ~ 3/4 beta_PBEmol */
   static double par_c_pbe[] = {0.06288, XC_EXT_PARAMS_DEFAULT, XC_EXT_PARAMS_DEFAULT};
-  
+
   /* Note that the value of funcs_coef[0] and cam_alpha will be set by
       set_ext_params */
   xc_mix_init(p, 2, funcs_id, funcs_coef);
   xc_func_set_ext_params(p->func_aux[1], par_c_pbe);
+
+  xc_hyb_init_hybrid(p, 0.0);
 }
 
 #ifdef __cplusplus
@@ -235,7 +244,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_pbe_molb0 = {
   XC_FAMILY_HYB_GGA,
   {&xc_ref_delCampo2012_104108, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
-  1e-32,
+  1e-15,
   {PBEH_N_PAR, pbeh_names, pbeh_desc, pbeh_values, pbeh_set_ext_params},
   hyb_gga_xc_pbemolb0_init,
   NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */
@@ -251,6 +260,7 @@ hyb_gga_xc_pbe50_init(xc_func_type *p)
   /* Note that the value of funcs_coef[0] and cam_alpha will be set by
       set_ext_params */
   xc_mix_init(p, 2, funcs_id, funcs_coef);
+  xc_hyb_init_hybrid(p, 0.0);
 }
 
 #ifdef __cplusplus
@@ -263,7 +273,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_pbe50 = {
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Bernard2012_204103, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
-  1e-32,
+  1e-15,
   {PBEH_N_PAR, pbeh_names, pbeh_desc, pbeh_50_values, pbeh_set_ext_params},
   hyb_gga_xc_pbe50_init,
   NULL, NULL, NULL, NULL /* this is taken care of by the generic routine */
