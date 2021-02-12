@@ -55,6 +55,13 @@ func_reference_type xc_ref_Adamson1998_6 = {
 };
 
 
+func_reference_type xc_ref_Ai2021_1207 = {
+  "W. Ai, W.-H. Fang, and N. Q. Su, J. Phys. Chem. Lett. 12, 1207 (2021)",
+  "10.1021/acs.jpclett.0c03621",
+  "@article{Ai2021_1207,\n  author = {Ai, Wenna and Fang, Wei-Hai and Su, Neil Qiang},\n  title = {The Role of Range-Separated Correlation in Long-Range Corrected Hybrid Functionals},\n  journal = {J. Phys. Chem. Lett.},\n  volume = {12},\n  pages = {1207-1213},\n  year = {2021},\n  doi = {10.1021/acs.jpclett.0c03621},\n  url = {https://doi.org/10.1021/acs.jpclett.0c03621}\n}"
+};
+
+
 func_reference_type xc_ref_Akinaga2008_348 = {
   "Y. Akinaga and S. Ten-no, Chem. Phys. Lett. 462, 348 (2008)",
   "10.1016/j.cplett.2008.07.103",
@@ -247,7 +254,7 @@ func_reference_type xc_ref_Bilc2008_165107 = {
 func_reference_type xc_ref_Bircher2018_3184 = {
   "M. P. Bircher and U. Rothlisberger, J. Chem. Theory Comput. 14, 3184 (2018)",
   "10.1021/acs.jctc.8b00069",
-  "@article{Bircher2018_3184,\nauthor = {Bircher, Martin P. and Rothlisberger, Ursula},\ntitle = {Plane-Wave Implementation and Performance of \\'{a}-la-Carte {C}oulomb-Attenuated Exchange-Correlation Functionals for Predicting Optical Excitation Energies in Some Notorious Cases},\njournal = {J. Chem. Theory Comput.},\nvolume = {14},\nnumber = {6},\npages = {3184-3195},\nyear = {2018},\ndoi = {10.1021/acs.jctc.8b00069},\nURL = {https://doi.org/10.1021/acs.jctc.8b00069}\n}"
+  "@article{Bircher2018_3184,\nauthor = {Bircher, Martin P. and Rothlisberger, Ursula},\ntitle = {Plane-Wave Implementation and Performance of \\'{a}-la-Carte {C}oulomb-Attenuated Exchange-Correlation Functionals for Predicting Optical Excitation Energies in Some Notorious Cases},\njournal = {J. Chem. Theory Comput.},\nvolume = {14},\nnumber = {6},\npages = {3184-3195},\nyear = {2018},\ndoi = {10.1021/acs.jctc.8b00069},\nurl = {https://doi.org/10.1021/acs.jctc.8b00069}\n}"
 };
 
 
@@ -555,7 +562,7 @@ func_reference_type xc_ref_Constantin2017_115153 = {
 func_reference_type xc_ref_Constantin2018_4385 = {
   "L. A. Constantin, E. Fabiano, and F. Della Sala, J. Phys. Chem. Lett. 9, 4385 (2018), pMID: 30019904",
   "10.1021/acs.jpclett.8b01926",
-  "@article{Constantin2018_4385,\n  author = {Constantin, Lucian A. and Fabiano, Eduardo and Della Sala, Fabio},\n  title = {Semilocal Pauli--Gaussian Kinetic Functionals for Orbital-Free Density Functional Theory Calculations of Solids},\n  journal = {J. Phys. Chem. Lett.},\n  volume = {9},\n  number = {15},\n  pages = {4385-4390},\n  year = {2018},\n  doi = {10.1021/acs.jpclett.8b01926},\n  note ={PMID: 30019904},\n  URL = {https://doi.org/10.1021/acs.jpclett.8b01926}\n}"
+  "@article{Constantin2018_4385,\n  author = {Constantin, Lucian A. and Fabiano, Eduardo and Della Sala, Fabio},\n  title = {Semilocal Pauli--Gaussian Kinetic Functionals for Orbital-Free Density Functional Theory Calculations of Solids},\n  journal = {J. Phys. Chem. Lett.},\n  volume = {9},\n  number = {15},\n  pages = {4385-4390},\n  year = {2018},\n  doi = {10.1021/acs.jpclett.8b01926},\n  note ={PMID: 30019904},\n  url = {https://doi.org/10.1021/acs.jpclett.8b01926}\n}"
 };
 
 
@@ -884,7 +891,7 @@ func_reference_type xc_ref_Gordon1972_3122 = {
 func_reference_type xc_ref_Grimme2005_3067 = {
   "S. Grimme, J. Phys. Chem. A 109, 3067 (2005)",
   "10.1021/jp050036j",
-  "@article{Grimme2005_3067,\n  author = {Grimme, Stefan},\n  title = {Accurate Calculation of the Heats of Formation for Large Main Group Compounds with Spin-Component Scaled MP2 Methods},\n  journal = {J. Phys. Chem. A},\n  volume = {109},\n  number = {13},\n  pages = {3067-3077},\n  year = {2005},\n  doi = {10.1021/jp050036j},\n  URL = {https://doi.org/10.1021/jp050036j}\n}"
+  "@article{Grimme2005_3067,\n  author = {Grimme, Stefan},\n  title = {Accurate Calculation of the Heats of Formation for Large Main Group Compounds with Spin-Component Scaled MP2 Methods},\n  journal = {J. Phys. Chem. A},\n  volume = {109},\n  number = {13},\n  pages = {3067-3077},\n  year = {2005},\n  doi = {10.1021/jp050036j},\n  url = {https://doi.org/10.1021/jp050036j}\n}"
 };
 
 
@@ -1074,6 +1081,13 @@ func_reference_type xc_ref_Jana2017_4804 = {
   "S. Jana and P. Samal, J. Phys. Chem. A 121, 4804 (2017)",
   "10.1021/acs.jpca.7b03686",
   "@article{Jana2017_4804,\n  author = {Jana, Subrata and Samal, Prasanjit},\n  title = {Semilocal Exchange Energy Functional for Two-Dimensional Quantum Systems: A Step Beyond Generalized Gradient Approximations},\n  journal = {J. Phys. Chem. A},\n  volume = {121},\n  number = {25},\n  pages = {4804-4811},\n  year = {2017},\n  doi = {10.1021/acs.jpca.7b03686},\n  url = {https://doi.org/10.1021/acs.jpca.7b03686},\n}"
+};
+
+
+func_reference_type xc_ref_Jana2018_1 = {
+  "S. Jana, B. Patra, H. Myneni, and P. Samal, Chem. Phys. Lett. 713, 1 (2018)",
+  "https://doi.org/10.1016/j.cplett.2018.10.007",
+  "@article{Jana2018_1,\n  title = \"On the many-electron self-interaction error of the semilocal exchange hole based meta-GGA level range-separated hybrid with the B88 hybrids\",\n  author = \"Subrata Jana and Bikash Patra and Hemanadhan Myneni and Prasanjit Samal\",\n  journal = \"Chem. Phys. Lett.\",\n  volume = \"713\",\n  pages = \"1--9\",\n  year = \"2018\",\n  issn = \"0009-2614\",\n  doi = \"https://doi.org/10.1016/j.cplett.2018.10.007\",\n  url = \"http://www.sciencedirect.com/science/article/pii/S0009261418308194\",\n}"
 };
 
 
@@ -1329,10 +1343,10 @@ func_reference_type xc_ref_Lehtola2018_1 = {
 };
 
 
-func_reference_type xc_ref_Lehtola2020 = {
-  "S. Lehtola and M. A. L. Marques, Meta-local density functionals: a new rung on jacob's ladder, (2020), arXiv:2006.16835 [physics.chem-ph]",
-  "",
-  "@misc{Lehtola2020,\n  title = {Meta-local density functionals: a new rung on Jacob's ladder},\n  author = {Susi Lehtola and Miguel A. L. Marques},\n  year = {2020},\n  eprint = {2006.16835},\n  archivePrefix = {arXiv},\n  primaryClass = {physics.chem-ph}\n}"
+func_reference_type xc_ref_Lehtola2021_943 = {
+  "S. Lehtola and M. A. L. Marques, J. Chem. Theory Comput. 17, 943 (2021)",
+  "10.1021/acs.jctc.0c01147",
+  "@article{Lehtola2021_943,\n  author = {Lehtola, Susi and Marques, Miguel A. L.},\n  title = {Meta-Local Density Functionals: A New Rung on Jacob's Ladder},\n  journal = {J. Chem. Theory Comput.},\n  volume = {17},\n  number = {2},\n  pages = {943-948},\n  year = {2021},\n  doi = {10.1021/acs.jctc.0c01147},\n  url = {https://doi.org/10.1021/acs.jctc.0c01147}\n}"
 };
 
 
@@ -1662,6 +1676,13 @@ func_reference_type xc_ref_Patra2019_19639 = {
   "A. Patra, S. Jana, H. Myneni, and P. Samal, Phys. Chem. Chem. Phys. 21, 19639 (2019)",
   "10.1039/C9CP03356D",
   "@Article{Patra2019_19639,\n  author = \"Patra, Abhilash and Jana, Subrata and Myneni, Hemanadhan and Samal, Prasanjit\",\n  title = \"Laplacian free and asymptotic corrected semilocal exchange potential applied to the band gap of solids\",\n  journal = \"Phys. Chem. Chem. Phys.\",\n  year = \"2019\",\n  volume = \"21\",\n  issue = \"35\",\n  pages = \"19639-19650\",\n  publisher = \"The Royal Society of Chemistry\",\n  doi = \"10.1039/C9CP03356D\",\n  url = \"http://doi.org/10.1039/C9CP03356D\",\n}"
+};
+
+
+func_reference_type xc_ref_Patra2020_184112 = {
+  "A. Patra, S. Jana, and P. Samal, J. Chem. Phys. 153, 184112 (2020)",
+  "10.1063/5.0025173",
+  "@article{Patra2020_184112,\n  author = {Patra, Abhilash and Jana, Subrata and Samal, Prasanjit },\n  title = {A way of resolving the order-of-limit problem of Tao--Mo semilocal functional},\n  journal = {J. Chem. Phys.},\n  volume = {153},\n  number = {18},\n  pages = {184112},\n  year = {2020},\n  doi = {10.1063/5.0025173},\n  url = {https://doi.org/10.1063/5.0025173}\n}"
 };
 
 
@@ -2114,9 +2135,9 @@ func_reference_type xc_ref_Shao2003_4807 = {
 
 
 func_reference_type xc_ref_Shao2020_587 = {
-  "Y. Shao, Y. Mei, D. Sundholm, and V. R. I. Kaila, J. Chem. Theory Comput. 16, 587 (2020), https://doi.org/10.1021/acs.jctc.9b00823",
+  "Y. Shao, Y. Mei, D. Sundholm, and V. R. I. Kaila, J. Chem. Theory Comput. 16, 587 (2020)",
   "10.1021/acs.jctc.9b00823",
-  "@article{Shao2020_587,\n  author = {Shao, Yihan and Mei, Ye and Sundholm, Dage and Kaila, Ville R. I.},\n  title = {Benchmarking the Performance of Time-Dependent Density Functional Theory Methods on Biochromophores},\n  journal = {J. Chem. Theory Comput.},\n  volume = {16},\n  number = {1},\n  pages = {587-600},\n  year = {2020},\n  doi = {10.1021/acs.jctc.9b00823},\n  url = {https://doi.org/10.1021/acs.jctc.9b00823},\n  eprint = {https://doi.org/10.1021/acs.jctc.9b00823}\n}"
+  "@article{Shao2020_587,\n  author = {Shao, Yihan and Mei, Ye and Sundholm, Dage and Kaila, Ville R. I.},\n  title = {Benchmarking the Performance of Time-Dependent Density Functional Theory Methods on Biochromophores},\n  journal = {J. Chem. Theory Comput.},\n  volume = {16},\n  number = {1},\n  pages = {587-600},\n  year = {2020},\n  doi = {10.1021/acs.jctc.9b00823},\n  url = {https://doi.org/10.1021/acs.jctc.9b00823}\n}"
 };
 
 
@@ -2520,9 +2541,9 @@ func_reference_type xc_ref_Wang2018_10257 = {
 
 
 func_reference_type xc_ref_Wang2020_2294 = {
-  "Y. Wang, P. Verma, L. Zhang, Y. Li, Z. Liu, D. G. Truhlar, and X. He, Proc. Natl. Acad. Sci. U. S. A. 117, 2294 (2020), https://www.pnas.org/content/117/5/2294.full.pdf",
+  "Y. Wang, P. Verma, L. Zhang, Y. Li, Z. Liu, D. G. Truhlar, and X. He, Proc. Natl. Acad. Sci. U. S. A. 117, 2294 (2020)",
   "10.1073/pnas.1913699117",
-  "@article{Wang2020_2294,\n  author = {Wang, Ying and Verma, Pragya and Zhang, Lujia and Li, Yaqi and Liu, Zhonghua and Truhlar, Donald G. and He, Xiao},\n  title = {M06-SX screened-exchange density functional for chemistry and solid-state physics},\n  volume = {117},\n  number = {5},\n  pages = {2294--2301},\n  year = {2020},\n  doi = {10.1073/pnas.1913699117},\n  publisher = {National Academy of Sciences},\n  issn = {0027-8424},\n  url = {https://www.pnas.org/content/117/5/2294},\n  eprint = {https://www.pnas.org/content/117/5/2294.full.pdf},\n  journal = {Proc. Natl. Acad. Sci. U. S. A.}\n}"
+  "@article{Wang2020_2294,\n  author = {Wang, Ying and Verma, Pragya and Zhang, Lujia and Li, Yaqi and Liu, Zhonghua and Truhlar, Donald G. and He, Xiao},\n  title = {M06-SX screened-exchange density functional for chemistry and solid-state physics},\n  volume = {117},\n  number = {5},\n  pages = {2294--2301},\n  year = {2020},\n  doi = {10.1073/pnas.1913699117},\n  publisher = {National Academy of Sciences},\n  issn = {0027-8424},\n  url = {https://www.pnas.org/content/117/5/2294},\n  journal = {Proc. Natl. Acad. Sci. U. S. A.}\n}"
 };
 
 
@@ -2600,6 +2621,13 @@ func_reference_type xc_ref_Wu2006_235116 = {
   "Z. Wu and R. E. Cohen, Phys. Rev. B 73, 235116 (2006)",
   "10.1103/PhysRevB.73.235116",
   "@article{Wu2006_235116,\n  title = {More accurate generalized gradient approximation for solids},\n  author = {Z. Wu and R. E. Cohen},\n  journal = {Phys. Rev. B},\n  volume = {73},\n  issue = {23},\n  pages = {235116},\n  year = {2006},\n  month = {Jun},\n  publisher = {American Physical Society},\n  doi = {10.1103/PhysRevB.73.235116},\n  url = {http://link.aps.org/doi/10.1103/PhysRevB.73.235116}\n}"
+};
+
+
+func_reference_type xc_ref_Xie2021_045130 = {
+  "Q.-X. Xie, J. Wu, and Y. Zhao, Phys. Rev. B 103, 045130 (2021)",
+  "10.1103/PhysRevB.103.045130",
+  "@article{Xie2021_045130,\n  title = {Accurate correlation energy functional for uniform electron gas from an interpolation ansatz without fitting parameters},\n  author = {Xie, Qing-Xing and Wu, Jiashun and Zhao, Yan},\n  journal = {Phys. Rev. B},\n  volume = {103},\n  issue = {4},\n  pages = {045130},\n  numpages = {6},\n  year = {2021},\n  month = {Jan},\n  publisher = {American Physical Society},\n  doi = {10.1103/PhysRevB.103.045130},\n  url = {https://link.aps.org/doi/10.1103/PhysRevB.103.045130}\n}"
 };
 
 

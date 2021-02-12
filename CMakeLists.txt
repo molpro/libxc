@@ -141,6 +141,7 @@ set(raw_sources_list
   gga_c_hcth_a.c
   gga_c_lm.c
   gga_c_lyp.c
+  gga_c_lypr.c
   gga_c_op_b88.c
   gga_c_op_g96.c
   gga_c_op_pbe.c
@@ -306,6 +307,7 @@ set(raw_sources_list
   lda_c_vwn_rpa.c
   lda_c_wigner.c
   lda_c_gk72.c
+  lda_c_w20.c
   lda_k_tf.c
   lda_k_zlp.c
   lda_k_gds08_worker.c
@@ -375,6 +377,7 @@ set(raw_sources_list
   mgga_x_scanl.c
   mgga_x_tau_hcth.c
   mgga_x_tm.c
+  mgga_x_regtm.c
   mgga_x_revtm.c
   mgga_x_tpss.c
   mgga_x_regtpss.c

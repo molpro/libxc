@@ -163,74 +163,75 @@ am__objects_1 = special_functions.lo bessel.lo expint_e1.lo \
 	lda_xc_1d_ehwlrg.lo lda_x_rel.lo lda_x_erf.lo lda_k_zlp.lo \
 	lda_c_gk72.lo lda_xc_bn05.lo lda_c_pmgb06.lo \
 	lda_k_gds08_worker.lo lda_xc_tih.lo lda_x_1d_exponential.lo \
-	lda_x_1d_soft.lo hyb_lda_xc_cam_lda0.lo lda_x_sloc.lo gga.lo \
-	gga_x_lg93.lo gga_x_pbe.lo gga_x_rpbe.lo gga_x_pbea.lo \
-	gga_x_mpbe.lo gga_x_herman.lo gga_x_b86.lo gga_x_b88.lo \
-	gga_x_g96.lo gga_x_pw86.lo gga_x_pw91.lo gga_x_optx.lo \
-	gga_x_airy.lo gga_x_c09x.lo gga_x_dk87.lo gga_x_ft97.lo \
-	gga_x_wc.lo gga_x_am05.lo gga_x_bayesian.lo gga_x_kt.lo \
-	gga_x_htbs.lo gga_c_pbe.lo gga_c_lyp.lo gga_c_p86.lo \
-	gga_c_pw91.lo gga_c_am05.lo gga_c_lm.lo gga_c_wl.lo \
-	gga_c_wi.lo gga_x_lb.lo gga_xc_b97.lo gga_xc_edf1.lo \
-	gga_xc_1w.lo gga_c_optc.lo gga_c_tca.lo gga_x_bpccac.lo \
-	gga_x_sogga11.lo gga_c_sogga11.lo gga_xc_th1.lo gga_x_wpbeh.lo \
-	gga_x_hjs.lo gga_x_ityh.lo gga_x_sfat.lo gga_x_sfat_pbe.lo \
-	gga_x_ev93.lo gga_x_ak13.lo gga_x_q2d.lo gga_c_q2d.lo \
-	gga_x_ssb_sw.lo gga_c_ft97.lo gga_x_n12.lo gga_x_lv_rpw86.lo \
-	gga_x_2d_b86.lo gga_k_llp.lo gga_x_2d_b86_mgc.lo \
-	gga_x_2d_b88.lo gga_x_2d_pbe.lo gga_x_lspbe.lo gga_x_lsrpbe.lo \
-	gga_k_tflw.lo gga_k_pearson.lo gga_x_ol2.lo gga_k_ol1.lo \
-	gga_k_ol2.lo gga_k_dk.lo gga_k_meyer.lo gga_x_vmt.lo \
-	gga_x_hcth_a.lo gga_x_cap.lo gga_x_beefvdw.lo gga_x_sg4.lo \
-	gga_x_gg99.lo gga_x_pbepow.lo gga_x_lag.lo gga_k_thakkar.lo \
-	gga_xc_oblyp_d.lo hyb_gga_xc_b3lyp.lo hyb_gga_xc_o3lyp.lo \
-	gga_x_pbeint.lo gga_x_rge2.lo gga_x_vmt84.lo \
-	gga_x_hjs_b88_v2.lo gga_c_revtca.lo gga_c_acgga.lo \
-	gga_c_acggap.lo gga_c_zpbeint.lo gga_c_pbeloc.lo gga_c_sg4.lo \
-	gga_c_regtpss.lo gga_c_scan_e0.lo gga_xc_th2.lo gga_xc_th3.lo \
-	gga_c_hcth_a.lo hyb_gga_xc_wb97.lo gga_c_bmk.lo gga_c_gapc.lo \
-	gga_c_gaploc.lo gga_c_zvpbeint.lo gga_c_w94.lo gga_c_cs1.lo \
-	gga_c_op_xalpha.lo gga_c_op_b88.lo gga_c_op_pbe.lo \
-	gga_c_op_g96.lo gga_c_op_pw91.lo gga_x_pbetrans.lo \
-	gga_k_apbeint.lo gga_x_chachiyo.lo gga_k_gds08.lo \
-	gga_k_exp4.lo hyb_gga_xc_pbeh.lo hyb_gga_xc_b1wc.lo \
-	hyb_gga_xc_hse.lo hyb_gga_xc_cam_b3lyp.lo gga_k_lc94.lo \
-	gga_c_zvpbeloc.lo hyb_gga_xc_camy_blyp.lo \
-	hyb_gga_xc_camy_b3lyp.lo hyb_gga_xc_lcy_pbe.lo \
-	hyb_gga_xc_lcy_blyp.lo gga_xc_vv10.lo hyb_gga_xc_edf2.lo \
-	gga_k_pw86.lo gga_k_mpbe.lo gga_k_apbe.lo gga_x_fd_lb94.lo \
-	gga_x_ncap.lo gga_c_chachiyo.lo hyb_gga_xc_lc_blyp.lo \
-	gga_c_pbe_vwn.lo gga_x_s12.lo gga_k_lkt.lo gga_k_lgap.lo \
-	gga_k_vt84f.lo gga_k_lgap_ge.lo gga_c_ccdf.lo \
-	gga_k_rational_p.lo gga_k_pg.lo gga_c_p86vwn.lo \
+	lda_x_1d_soft.lo hyb_lda_xc_cam_lda0.lo lda_x_sloc.lo \
+	lda_c_w20.lo gga.lo gga_x_lg93.lo gga_x_pbe.lo gga_x_rpbe.lo \
+	gga_x_pbea.lo gga_x_mpbe.lo gga_x_herman.lo gga_x_b86.lo \
+	gga_x_b88.lo gga_x_g96.lo gga_x_pw86.lo gga_x_pw91.lo \
+	gga_x_optx.lo gga_x_airy.lo gga_x_c09x.lo gga_x_dk87.lo \
+	gga_x_ft97.lo gga_x_wc.lo gga_x_am05.lo gga_x_bayesian.lo \
+	gga_x_kt.lo gga_x_htbs.lo gga_c_pbe.lo gga_c_lyp.lo \
+	gga_c_p86.lo gga_c_pw91.lo gga_c_am05.lo gga_c_lm.lo \
+	gga_c_wl.lo gga_c_wi.lo gga_x_lb.lo gga_xc_b97.lo \
+	gga_xc_edf1.lo gga_xc_1w.lo gga_c_optc.lo gga_c_tca.lo \
+	gga_x_bpccac.lo gga_x_sogga11.lo gga_c_sogga11.lo \
+	gga_xc_th1.lo gga_x_wpbeh.lo gga_x_hjs.lo gga_x_ityh.lo \
+	gga_x_sfat.lo gga_x_sfat_pbe.lo gga_x_ev93.lo gga_x_ak13.lo \
+	gga_x_q2d.lo gga_c_q2d.lo gga_x_ssb_sw.lo gga_c_ft97.lo \
+	gga_x_n12.lo gga_x_lv_rpw86.lo gga_x_2d_b86.lo gga_k_llp.lo \
+	gga_x_2d_b86_mgc.lo gga_x_2d_b88.lo gga_x_2d_pbe.lo \
+	gga_x_lspbe.lo gga_x_lsrpbe.lo gga_k_tflw.lo gga_k_pearson.lo \
+	gga_x_ol2.lo gga_k_ol1.lo gga_k_ol2.lo gga_k_dk.lo \
+	gga_k_meyer.lo gga_x_vmt.lo gga_x_hcth_a.lo gga_x_cap.lo \
+	gga_x_beefvdw.lo gga_x_sg4.lo gga_x_gg99.lo gga_x_pbepow.lo \
+	gga_x_lag.lo gga_k_thakkar.lo gga_xc_oblyp_d.lo \
+	hyb_gga_xc_b3lyp.lo hyb_gga_xc_o3lyp.lo gga_x_pbeint.lo \
+	gga_x_rge2.lo gga_x_vmt84.lo gga_x_hjs_b88_v2.lo \
+	gga_c_revtca.lo gga_c_acgga.lo gga_c_acggap.lo \
+	gga_c_zpbeint.lo gga_c_pbeloc.lo gga_c_sg4.lo gga_c_regtpss.lo \
+	gga_c_scan_e0.lo gga_xc_th2.lo gga_xc_th3.lo gga_c_hcth_a.lo \
+	hyb_gga_xc_wb97.lo gga_c_bmk.lo gga_c_gapc.lo gga_c_gaploc.lo \
+	gga_c_zvpbeint.lo gga_c_w94.lo gga_c_cs1.lo gga_c_op_xalpha.lo \
+	gga_c_op_b88.lo gga_c_op_pbe.lo gga_c_op_g96.lo \
+	gga_c_op_pw91.lo gga_x_pbetrans.lo gga_k_apbeint.lo \
+	gga_x_chachiyo.lo gga_k_gds08.lo gga_k_exp4.lo \
+	hyb_gga_xc_pbeh.lo hyb_gga_xc_b1wc.lo hyb_gga_xc_hse.lo \
+	hyb_gga_xc_cam_b3lyp.lo gga_k_lc94.lo gga_c_zvpbeloc.lo \
+	hyb_gga_xc_camy_blyp.lo hyb_gga_xc_camy_b3lyp.lo \
+	hyb_gga_xc_lcy_pbe.lo hyb_gga_xc_lcy_blyp.lo gga_xc_vv10.lo \
+	hyb_gga_xc_edf2.lo gga_k_pw86.lo gga_k_mpbe.lo gga_k_apbe.lo \
+	gga_x_fd_lb94.lo gga_x_ncap.lo gga_c_chachiyo.lo \
+	hyb_gga_xc_lc_blyp.lo gga_c_pbe_vwn.lo gga_x_s12.lo \
+	gga_k_lkt.lo gga_k_lgap.lo gga_k_vt84f.lo gga_k_lgap_ge.lo \
+	gga_c_ccdf.lo gga_k_rational_p.lo gga_k_pg.lo gga_c_p86vwn.lo \
 	gga_x_ityh_optx.lo hyb_gga_xc_cam_o3lyp.lo gga_x_ityh_pbe.lo \
-	mgga.lo mgga_x_lta.lo mgga_x_tpss.lo mgga_x_br89.lo \
-	mgga_x_gvt4.lo mgga_x_m06l.lo mgga_x_tau_hcth.lo \
-	mgga_x_2d_prhg07.lo mgga_x_2d_prp10.lo mgga_x_pkzb.lo \
-	hyb_mgga_x_m05.lo mgga_x_m08.lo mgga_x_ms.lo mgga_x_mn12.lo \
-	mgga_c_vsxc.lo mgga_c_pkzb.lo mgga_c_bc95.lo mgga_c_m08.lo \
-	mgga_xc_cc06.lo mgga_c_cs.lo mgga_xc_otpss_d.lo mgga_xc_zlp.lo \
-	hyb_mgga_xc_b88b95.lo mgga_x_mbeef.lo mgga_xc_b97mv.lo \
-	mgga_x_scan.lo mgga_c_scan.lo hyb_mgga_xc_tpssh.lo \
-	mgga_x_mvs.lo hyb_mgga_x_mvsh.lo mgga_x_tm.lo mgga_x_vt84.lo \
-	mgga_x_sa_tpss.lo mgga_k_pc07.lo mgga_x_mbeefvdw.lo \
-	mgga_x_m11.lo mgga_x_m11_l.lo hyb_mgga_xc_wb97mv.lo \
-	mgga_c_m05.lo mgga_c_m06l.lo hyb_mgga_x_dldf.lo mgga_c_tpss.lo \
-	mgga_c_revtpss.lo mgga_c_tpssloc.lo mgga_xc_hle17.lo \
-	mgga_c_kcis.lo mgga_xc_lp90.lo hyb_mgga_xc_kcis.lo \
-	mgga_c_b88.lo mgga_x_gx.lo mgga_x_pbe_gx.lo mgga_c_revscan.lo \
-	mgga_x_br89_explicit.lo mgga_xc_b98.lo mgga_x_rtpss.lo \
-	mgga_x_msb.lo mgga_x_mvsb.lo mgga_x_regtpss.lo mgga_x_rscan.lo \
-	mgga_c_rscan.lo mgga_x_2d_js17.lo mgga_x_tb09.lo \
-	mgga_x_edmgga.lo mgga_x_gdme.lo mgga_x_rlda.lo mgga_x_revtm.lo \
-	mgga_x_scanl.lo mgga_c_scanl.lo hyb_mgga_x_js18.lo \
-	hyb_mgga_x_pjs18.lo mgga_x_mbrxh_bg.lo mgga_x_mbrxc_bg.lo \
-	mgga_x_task.lo mgga_x_mggac.lo mgga_x_th.lo mgga_x_mbr.lo \
-	mgga_c_ltapw.lo mgga_x_jk.lo mgga_x_r2scan.lo mgga_c_r2scan.lo \
-	mgga_c_b94.lo mgga_k_lk.lo mgga_k_rda.lo mgga_k_gea2.lo \
-	mgga_k_gea4.lo mgga_k_csk.lo mgga_k_csk_loc.lo \
-	mgga_x_r2scanl.lo mgga_c_r2scanl.lo mgga_k_pgslb.lo \
-	mgga_c_kcisk.lo
+	gga_c_lypr.lo mgga.lo mgga_x_lta.lo mgga_x_tpss.lo \
+	mgga_x_br89.lo mgga_x_gvt4.lo mgga_x_m06l.lo \
+	mgga_x_tau_hcth.lo mgga_x_2d_prhg07.lo mgga_x_2d_prp10.lo \
+	mgga_x_pkzb.lo hyb_mgga_x_m05.lo mgga_x_m08.lo mgga_x_ms.lo \
+	mgga_x_mn12.lo mgga_c_vsxc.lo mgga_c_pkzb.lo mgga_c_bc95.lo \
+	mgga_c_m08.lo mgga_xc_cc06.lo mgga_c_cs.lo mgga_xc_otpss_d.lo \
+	mgga_xc_zlp.lo hyb_mgga_xc_b88b95.lo mgga_x_mbeef.lo \
+	mgga_xc_b97mv.lo mgga_x_scan.lo mgga_c_scan.lo \
+	hyb_mgga_xc_tpssh.lo mgga_x_mvs.lo hyb_mgga_x_mvsh.lo \
+	mgga_x_tm.lo mgga_x_vt84.lo mgga_x_sa_tpss.lo mgga_k_pc07.lo \
+	mgga_x_mbeefvdw.lo mgga_x_m11.lo mgga_x_m11_l.lo \
+	hyb_mgga_xc_wb97mv.lo mgga_c_m05.lo mgga_c_m06l.lo \
+	hyb_mgga_x_dldf.lo mgga_c_tpss.lo mgga_c_revtpss.lo \
+	mgga_c_tpssloc.lo mgga_xc_hle17.lo mgga_c_kcis.lo \
+	mgga_xc_lp90.lo hyb_mgga_xc_kcis.lo mgga_c_b88.lo mgga_x_gx.lo \
+	mgga_x_pbe_gx.lo mgga_c_revscan.lo mgga_x_br89_explicit.lo \
+	mgga_xc_b98.lo mgga_x_rtpss.lo mgga_x_msb.lo mgga_x_mvsb.lo \
+	mgga_x_regtpss.lo mgga_x_rscan.lo mgga_c_rscan.lo \
+	mgga_x_2d_js17.lo mgga_x_tb09.lo mgga_x_edmgga.lo \
+	mgga_x_gdme.lo mgga_x_rlda.lo mgga_x_revtm.lo mgga_x_scanl.lo \
+	mgga_c_scanl.lo hyb_mgga_x_js18.lo hyb_mgga_x_pjs18.lo \
+	mgga_x_mbrxh_bg.lo mgga_x_mbrxc_bg.lo mgga_x_task.lo \
+	mgga_x_mggac.lo mgga_x_th.lo mgga_x_mbr.lo mgga_c_ltapw.lo \
+	mgga_x_jk.lo mgga_x_r2scan.lo mgga_c_r2scan.lo mgga_c_b94.lo \
+	mgga_k_lk.lo mgga_k_rda.lo mgga_k_gea2.lo mgga_k_gea4.lo \
+	mgga_k_csk.lo mgga_k_csk_loc.lo mgga_x_r2scanl.lo \
+	mgga_c_r2scanl.lo mgga_k_pgslb.lo mgga_c_kcisk.lo \
+	mgga_x_regtm.lo
 am_libxc_la_OBJECTS = references.lo $(am__objects_1)
 libxc_la_OBJECTS = $(am_libxc_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -304,65 +305,65 @@ am__depfiles_remade = ./$(DEPDIR)/bessel.Plo \
 	./$(DEPDIR)/gga_c_cs1.Plo ./$(DEPDIR)/gga_c_ft97.Plo \
 	./$(DEPDIR)/gga_c_gapc.Plo ./$(DEPDIR)/gga_c_gaploc.Plo \
 	./$(DEPDIR)/gga_c_hcth_a.Plo ./$(DEPDIR)/gga_c_lm.Plo \
-	./$(DEPDIR)/gga_c_lyp.Plo ./$(DEPDIR)/gga_c_op_b88.Plo \
-	./$(DEPDIR)/gga_c_op_g96.Plo ./$(DEPDIR)/gga_c_op_pbe.Plo \
-	./$(DEPDIR)/gga_c_op_pw91.Plo ./$(DEPDIR)/gga_c_op_xalpha.Plo \
-	./$(DEPDIR)/gga_c_optc.Plo ./$(DEPDIR)/gga_c_p86.Plo \
-	./$(DEPDIR)/gga_c_p86vwn.Plo ./$(DEPDIR)/gga_c_pbe.Plo \
-	./$(DEPDIR)/gga_c_pbe_vwn.Plo ./$(DEPDIR)/gga_c_pbeloc.Plo \
-	./$(DEPDIR)/gga_c_pw91.Plo ./$(DEPDIR)/gga_c_q2d.Plo \
-	./$(DEPDIR)/gga_c_regtpss.Plo ./$(DEPDIR)/gga_c_revtca.Plo \
-	./$(DEPDIR)/gga_c_scan_e0.Plo ./$(DEPDIR)/gga_c_sg4.Plo \
-	./$(DEPDIR)/gga_c_sogga11.Plo ./$(DEPDIR)/gga_c_tca.Plo \
-	./$(DEPDIR)/gga_c_w94.Plo ./$(DEPDIR)/gga_c_wi.Plo \
-	./$(DEPDIR)/gga_c_wl.Plo ./$(DEPDIR)/gga_c_zpbeint.Plo \
-	./$(DEPDIR)/gga_c_zvpbeint.Plo ./$(DEPDIR)/gga_c_zvpbeloc.Plo \
-	./$(DEPDIR)/gga_k_apbe.Plo ./$(DEPDIR)/gga_k_apbeint.Plo \
-	./$(DEPDIR)/gga_k_dk.Plo ./$(DEPDIR)/gga_k_exp4.Plo \
-	./$(DEPDIR)/gga_k_gds08.Plo ./$(DEPDIR)/gga_k_lc94.Plo \
-	./$(DEPDIR)/gga_k_lgap.Plo ./$(DEPDIR)/gga_k_lgap_ge.Plo \
-	./$(DEPDIR)/gga_k_lkt.Plo ./$(DEPDIR)/gga_k_llp.Plo \
-	./$(DEPDIR)/gga_k_meyer.Plo ./$(DEPDIR)/gga_k_mpbe.Plo \
-	./$(DEPDIR)/gga_k_ol1.Plo ./$(DEPDIR)/gga_k_ol2.Plo \
-	./$(DEPDIR)/gga_k_pearson.Plo ./$(DEPDIR)/gga_k_pg.Plo \
-	./$(DEPDIR)/gga_k_pw86.Plo ./$(DEPDIR)/gga_k_rational_p.Plo \
-	./$(DEPDIR)/gga_k_tflw.Plo ./$(DEPDIR)/gga_k_thakkar.Plo \
-	./$(DEPDIR)/gga_k_vt84f.Plo ./$(DEPDIR)/gga_x_2d_b86.Plo \
-	./$(DEPDIR)/gga_x_2d_b86_mgc.Plo ./$(DEPDIR)/gga_x_2d_b88.Plo \
-	./$(DEPDIR)/gga_x_2d_pbe.Plo ./$(DEPDIR)/gga_x_airy.Plo \
-	./$(DEPDIR)/gga_x_ak13.Plo ./$(DEPDIR)/gga_x_am05.Plo \
-	./$(DEPDIR)/gga_x_b86.Plo ./$(DEPDIR)/gga_x_b88.Plo \
-	./$(DEPDIR)/gga_x_bayesian.Plo ./$(DEPDIR)/gga_x_beefvdw.Plo \
-	./$(DEPDIR)/gga_x_bpccac.Plo ./$(DEPDIR)/gga_x_c09x.Plo \
-	./$(DEPDIR)/gga_x_cap.Plo ./$(DEPDIR)/gga_x_chachiyo.Plo \
-	./$(DEPDIR)/gga_x_dk87.Plo ./$(DEPDIR)/gga_x_ev93.Plo \
-	./$(DEPDIR)/gga_x_fd_lb94.Plo ./$(DEPDIR)/gga_x_ft97.Plo \
-	./$(DEPDIR)/gga_x_g96.Plo ./$(DEPDIR)/gga_x_gg99.Plo \
-	./$(DEPDIR)/gga_x_hcth_a.Plo ./$(DEPDIR)/gga_x_herman.Plo \
-	./$(DEPDIR)/gga_x_hjs.Plo ./$(DEPDIR)/gga_x_hjs_b88_v2.Plo \
-	./$(DEPDIR)/gga_x_htbs.Plo ./$(DEPDIR)/gga_x_ityh.Plo \
-	./$(DEPDIR)/gga_x_ityh_optx.Plo ./$(DEPDIR)/gga_x_ityh_pbe.Plo \
-	./$(DEPDIR)/gga_x_kt.Plo ./$(DEPDIR)/gga_x_lag.Plo \
-	./$(DEPDIR)/gga_x_lb.Plo ./$(DEPDIR)/gga_x_lg93.Plo \
-	./$(DEPDIR)/gga_x_lspbe.Plo ./$(DEPDIR)/gga_x_lsrpbe.Plo \
-	./$(DEPDIR)/gga_x_lv_rpw86.Plo ./$(DEPDIR)/gga_x_mpbe.Plo \
-	./$(DEPDIR)/gga_x_n12.Plo ./$(DEPDIR)/gga_x_ncap.Plo \
-	./$(DEPDIR)/gga_x_ol2.Plo ./$(DEPDIR)/gga_x_optx.Plo \
-	./$(DEPDIR)/gga_x_pbe.Plo ./$(DEPDIR)/gga_x_pbea.Plo \
-	./$(DEPDIR)/gga_x_pbeint.Plo ./$(DEPDIR)/gga_x_pbepow.Plo \
-	./$(DEPDIR)/gga_x_pbetrans.Plo ./$(DEPDIR)/gga_x_pw86.Plo \
-	./$(DEPDIR)/gga_x_pw91.Plo ./$(DEPDIR)/gga_x_q2d.Plo \
-	./$(DEPDIR)/gga_x_rge2.Plo ./$(DEPDIR)/gga_x_rpbe.Plo \
-	./$(DEPDIR)/gga_x_s12.Plo ./$(DEPDIR)/gga_x_sfat.Plo \
-	./$(DEPDIR)/gga_x_sfat_pbe.Plo ./$(DEPDIR)/gga_x_sg4.Plo \
-	./$(DEPDIR)/gga_x_sogga11.Plo ./$(DEPDIR)/gga_x_ssb_sw.Plo \
-	./$(DEPDIR)/gga_x_vmt.Plo ./$(DEPDIR)/gga_x_vmt84.Plo \
-	./$(DEPDIR)/gga_x_wc.Plo ./$(DEPDIR)/gga_x_wpbeh.Plo \
-	./$(DEPDIR)/gga_xc_1w.Plo ./$(DEPDIR)/gga_xc_b97.Plo \
-	./$(DEPDIR)/gga_xc_edf1.Plo ./$(DEPDIR)/gga_xc_oblyp_d.Plo \
-	./$(DEPDIR)/gga_xc_th1.Plo ./$(DEPDIR)/gga_xc_th2.Plo \
-	./$(DEPDIR)/gga_xc_th3.Plo ./$(DEPDIR)/gga_xc_vv10.Plo \
-	./$(DEPDIR)/hyb_gga_xc_b1wc.Plo \
+	./$(DEPDIR)/gga_c_lyp.Plo ./$(DEPDIR)/gga_c_lypr.Plo \
+	./$(DEPDIR)/gga_c_op_b88.Plo ./$(DEPDIR)/gga_c_op_g96.Plo \
+	./$(DEPDIR)/gga_c_op_pbe.Plo ./$(DEPDIR)/gga_c_op_pw91.Plo \
+	./$(DEPDIR)/gga_c_op_xalpha.Plo ./$(DEPDIR)/gga_c_optc.Plo \
+	./$(DEPDIR)/gga_c_p86.Plo ./$(DEPDIR)/gga_c_p86vwn.Plo \
+	./$(DEPDIR)/gga_c_pbe.Plo ./$(DEPDIR)/gga_c_pbe_vwn.Plo \
+	./$(DEPDIR)/gga_c_pbeloc.Plo ./$(DEPDIR)/gga_c_pw91.Plo \
+	./$(DEPDIR)/gga_c_q2d.Plo ./$(DEPDIR)/gga_c_regtpss.Plo \
+	./$(DEPDIR)/gga_c_revtca.Plo ./$(DEPDIR)/gga_c_scan_e0.Plo \
+	./$(DEPDIR)/gga_c_sg4.Plo ./$(DEPDIR)/gga_c_sogga11.Plo \
+	./$(DEPDIR)/gga_c_tca.Plo ./$(DEPDIR)/gga_c_w94.Plo \
+	./$(DEPDIR)/gga_c_wi.Plo ./$(DEPDIR)/gga_c_wl.Plo \
+	./$(DEPDIR)/gga_c_zpbeint.Plo ./$(DEPDIR)/gga_c_zvpbeint.Plo \
+	./$(DEPDIR)/gga_c_zvpbeloc.Plo ./$(DEPDIR)/gga_k_apbe.Plo \
+	./$(DEPDIR)/gga_k_apbeint.Plo ./$(DEPDIR)/gga_k_dk.Plo \
+	./$(DEPDIR)/gga_k_exp4.Plo ./$(DEPDIR)/gga_k_gds08.Plo \
+	./$(DEPDIR)/gga_k_lc94.Plo ./$(DEPDIR)/gga_k_lgap.Plo \
+	./$(DEPDIR)/gga_k_lgap_ge.Plo ./$(DEPDIR)/gga_k_lkt.Plo \
+	./$(DEPDIR)/gga_k_llp.Plo ./$(DEPDIR)/gga_k_meyer.Plo \
+	./$(DEPDIR)/gga_k_mpbe.Plo ./$(DEPDIR)/gga_k_ol1.Plo \
+	./$(DEPDIR)/gga_k_ol2.Plo ./$(DEPDIR)/gga_k_pearson.Plo \
+	./$(DEPDIR)/gga_k_pg.Plo ./$(DEPDIR)/gga_k_pw86.Plo \
+	./$(DEPDIR)/gga_k_rational_p.Plo ./$(DEPDIR)/gga_k_tflw.Plo \
+	./$(DEPDIR)/gga_k_thakkar.Plo ./$(DEPDIR)/gga_k_vt84f.Plo \
+	./$(DEPDIR)/gga_x_2d_b86.Plo ./$(DEPDIR)/gga_x_2d_b86_mgc.Plo \
+	./$(DEPDIR)/gga_x_2d_b88.Plo ./$(DEPDIR)/gga_x_2d_pbe.Plo \
+	./$(DEPDIR)/gga_x_airy.Plo ./$(DEPDIR)/gga_x_ak13.Plo \
+	./$(DEPDIR)/gga_x_am05.Plo ./$(DEPDIR)/gga_x_b86.Plo \
+	./$(DEPDIR)/gga_x_b88.Plo ./$(DEPDIR)/gga_x_bayesian.Plo \
+	./$(DEPDIR)/gga_x_beefvdw.Plo ./$(DEPDIR)/gga_x_bpccac.Plo \
+	./$(DEPDIR)/gga_x_c09x.Plo ./$(DEPDIR)/gga_x_cap.Plo \
+	./$(DEPDIR)/gga_x_chachiyo.Plo ./$(DEPDIR)/gga_x_dk87.Plo \
+	./$(DEPDIR)/gga_x_ev93.Plo ./$(DEPDIR)/gga_x_fd_lb94.Plo \
+	./$(DEPDIR)/gga_x_ft97.Plo ./$(DEPDIR)/gga_x_g96.Plo \
+	./$(DEPDIR)/gga_x_gg99.Plo ./$(DEPDIR)/gga_x_hcth_a.Plo \
+	./$(DEPDIR)/gga_x_herman.Plo ./$(DEPDIR)/gga_x_hjs.Plo \
+	./$(DEPDIR)/gga_x_hjs_b88_v2.Plo ./$(DEPDIR)/gga_x_htbs.Plo \
+	./$(DEPDIR)/gga_x_ityh.Plo ./$(DEPDIR)/gga_x_ityh_optx.Plo \
+	./$(DEPDIR)/gga_x_ityh_pbe.Plo ./$(DEPDIR)/gga_x_kt.Plo \
+	./$(DEPDIR)/gga_x_lag.Plo ./$(DEPDIR)/gga_x_lb.Plo \
+	./$(DEPDIR)/gga_x_lg93.Plo ./$(DEPDIR)/gga_x_lspbe.Plo \
+	./$(DEPDIR)/gga_x_lsrpbe.Plo ./$(DEPDIR)/gga_x_lv_rpw86.Plo \
+	./$(DEPDIR)/gga_x_mpbe.Plo ./$(DEPDIR)/gga_x_n12.Plo \
+	./$(DEPDIR)/gga_x_ncap.Plo ./$(DEPDIR)/gga_x_ol2.Plo \
+	./$(DEPDIR)/gga_x_optx.Plo ./$(DEPDIR)/gga_x_pbe.Plo \
+	./$(DEPDIR)/gga_x_pbea.Plo ./$(DEPDIR)/gga_x_pbeint.Plo \
+	./$(DEPDIR)/gga_x_pbepow.Plo ./$(DEPDIR)/gga_x_pbetrans.Plo \
+	./$(DEPDIR)/gga_x_pw86.Plo ./$(DEPDIR)/gga_x_pw91.Plo \
+	./$(DEPDIR)/gga_x_q2d.Plo ./$(DEPDIR)/gga_x_rge2.Plo \
+	./$(DEPDIR)/gga_x_rpbe.Plo ./$(DEPDIR)/gga_x_s12.Plo \
+	./$(DEPDIR)/gga_x_sfat.Plo ./$(DEPDIR)/gga_x_sfat_pbe.Plo \
+	./$(DEPDIR)/gga_x_sg4.Plo ./$(DEPDIR)/gga_x_sogga11.Plo \
+	./$(DEPDIR)/gga_x_ssb_sw.Plo ./$(DEPDIR)/gga_x_vmt.Plo \
+	./$(DEPDIR)/gga_x_vmt84.Plo ./$(DEPDIR)/gga_x_wc.Plo \
+	./$(DEPDIR)/gga_x_wpbeh.Plo ./$(DEPDIR)/gga_xc_1w.Plo \
+	./$(DEPDIR)/gga_xc_b97.Plo ./$(DEPDIR)/gga_xc_edf1.Plo \
+	./$(DEPDIR)/gga_xc_oblyp_d.Plo ./$(DEPDIR)/gga_xc_th1.Plo \
+	./$(DEPDIR)/gga_xc_th2.Plo ./$(DEPDIR)/gga_xc_th3.Plo \
+	./$(DEPDIR)/gga_xc_vv10.Plo ./$(DEPDIR)/hyb_gga_xc_b1wc.Plo \
 	./$(DEPDIR)/hyb_gga_xc_b3lyp.Plo \
 	./$(DEPDIR)/hyb_gga_xc_cam_b3lyp.Plo \
 	./$(DEPDIR)/hyb_gga_xc_cam_o3lyp.Plo \
@@ -397,7 +398,7 @@ am__depfiles_remade = ./$(DEPDIR)/bessel.Plo \
 	./$(DEPDIR)/lda_c_vwn.Plo ./$(DEPDIR)/lda_c_vwn_1.Plo \
 	./$(DEPDIR)/lda_c_vwn_2.Plo ./$(DEPDIR)/lda_c_vwn_3.Plo \
 	./$(DEPDIR)/lda_c_vwn_4.Plo ./$(DEPDIR)/lda_c_vwn_rpa.Plo \
-	./$(DEPDIR)/lda_c_wigner.Plo \
+	./$(DEPDIR)/lda_c_w20.Plo ./$(DEPDIR)/lda_c_wigner.Plo \
 	./$(DEPDIR)/lda_k_gds08_worker.Plo ./$(DEPDIR)/lda_k_tf.Plo \
 	./$(DEPDIR)/lda_k_zlp.Plo ./$(DEPDIR)/lda_x.Plo \
 	./$(DEPDIR)/lda_x_1d_exponential.Plo \
@@ -438,22 +439,22 @@ am__depfiles_remade = ./$(DEPDIR)/bessel.Plo \
 	./$(DEPDIR)/mgga_x_msb.Plo ./$(DEPDIR)/mgga_x_mvs.Plo \
 	./$(DEPDIR)/mgga_x_mvsb.Plo ./$(DEPDIR)/mgga_x_pbe_gx.Plo \
 	./$(DEPDIR)/mgga_x_pkzb.Plo ./$(DEPDIR)/mgga_x_r2scan.Plo \
-	./$(DEPDIR)/mgga_x_r2scanl.Plo ./$(DEPDIR)/mgga_x_regtpss.Plo \
-	./$(DEPDIR)/mgga_x_revtm.Plo ./$(DEPDIR)/mgga_x_rlda.Plo \
-	./$(DEPDIR)/mgga_x_rscan.Plo ./$(DEPDIR)/mgga_x_rtpss.Plo \
-	./$(DEPDIR)/mgga_x_sa_tpss.Plo ./$(DEPDIR)/mgga_x_scan.Plo \
-	./$(DEPDIR)/mgga_x_scanl.Plo ./$(DEPDIR)/mgga_x_task.Plo \
-	./$(DEPDIR)/mgga_x_tau_hcth.Plo ./$(DEPDIR)/mgga_x_tb09.Plo \
-	./$(DEPDIR)/mgga_x_th.Plo ./$(DEPDIR)/mgga_x_tm.Plo \
-	./$(DEPDIR)/mgga_x_tpss.Plo ./$(DEPDIR)/mgga_x_vt84.Plo \
-	./$(DEPDIR)/mgga_xc_b97mv.Plo ./$(DEPDIR)/mgga_xc_b98.Plo \
-	./$(DEPDIR)/mgga_xc_cc06.Plo ./$(DEPDIR)/mgga_xc_hle17.Plo \
-	./$(DEPDIR)/mgga_xc_lp90.Plo ./$(DEPDIR)/mgga_xc_otpss_d.Plo \
-	./$(DEPDIR)/mgga_xc_zlp.Plo ./$(DEPDIR)/mix_func.Plo \
-	./$(DEPDIR)/references.Plo ./$(DEPDIR)/special_functions.Plo \
-	./$(DEPDIR)/util.Plo ./$(DEPDIR)/version.Plo \
-	./$(DEPDIR)/xc-info.Po ./$(DEPDIR)/xc-sanity.Po \
-	./$(DEPDIR)/xc-threshold.Po
+	./$(DEPDIR)/mgga_x_r2scanl.Plo ./$(DEPDIR)/mgga_x_regtm.Plo \
+	./$(DEPDIR)/mgga_x_regtpss.Plo ./$(DEPDIR)/mgga_x_revtm.Plo \
+	./$(DEPDIR)/mgga_x_rlda.Plo ./$(DEPDIR)/mgga_x_rscan.Plo \
+	./$(DEPDIR)/mgga_x_rtpss.Plo ./$(DEPDIR)/mgga_x_sa_tpss.Plo \
+	./$(DEPDIR)/mgga_x_scan.Plo ./$(DEPDIR)/mgga_x_scanl.Plo \
+	./$(DEPDIR)/mgga_x_task.Plo ./$(DEPDIR)/mgga_x_tau_hcth.Plo \
+	./$(DEPDIR)/mgga_x_tb09.Plo ./$(DEPDIR)/mgga_x_th.Plo \
+	./$(DEPDIR)/mgga_x_tm.Plo ./$(DEPDIR)/mgga_x_tpss.Plo \
+	./$(DEPDIR)/mgga_x_vt84.Plo ./$(DEPDIR)/mgga_xc_b97mv.Plo \
+	./$(DEPDIR)/mgga_xc_b98.Plo ./$(DEPDIR)/mgga_xc_cc06.Plo \
+	./$(DEPDIR)/mgga_xc_hle17.Plo ./$(DEPDIR)/mgga_xc_lp90.Plo \
+	./$(DEPDIR)/mgga_xc_otpss_d.Plo ./$(DEPDIR)/mgga_xc_zlp.Plo \
+	./$(DEPDIR)/mix_func.Plo ./$(DEPDIR)/references.Plo \
+	./$(DEPDIR)/special_functions.Plo ./$(DEPDIR)/util.Plo \
+	./$(DEPDIR)/version.Plo ./$(DEPDIR)/xc-info.Po \
+	./$(DEPDIR)/xc-sanity.Po ./$(DEPDIR)/xc-threshold.Po
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -726,7 +727,7 @@ libxc_la_FUNC_SOURCES = \
 	lda_xc_1d_ehwlrg.c lda_x_rel.c lda_x_erf.c lda_k_zlp.c		\
 	lda_c_gk72.c lda_xc_bn05.c lda_c_pmgb06.c			\
 	lda_k_gds08_worker.c lda_xc_tih.c lda_x_1d_exponential.c	\
-	lda_x_1d_soft.c hyb_lda_xc_cam_lda0.c lda_x_sloc.c \
+	lda_x_1d_soft.c hyb_lda_xc_cam_lda0.c lda_x_sloc.c lda_c_w20.c  \
 	gga.c \
 	gga_x_lg93.c gga_x_pbe.c gga_x_rpbe.c gga_x_pbea.c		\
 	gga_x_mpbe.c gga_x_herman.c gga_x_b86.c gga_x_b88.c		\
@@ -767,7 +768,7 @@ libxc_la_FUNC_SOURCES = \
 	gga_k_lkt.c gga_k_lgap.c gga_k_vt84f.c   \
 	gga_k_lgap_ge.c	gga_c_ccdf.c gga_k_rational_p.c gga_k_pg.c      \
 	gga_c_p86vwn.c gga_x_ityh_optx.c hyb_gga_xc_cam_o3lyp.c \
-	gga_x_ityh_pbe.c \
+	gga_x_ityh_pbe.c gga_c_lypr.c \
 	mgga.c \
 	mgga_x_lta.c mgga_x_tpss.c mgga_x_br89.c mgga_x_gvt4.c		\
 	mgga_x_m06l.c mgga_x_tau_hcth.c mgga_x_2d_prhg07.c		\
@@ -793,7 +794,7 @@ libxc_la_FUNC_SOURCES = \
 	mgga_c_ltapw.c mgga_x_jk.c mgga_x_r2scan.c mgga_c_r2scan.c      \
 	mgga_c_b94.c mgga_k_lk.c mgga_k_rda.c mgga_k_gea2.c             \
 	mgga_k_gea4.c mgga_k_csk.c mgga_k_csk_loc.c mgga_x_r2scanl.c    \
-        mgga_c_r2scanl.c mgga_k_pgslb.c mgga_c_kcisk.c
+        mgga_c_r2scanl.c mgga_k_pgslb.c mgga_c_kcisk.c mgga_x_regtm.c
 
 libxc_la_SOURCES = references.c $(libxc_la_FUNC_SOURCES)
 libxc_la_LDFLAGS = -version-info $(XC_LT_VERSION)
@@ -1013,6 +1014,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_c_hcth_a.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_c_lm.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_c_lyp.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_c_lypr.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_c_op_b88.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_c_op_g96.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gga_c_op_pbe.Plo@am__quote@ # am--include-marker
@@ -1178,6 +1180,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_c_vwn_3.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_c_vwn_4.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_c_vwn_rpa.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_c_w20.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_c_wigner.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_k_gds08_worker.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_k_tf.Plo@am__quote@ # am--include-marker
@@ -1256,6 +1259,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_pkzb.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_r2scan.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_r2scanl.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_regtm.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_regtpss.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_revtm.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_rlda.Plo@am__quote@ # am--include-marker
@@ -1621,6 +1625,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/gga_c_hcth_a.Plo
 	-rm -f ./$(DEPDIR)/gga_c_lm.Plo
 	-rm -f ./$(DEPDIR)/gga_c_lyp.Plo
+	-rm -f ./$(DEPDIR)/gga_c_lypr.Plo
 	-rm -f ./$(DEPDIR)/gga_c_op_b88.Plo
 	-rm -f ./$(DEPDIR)/gga_c_op_g96.Plo
 	-rm -f ./$(DEPDIR)/gga_c_op_pbe.Plo
@@ -1786,6 +1791,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/lda_c_vwn_3.Plo
 	-rm -f ./$(DEPDIR)/lda_c_vwn_4.Plo
 	-rm -f ./$(DEPDIR)/lda_c_vwn_rpa.Plo
+	-rm -f ./$(DEPDIR)/lda_c_w20.Plo
 	-rm -f ./$(DEPDIR)/lda_c_wigner.Plo
 	-rm -f ./$(DEPDIR)/lda_k_gds08_worker.Plo
 	-rm -f ./$(DEPDIR)/lda_k_tf.Plo
@@ -1864,6 +1870,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/mgga_x_pkzb.Plo
 	-rm -f ./$(DEPDIR)/mgga_x_r2scan.Plo
 	-rm -f ./$(DEPDIR)/mgga_x_r2scanl.Plo
+	-rm -f ./$(DEPDIR)/mgga_x_regtm.Plo
 	-rm -f ./$(DEPDIR)/mgga_x_regtpss.Plo
 	-rm -f ./$(DEPDIR)/mgga_x_revtm.Plo
 	-rm -f ./$(DEPDIR)/mgga_x_rlda.Plo
@@ -1962,6 +1969,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/gga_c_hcth_a.Plo
 	-rm -f ./$(DEPDIR)/gga_c_lm.Plo
 	-rm -f ./$(DEPDIR)/gga_c_lyp.Plo
+	-rm -f ./$(DEPDIR)/gga_c_lypr.Plo
 	-rm -f ./$(DEPDIR)/gga_c_op_b88.Plo
 	-rm -f ./$(DEPDIR)/gga_c_op_g96.Plo
 	-rm -f ./$(DEPDIR)/gga_c_op_pbe.Plo
@@ -2127,6 +2135,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/lda_c_vwn_3.Plo
 	-rm -f ./$(DEPDIR)/lda_c_vwn_4.Plo
 	-rm -f ./$(DEPDIR)/lda_c_vwn_rpa.Plo
+	-rm -f ./$(DEPDIR)/lda_c_w20.Plo
 	-rm -f ./$(DEPDIR)/lda_c_wigner.Plo
 	-rm -f ./$(DEPDIR)/lda_k_gds08_worker.Plo
 	-rm -f ./$(DEPDIR)/lda_k_tf.Plo
@@ -2205,6 +2214,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/mgga_x_pkzb.Plo
 	-rm -f ./$(DEPDIR)/mgga_x_r2scan.Plo
 	-rm -f ./$(DEPDIR)/mgga_x_r2scanl.Plo
+	-rm -f ./$(DEPDIR)/mgga_x_regtm.Plo
 	-rm -f ./$(DEPDIR)/mgga_x_regtpss.Plo
 	-rm -f ./$(DEPDIR)/mgga_x_revtm.Plo
 	-rm -f ./$(DEPDIR)/mgga_x_rlda.Plo
