@@ -13,10 +13,10 @@
 extern "C" {
 #endif
 
-#define XC_VERSION "5.1.2"
+#define XC_VERSION "5.1.3"
 #define XC_MAJOR_VERSION 5
 #define XC_MINOR_VERSION 1
-#define XC_MICRO_VERSION 2
+#define XC_MICRO_VERSION 3
 
 #ifdef __cplusplus
 }
