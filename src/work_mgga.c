@@ -42,11 +42,6 @@ work_mgga(const XC(func_type) *p, size_t np,
 {
 
   int order = -1;
-  size_t ip;
-  double dens;
-  double my_rho[2]={0.0, 0.0};
-  double my_sigma[3]={0.0, 0.0, 0.0};
-  double my_tau[2]={0.0, 0.0};
 
   if(zk     != NULL) order = 0;
   if(vrho   != NULL) order = 1;
@@ -68,7 +63,7 @@ work_mgga(const XC(func_type) *p, size_t np,
 
   *pcuda = *p;
 
-  auto nblocks = np/CUDA_BLOCK_SIZE;
+  size_t nblocks = np/CUDA_BLOCK_SIZE;
   if(np != nblocks*CUDA_BLOCK_SIZE) nblocks++;
 
   work_mgga_gpu<<<nblocks, CUDA_BLOCK_SIZE>>>(pcuda, order, np, rho, sigma, lapl, tau,
@@ -77,6 +72,12 @@ work_mgga(const XC(func_type) *p, size_t np,
   libxc_free(pcuda);
 
 #else
+  size_t ip;
+  double dens;
+  double my_rho[2]={0.0, 0.0};
+  double my_sigma[3]={0.0, 0.0, 0.0};
+  double my_tau[2]={0.0, 0.0};
+
   for(ip = 0; ip < np; ip++){
     //fprintf(stderr,
     //        "%14.10le %14.10le %14.10le %14.10le %14.10le %14.10le %14.10le %14.10le %14.10le\n",
