@@ -161,17 +161,17 @@ am__objects_1 = special_functions.lo bessel.lo expint_e1.lo \
 	lda_c_2d_amgb.lo lda_c_2d_prm.lo lda_k_tf.lo lda_xc_zlp.lo \
 	lda_xc_ksdt.lo lda_c_chachiyo.lo lda_c_chachiyo_mod.lo \
 	lda_xc_1d_ehwlrg.lo lda_x_rel.lo lda_x_erf.lo lda_k_zlp.lo \
-	lda_c_gk72.lo lda_xc_bn05.lo lda_c_pmgb06.lo \
+	lda_c_gk72.lo hyb_lda_xc_bn05.lo lda_c_pmgb06.lo \
 	lda_k_gds08_worker.lo lda_xc_tih.lo lda_x_1d_exponential.lo \
 	lda_x_1d_soft.lo hyb_lda_xc_cam_lda0.lo lda_x_sloc.lo \
-	lda_c_w20.lo gga.lo gga_x_lg93.lo gga_x_pbe.lo gga_x_rpbe.lo \
-	gga_x_pbea.lo gga_x_mpbe.lo gga_x_herman.lo gga_x_b86.lo \
-	gga_x_b88.lo gga_x_g96.lo gga_x_pw86.lo gga_x_pw91.lo \
-	gga_x_optx.lo gga_x_airy.lo gga_x_c09x.lo gga_x_dk87.lo \
-	gga_x_ft97.lo gga_x_wc.lo gga_x_am05.lo gga_x_bayesian.lo \
-	gga_x_kt.lo gga_x_htbs.lo gga_c_pbe.lo gga_c_lyp.lo \
-	gga_c_p86.lo gga_c_pw91.lo gga_c_am05.lo gga_c_lm.lo \
-	gga_c_wl.lo gga_c_wi.lo gga_x_lb.lo gga_xc_b97.lo \
+	lda_c_w20.lo lda_x_yukawa.lo gga.lo gga_x_lg93.lo gga_x_pbe.lo \
+	gga_x_rpbe.lo gga_x_pbea.lo gga_x_mpbe.lo gga_x_herman.lo \
+	gga_x_b86.lo gga_x_b88.lo gga_x_g96.lo gga_x_pw86.lo \
+	gga_x_pw91.lo gga_x_optx.lo gga_x_airy.lo gga_x_c09x.lo \
+	gga_x_dk87.lo gga_x_ft97.lo gga_x_wc.lo gga_x_am05.lo \
+	gga_x_bayesian.lo gga_x_kt.lo gga_x_htbs.lo gga_c_pbe.lo \
+	gga_c_lyp.lo gga_c_p86.lo gga_c_pw91.lo gga_c_am05.lo \
+	gga_c_lm.lo gga_c_wl.lo gga_c_wi.lo gga_x_lb.lo gga_xc_b97.lo \
 	gga_xc_edf1.lo gga_xc_1w.lo gga_c_optc.lo gga_c_tca.lo \
 	gga_x_bpccac.lo gga_x_sogga11.lo gga_c_sogga11.lo \
 	gga_xc_th1.lo gga_x_wpbeh.lo gga_x_hjs.lo gga_x_ityh.lo \
@@ -376,6 +376,7 @@ am__depfiles_remade = ./$(DEPDIR)/bessel.Plo \
 	./$(DEPDIR)/hyb_gga_xc_o3lyp.Plo \
 	./$(DEPDIR)/hyb_gga_xc_pbeh.Plo \
 	./$(DEPDIR)/hyb_gga_xc_wb97.Plo \
+	./$(DEPDIR)/hyb_lda_xc_bn05.Plo \
 	./$(DEPDIR)/hyb_lda_xc_cam_lda0.Plo \
 	./$(DEPDIR)/hyb_mgga_x_dldf.Plo \
 	./$(DEPDIR)/hyb_mgga_x_js18.Plo ./$(DEPDIR)/hyb_mgga_x_m05.Plo \
@@ -404,8 +405,8 @@ am__depfiles_remade = ./$(DEPDIR)/bessel.Plo \
 	./$(DEPDIR)/lda_x_1d_exponential.Plo \
 	./$(DEPDIR)/lda_x_1d_soft.Plo ./$(DEPDIR)/lda_x_2d.Plo \
 	./$(DEPDIR)/lda_x_erf.Plo ./$(DEPDIR)/lda_x_rel.Plo \
-	./$(DEPDIR)/lda_x_sloc.Plo ./$(DEPDIR)/lda_xc_1d_ehwlrg.Plo \
-	./$(DEPDIR)/lda_xc_bn05.Plo ./$(DEPDIR)/lda_xc_ksdt.Plo \
+	./$(DEPDIR)/lda_x_sloc.Plo ./$(DEPDIR)/lda_x_yukawa.Plo \
+	./$(DEPDIR)/lda_xc_1d_ehwlrg.Plo ./$(DEPDIR)/lda_xc_ksdt.Plo \
 	./$(DEPDIR)/lda_xc_teter93.Plo ./$(DEPDIR)/lda_xc_tih.Plo \
 	./$(DEPDIR)/lda_xc_zlp.Plo ./$(DEPDIR)/math_brent.Plo \
 	./$(DEPDIR)/mgga.Plo ./$(DEPDIR)/mgga_c_b88.Plo \
@@ -725,9 +726,10 @@ libxc_la_FUNC_SOURCES = \
 	lda_c_2d_amgb.c lda_c_2d_prm.c lda_k_tf.c lda_xc_zlp.c		\
 	lda_xc_ksdt.c lda_c_chachiyo.c lda_c_chachiyo_mod.c		\
 	lda_xc_1d_ehwlrg.c lda_x_rel.c lda_x_erf.c lda_k_zlp.c		\
-	lda_c_gk72.c lda_xc_bn05.c lda_c_pmgb06.c			\
+	lda_c_gk72.c hyb_lda_xc_bn05.c lda_c_pmgb06.c			\
 	lda_k_gds08_worker.c lda_xc_tih.c lda_x_1d_exponential.c	\
 	lda_x_1d_soft.c hyb_lda_xc_cam_lda0.c lda_x_sloc.c lda_c_w20.c  \
+	lda_x_yukawa.c 	                                                \
 	gga.c \
 	gga_x_lg93.c gga_x_pbe.c gga_x_rpbe.c gga_x_pbea.c		\
 	gga_x_mpbe.c gga_x_herman.c gga_x_b86.c gga_x_b88.c		\
@@ -1144,6 +1146,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_gga_xc_o3lyp.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_gga_xc_pbeh.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_gga_xc_wb97.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_lda_xc_bn05.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_lda_xc_cam_lda0.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_mgga_x_dldf.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_mgga_x_js18.Plo@am__quote@ # am--include-marker
@@ -1192,8 +1195,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_x_erf.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_x_rel.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_x_sloc.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_x_yukawa.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_xc_1d_ehwlrg.Plo@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_xc_bn05.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_xc_ksdt.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_xc_teter93.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lda_xc_tih.Plo@am__quote@ # am--include-marker
@@ -1755,6 +1758,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/hyb_gga_xc_o3lyp.Plo
 	-rm -f ./$(DEPDIR)/hyb_gga_xc_pbeh.Plo
 	-rm -f ./$(DEPDIR)/hyb_gga_xc_wb97.Plo
+	-rm -f ./$(DEPDIR)/hyb_lda_xc_bn05.Plo
 	-rm -f ./$(DEPDIR)/hyb_lda_xc_cam_lda0.Plo
 	-rm -f ./$(DEPDIR)/hyb_mgga_x_dldf.Plo
 	-rm -f ./$(DEPDIR)/hyb_mgga_x_js18.Plo
@@ -1803,8 +1807,8 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/lda_x_erf.Plo
 	-rm -f ./$(DEPDIR)/lda_x_rel.Plo
 	-rm -f ./$(DEPDIR)/lda_x_sloc.Plo
+	-rm -f ./$(DEPDIR)/lda_x_yukawa.Plo
 	-rm -f ./$(DEPDIR)/lda_xc_1d_ehwlrg.Plo
-	-rm -f ./$(DEPDIR)/lda_xc_bn05.Plo
 	-rm -f ./$(DEPDIR)/lda_xc_ksdt.Plo
 	-rm -f ./$(DEPDIR)/lda_xc_teter93.Plo
 	-rm -f ./$(DEPDIR)/lda_xc_tih.Plo
@@ -2099,6 +2103,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/hyb_gga_xc_o3lyp.Plo
 	-rm -f ./$(DEPDIR)/hyb_gga_xc_pbeh.Plo
 	-rm -f ./$(DEPDIR)/hyb_gga_xc_wb97.Plo
+	-rm -f ./$(DEPDIR)/hyb_lda_xc_bn05.Plo
 	-rm -f ./$(DEPDIR)/hyb_lda_xc_cam_lda0.Plo
 	-rm -f ./$(DEPDIR)/hyb_mgga_x_dldf.Plo
 	-rm -f ./$(DEPDIR)/hyb_mgga_x_js18.Plo
@@ -2147,8 +2152,8 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/lda_x_erf.Plo
 	-rm -f ./$(DEPDIR)/lda_x_rel.Plo
 	-rm -f ./$(DEPDIR)/lda_x_sloc.Plo
+	-rm -f ./$(DEPDIR)/lda_x_yukawa.Plo
 	-rm -f ./$(DEPDIR)/lda_xc_1d_ehwlrg.Plo
-	-rm -f ./$(DEPDIR)/lda_xc_bn05.Plo
 	-rm -f ./$(DEPDIR)/lda_xc_ksdt.Plo
 	-rm -f ./$(DEPDIR)/lda_xc_teter93.Plo
 	-rm -f ./$(DEPDIR)/lda_xc_tih.Plo
