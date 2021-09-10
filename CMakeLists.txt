@@ -237,6 +237,7 @@ set(raw_sources_list
   gga_x_pbetrans.c
   gga_x_pw86.c
   gga_x_pw91.c
+  gga_x_q1d.c
   gga_x_q2d.c
   gga_x_rge2.c
   gga_x_rpbe.c
@@ -415,6 +416,9 @@ set(raw_sources_list
   mgga_k_gea4.c
   mgga_x_r2scanl.c
   mgga_c_r2scanl.c
+  mgga_c_rregtm.c
+  mgga_x_mcml.c
+  mgga_c_rmggac.c
   mix_func.c
   deorbitalize_func.c
   references.c
