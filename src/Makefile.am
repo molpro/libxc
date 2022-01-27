@@ -121,7 +121,7 @@ libxc_la_FUNC_SOURCES = \
 	mgga_k_gea4.c mgga_k_csk.c mgga_k_csk_loc.c mgga_x_r2scanl.c    \
         mgga_c_r2scanl.c mgga_k_pgslb.c mgga_c_kcisk.c mgga_x_regtm.c   \
 	mgga_c_rregtm.c mgga_x_mcml.c mgga_c_rmggac.c mgga_x_rppscan.c  \
-	mgga_c_rppscan.c mgga_x_r4scan.c
+	mgga_c_rppscan.c mgga_x_r4scan.c mgga_x_ft98.c
 
 libxc_la_SOURCES = references.c $(libxc_la_FUNC_SOURCES)
 libxc_la_LDFLAGS = -version-info $(XC_LT_VERSION)
@@ -129,8 +129,8 @@ libxc_la_LDFLAGS = -version-info $(XC_LT_VERSION)
 if COMPILE_FORTRAN
   lib_LTLIBRARIES += libxcf03.la libxcf90.la
 
-  nodist_libxcf03_la_SOURCES = libxcf03.f90
-  nodist_libxcf90_la_SOURCES = libxcf90.f90
+  libxcf03_la_SOURCES = libxcf03.f90
+  libxcf90_la_SOURCES = libxcf90.f90
 
   # libtool stuff
   libxcf03_la_LDFLAGS = -version-info $(XC_LT_VERSION)
@@ -143,12 +143,11 @@ endif
 noinst_HEADERS = \
 	string_f.h references.h util.h \
 	decl_lda.h decl_gga.h decl_mgga.h \
-  work_lda.c work_gga.c work_mgga.c \
-	libxc_master.F90 libxc_master_f90.F90
-include_HEADERS = xc.h xc_funcs_removed.h
-nodist_include_HEADERS = xc_funcs.h xc_funcs_worker.h
-
-BUILT_SOURCES = xc_funcs.h
+	work_lda.c work_gga.c work_mgga.c \
+	libxc_master.F90 libxc_master_f90.F90 \
+        funcs_lda.c funcs_hyb_lda.c funcs_gga.c funcs_hyb_gga.c funcs_mgga.c funcs_hyb_mgga.c funcs_key.c \
+	libxc_inc.f90
+include_HEADERS = xc.h xc_funcs.h xc_funcs_removed.h xc_funcs_worker.h
 
 ## declare fortran modules so they are installed
 fmoddir = @FMODDIR@
@@ -168,15 +167,11 @@ fmod_DATA += $(XCF03LIBMODS) $(XCF90LIBMODS)
 
 endif # COMPILE_FORTRAN
 
-
-CLEANFILES = *~ *.bak *.mod *.il *.d *.pc* ifc* funcs_*.c funcs.h \
-  libxc_inc.f90 libxcf03.f90 libxcf90.f90 xc_funcs.h xc_funcs_worker.h \
-  xc_f_inc.c libxc_docs.txt
+CLEANFILES = *~ *.bak *.mod *.il *.d *.pc* ifc*
 
 xc_f.o : xc_f_inc.c
 
-xc_funcs.h xc_funcs_worker.h libxc_inc.f90 \
-funcs_lda.c funcs_gga.c funcs_mgga.c funcs_key.c: $(srcdir)/../scripts/get_funcs.pl
+funcs: $(srcdir)/../scripts/get_funcs.pl
 	$(srcdir)/../scripts/get_funcs.pl $(srcdir) $(top_builddir)/src
 
 LTPREF = $(subst xc_f.lo,,$(firstword $(am_libxcf03_la_OBJECTS)))
@@ -186,7 +181,7 @@ LTPREF = $(subst xc_f.lo,,$(firstword $(am_libxcf03_la_OBJECTS)))
 #src/Makefile.am:140: subst xc_f.lo,,$(firstword $(am_libxcf03_la_OBJECTS: non-POSIX variable name
 #src/Makefile.am:140: (probably a GNU make extension)
 
-LTPREF03 = $(subst libxcf03.lo,,$(firstword $(nodist_libxcf03_la_OBJECTS)))
+LTPREF03 = $(subst libxcf03.lo,,$(firstword $(libxcf03_la_OBJECTS)))
 libxcf03.f90 : libxc_master.F90 libxc_inc.f90
 	@FCCPP@ @CPPFLAGS@ $(AM_CPPFLAGS) -I$(top_builddir)/src $(srcdir)/libxc_master.F90 > $(top_builddir)/src/libxcf03.f90
 	@if [ "@F90_ACCEPTS_LINE_NUMBERS@" = "no" ]; then \

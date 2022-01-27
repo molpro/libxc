@@ -28,17 +28,24 @@ if(${ENABLE_PYTHON} AND NOT ${BUILD_SHARED_LIBS})
   message(FATAL_ERROR "ENABLE_PYTHON ON requires BUILD_SHARED_LIBS ON because only shared libraries can be dynamically loaded")
 endif()
 
-# GCC appears to be catching -xHost as "-x Host" which breaks the detection
+# Need to check things per compiler brand since they're different
 if(CMAKE_C_COMPILER_ID MATCHES Intel)
-  option_with_flags(ENABLE_XHOST "Enable processor-specific optimization" ON "-xHost" "-march=native" "/arch:AVX2")
-else()
-  option_with_flags(ENABLE_XHOST "Enable processor-specific optimization" ON  "-march=native" "-xHost" "/arch:AVX2")
+  option_with_flags(ENABLE_XHOST "Enable processor-specific optimization" ON "-xHost")
+elseif(CMAKE_C_COMPILER_ID MATCHES GNU)
+  option_with_flags(ENABLE_XHOST "Enable processor-specific optimization" ON  "-march=native")
+elseif(CMAKE_C_COMPILER_ID MATCHES Clang)
+  option_with_flags(ENABLE_XHOST "Enable processor-specific optimization" ON  "-march=native")
+elseif(CMAKE_C_COMPILER_ID MATCHES PGI)
+  option_with_flags(ENABLE_XHOST "Enable processor-specific optimization" ON  "-tp host")
+elseif(CMAKE_C_COMPILER_ID MATCHES MSVC)
+  option_with_flags(ENABLE_XHOST "Enable processor-specific optimization" ON  "/arch:AVX2")
 endif()
 
 option_with_print(DISABLE_VXC "Don't compile first derivative code" OFF)
 option_with_print(DISABLE_FXC "Don't compile second derivative code" OFF)
 option_with_print(DISABLE_KXC "Don't compile third derivative code" ON)
 option_with_print(DISABLE_LXC "Don't compile fourth derivative code" ON)
+option_with_print(DISABLE_FHC "Disable enforcement of Fermi hole curvature?" OFF)
 
 ######################### Process & Validate Options ###########################
 include(autocmake_safeguards)
@@ -84,6 +91,9 @@ endif(DISABLE_KXC)
 if(DISABLE_LXC)
   add_definitions (-DXC_DONT_COMPILE_LXC)
 endif(DISABLE_LXC)
+if(NOT DISABLE_FHC)
+  add_definitions (-DXC_ENFORCE_FERMI_HOLE_CURVATURE)
+endif(NOT DISABLE_FHC)
 
 # <<<  Build  >>>
 
@@ -424,6 +434,7 @@ set(raw_sources_list
   mgga_x_rppscan.c
   mgga_c_rppscan.c
   mgga_x_r4scan.c
+  mgga_x_ft98.c
   mix_func.c
   deorbitalize_func.c
   references.c
@@ -475,18 +486,6 @@ if(ENABLE_FORTRAN)
     SOVERSION ${${PROJECT_NAME}_SOMAJOR})
 endif()
 
-# run get_funcs.pl to generate headers for xc inclusion
-find_package(Perl REQUIRED)
-set(gen_dir "${PROJECT_BINARY_DIR}/gen_funcidx")
-execute_process(
-  COMMAND ${CMAKE_COMMAND} -E make_directory ${gen_dir}
-  TIMEOUT 5
-  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
-execute_process(
-  COMMAND ${PERL_EXECUTABLE} scripts/get_funcs.pl ${src_prefix} ${gen_dir}
-  TIMEOUT 60
-  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
-
 add_executable(xc-info "${src_prefix}/xc-info.c")
 target_link_libraries(xc-info xc)
 
@@ -497,7 +496,7 @@ target_link_libraries(xc-threshold xc)
 include_directories(${PROJECT_SOURCE_DIR}/${src_prefix}  # for util.h
   ${PROJECT_BINARY_DIR}/${src_prefix}  # for xc.h
   ${PROJECT_BINARY_DIR}  # for xc_version.h, config.h
-  ${gen_dir})  # for xc_funcs.h
+)
 
 if(BUILD_TESTING)
   find_program(BZip2_EXECUTABLE
@@ -515,10 +514,10 @@ endif()
 
 # by default, headers NOT namespace protected
 install(FILES ${PROJECT_BINARY_DIR}/${src_prefix}/xc.h
-  ${gen_dir}/xc_funcs.h
-  ${gen_dir}/xc_funcs_worker.h
-  ${PROJECT_BINARY_DIR}/xc_version.h
+  ${PROJECT_SOURCE_DIR}/${src_prefix}/xc_funcs.h
+  ${PROJECT_SOURCE_DIR}/${src_prefix}/xc_funcs_worker.h
   ${PROJECT_SOURCE_DIR}/${src_prefix}/xc_funcs_removed.h
+  ${PROJECT_BINARY_DIR}/xc_version.h
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}${NAMESPACE_INSTALL_INCLUDEDIR})
 install(TARGETS xc-info
   OPTIONAL

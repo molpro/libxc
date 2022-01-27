@@ -139,6 +139,9 @@
 /* defined if first derivatives are disabled */
 #undef XC_DONT_COMPILE_VXC
 
+/* defined if Fermi hole curvature is enforced */
+#undef XC_ENFORCE_FERMI_HOLE_CURVATURE
+
 /* Define to `__inline__' or `__inline' if that's what the C compiler
    calls it, or to nothing if 'inline' is not supported under any name.  */
 #ifndef __cplusplus
