@@ -1,3 +1,14 @@
+## [5.2.2] - 2022-02-01
+
+### Fixed
+- Some Maple sources had not been properly backported from the changed API in master which caused compile failures in 5.2.1 (#379)
+
+## [5.2.1] - 2022-01-31
+
+### Fixed
+- Maple code in repository was incorrect for hyb_gga_x_cam_s12 (#372)
+- Cleanup of reference handling in Fortran interface caused infinite loop (#374)
+
 ## [5.2.0] - 2022-01-21
 
 ### Fixed
