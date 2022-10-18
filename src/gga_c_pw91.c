@@ -10,7 +10,6 @@
 
 #define XC_GGA_C_PW91 134 /* Perdew & Wang 91 */
 
-#include "decl_gga.h"
 #include "maple2c/gga_exc/gga_c_pw91.c"
 #include "work_gga.c"
 
@@ -22,10 +21,10 @@ const xc_func_info_type xc_func_info_gga_c_pw91 = {
   XC_CORRELATION,
   "Perdew & Wang 91",
   XC_FAMILY_GGA,
-  {&xc_ref_Perdew1991, &xc_ref_Perdew1992_6671, &xc_ref_Perdew1992_6671_err, NULL, NULL},
+  {&xc_ref_Perdew1991, &xc_ref_Perdew1992_6671, &xc_ref_Perdew1993_4978, NULL, NULL},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-12,
   {0, NULL, NULL, NULL, NULL},
   NULL, NULL,
-  NULL, work_gga, NULL
+  NULL, &work_gga, NULL
 };

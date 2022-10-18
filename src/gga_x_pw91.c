@@ -70,7 +70,6 @@ mpw91_set_ext_params(xc_func_type *p, const double *ext_params)
   params->f    =  1.0e-6/(X_FACTOR_C*pow(X2S, params->expo));
 }
 
-#include "decl_gga.h"
 #include "maple2c/gga_exc/gga_x_pw91.c"
 #include "work_gga.c"
 
@@ -82,12 +81,12 @@ const xc_func_info_type xc_func_info_gga_x_pw91 = {
   XC_EXCHANGE,
   "Perdew & Wang 91",
   XC_FAMILY_GGA,
-  {&xc_ref_Perdew1991, &xc_ref_Perdew1992_6671, &xc_ref_Perdew1992_6671_err, NULL, NULL},
+  {&xc_ref_Perdew1991, &xc_ref_Perdew1992_6671, &xc_ref_Perdew1993_4978, NULL, NULL},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-15,
   {PW91_N_PAR, pw91_names, pw91_desc, pw91_values, set_ext_params_cpy},
   gga_x_pw91_init, NULL,
-  NULL, work_gga, NULL
+  NULL, &work_gga, NULL
 };
 
 #ifdef __cplusplus
@@ -103,7 +102,7 @@ const xc_func_info_type xc_func_info_gga_x_mpw91 = {
   1e-15,
   {MPW91_N_PAR, mpw91_names, mpw91_desc, mpw91_values, mpw91_set_ext_params},
   gga_x_pw91_init, NULL,
-  NULL, work_gga, NULL
+  NULL, &work_gga, NULL
 };
 
 #ifdef __cplusplus
@@ -114,10 +113,10 @@ const xc_func_info_type xc_func_info_gga_x_pw91_mod = {
   XC_EXCHANGE,
   "PW91, alternate version with more digits",
   XC_FAMILY_GGA,
-  {&xc_ref_Perdew1991, &xc_ref_Perdew1992_6671, &xc_ref_Perdew1992_6671_err, NULL, NULL},
+  {&xc_ref_Perdew1991, &xc_ref_Perdew1992_6671, &xc_ref_Perdew1993_4978, NULL, NULL},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-15,
   {MPW91_N_PAR, mpw91_names, mpw91_desc, pw91_mod_values, mpw91_set_ext_params},
   gga_x_pw91_init, NULL,
-  NULL, work_gga, NULL
+  NULL, &work_gga, NULL
 };

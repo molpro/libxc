@@ -9,12 +9,12 @@
 
 #include "util.h"
 
-#define XC_MGGA_X_M06_L         203 /* M06-L exchange functional from Minnesota          */
-#define XC_HYB_MGGA_X_M06_HF    444 /* M06-HF hybrid exchange functional from Minnesota  */
-#define XC_HYB_MGGA_X_M06       449 /* M06 hybrid exchange functional from Minnesota     */
-#define XC_MGGA_X_REVM06_L      293 /* revised M06-L exchange functional from Minnesota  */
-#define XC_HYB_MGGA_X_REVM06    305 /* revised M06 hybrid exchange functional from Minnesota  */
-#define XC_HYB_MGGA_X_M06_SX    310 /* M06-SX exchange functional from Minnesota  */
+#define XC_MGGA_X_M06_L         203 /* Minnesota M06-L exchange functional              */
+#define XC_HYB_MGGA_X_M06_HF    444 /* Minnesota M06-HF hybrid exchange functional      */
+#define XC_HYB_MGGA_X_M06       449 /* Minnesota M06 hybrid exchange functional         */
+#define XC_MGGA_X_REVM06_L      293 /* revised Minnesota M06-L exchange functional      */
+#define XC_HYB_MGGA_X_REVM06    305 /* revised Minnesota M06 hybrid exchange functional */
+#define XC_HYB_MGGA_X_M06_SX    310 /* Minnesota M06-SX exchange functional             */
 
 typedef struct {
   double a[12], d[6];
@@ -158,7 +158,6 @@ mgga_x_m06l_init(xc_func_type *p)
   }
 }
 
-#include "decl_mgga.h"
 #include "maple2c/mgga_exc/mgga_x_m06l.c"
 #include "work_mgga.c"
 
@@ -175,7 +174,7 @@ const xc_func_info_type xc_func_info_mgga_x_m06_l = {
   1e-15,
   {N_PAR_PURE, pure_names, pure_desc, par_m06l, set_ext_params_cpy},
   mgga_x_m06l_init, NULL,
-  NULL, NULL, work_mgga
+  NULL, NULL, &work_mgga
 };
 
 #ifdef __cplusplus
@@ -191,7 +190,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_m06_hf = {
   1e-15,
   {N_PAR_HYB, hyb_names, hyb_desc, par_m06hf, set_ext_params_cpy_exx},
   mgga_x_m06l_init, NULL,
-  NULL, NULL, work_mgga
+  NULL, NULL, &work_mgga
 };
 
 #ifdef __cplusplus
@@ -207,7 +206,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_m06 = {
   1e-15,
   {N_PAR_HYB, hyb_names, hyb_desc, par_m06, set_ext_params_cpy_exx},
   mgga_x_m06l_init, NULL,
-  NULL, NULL, work_mgga
+  NULL, NULL, &work_mgga
 };
 
 #ifdef __cplusplus
@@ -223,7 +222,7 @@ const xc_func_info_type xc_func_info_mgga_x_revm06_l = {
   1e-15,
   {N_PAR_PURE, pure_names, pure_desc, par_revm06l, set_ext_params_cpy},
   mgga_x_m06l_init, NULL,
-  NULL, NULL, work_mgga
+  NULL, NULL, &work_mgga
 };
 
 #ifdef __cplusplus
@@ -239,7 +238,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_revm06 = {
   1e-15,
   {N_PAR_HYB, hyb_names, hyb_desc, par_revm06, set_ext_params_cpy_exx},
   mgga_x_m06l_init, NULL,
-  NULL, NULL, work_mgga
+  NULL, NULL, &work_mgga
 };
 
 #ifdef __cplusplus
@@ -255,5 +254,5 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_m06_sx = {
   1e-15,
   {N_PAR_SR, sr_names, sr_desc, par_m06_sx, set_ext_params_cpy_cam_sr},
   mgga_x_m06l_init, NULL,
-  NULL, NULL, work_mgga
+  NULL, NULL, &work_mgga
 };

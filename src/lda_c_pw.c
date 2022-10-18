@@ -114,7 +114,6 @@ lda_c_pw_init(xc_func_type *p)
   p->params = libxc_malloc(sizeof(lda_c_pw_params));
 }
 
-#include "decl_lda.h"
 #include "maple2c/lda_exc/lda_c_pw.c"
 #include "work_lda.c"
 
@@ -131,7 +130,7 @@ const xc_func_info_type xc_func_info_lda_c_pw = {
   1e-15,
   {PW_N_PAR, pw_names, pw_desc, par_pw, set_ext_params_cpy},
   lda_c_pw_init, NULL,
-  work_lda, NULL, NULL
+  &work_lda, NULL, NULL
 };
 
 #ifdef __cplusplus
@@ -142,12 +141,12 @@ const xc_func_info_type xc_func_info_lda_c_pw_mod = {
   XC_CORRELATION,
   "Perdew & Wang (modified)",
   XC_FAMILY_LDA,
-  {&xc_ref_Perdew1992_13244_mod, NULL, NULL, NULL, NULL},
+  {&xc_ref_Perdew1992_13244, &xc_ref_PBEdigits, NULL, NULL, NULL},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-15,
   {PW_N_PAR, pw_names, pw_desc, par_pw_mod, set_ext_params_cpy},
   lda_c_pw_init, NULL,
-  work_lda, NULL, NULL
+  &work_lda, NULL, NULL
 };
 
 #ifdef __cplusplus
@@ -158,12 +157,12 @@ const xc_func_info_type xc_func_info_lda_c_ob_pw = {
   XC_CORRELATION,
   "Ortiz & Ballone (PW parametrization)",
   XC_FAMILY_LDA,
-  {&xc_ref_Ortiz1994_1391, &xc_ref_Ortiz1994_1391_err, &xc_ref_Perdew1992_13244_mod, NULL, NULL},
+  {&xc_ref_Ortiz1994_1391, &xc_ref_Ortiz1997_9970, &xc_ref_Perdew1992_13244, &xc_ref_PBEdigits, NULL},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-15,
   {PW_N_PAR, pw_names, pw_desc, par_ob, set_ext_params_cpy},
   lda_c_pw_init, NULL,
-  work_lda, NULL, NULL
+  &work_lda, NULL, NULL
 };
 
 #ifdef __cplusplus
@@ -179,7 +178,7 @@ const xc_func_info_type xc_func_info_lda_c_pw_rpa = {
   1e-15,
   {PW_N_PAR, pw_names, pw_desc, par_pw_rpa, set_ext_params_cpy},
   lda_c_pw_init, NULL,
-  work_lda, NULL, NULL
+  &work_lda, NULL, NULL
 };
 
 #ifdef __cplusplus
@@ -195,7 +194,7 @@ const xc_func_info_type xc_func_info_lda_c_upw92 = {
   1e-15,
   {PW_N_PAR, pw_names, pw_desc, par_upw92, set_ext_params_cpy},
   lda_c_pw_init, NULL,
-  work_lda, NULL, NULL
+  &work_lda, NULL, NULL
 };
 
 #ifdef __cplusplus
@@ -211,5 +210,5 @@ const xc_func_info_type xc_func_info_lda_c_rpw92 = {
   1e-15,
   {PW_N_PAR, pw_names, pw_desc, par_rpw92, set_ext_params_cpy},
   lda_c_pw_init, NULL,
-  work_lda, NULL, NULL
+  &work_lda, NULL, NULL
 };

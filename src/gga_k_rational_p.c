@@ -31,7 +31,6 @@ static const char  *desc[N_PAR]   = {
 static const double par_p32[N_PAR] =
   {0.7687, 3.0/2.0};
 
-#include "decl_gga.h"
 #include "maple2c/gga_exc/gga_k_rational_p.c"
 #include "work_gga.c"
 
@@ -41,12 +40,12 @@ extern "C"
 const xc_func_info_type xc_func_info_gga_k_rational_p = {
   XC_GGA_K_RATIONAL_P,
   XC_KINETIC,
-  "RATIONAL^p by Lehtomaki and Lopez-Acevedo (by default p=3/2, C2=0.7687)",
+  "RATIONAL$^{p}$ by Lehtomaki and Lopez-Acevedo (by default $p=3/2$, $C_{2}=0.7687$)",
   XC_FAMILY_GGA,
   {&xc_ref_Lehtomaki2019_165111, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-15,
   {N_PAR, names, desc, par_p32, set_ext_params_cpy},
   gga_k_rational_p_init, NULL,
-  NULL, work_gga, NULL
+  NULL, &work_gga, NULL
 };

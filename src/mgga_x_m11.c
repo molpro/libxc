@@ -10,8 +10,8 @@
 
 #include "util.h"
 
-#define XC_HYB_MGGA_X_M11       297 /* M11 hybrid exchange functional from Minnesota        */
-#define XC_HYB_MGGA_X_REVM11    304 /* revM11 hybrid exchange functional from Minnesota     */
+#define XC_HYB_MGGA_X_M11       297 /* Minnesota M11 hybrid exchange functional            */
+#define XC_HYB_MGGA_X_REVM11    304 /* Revised Minnesota revM11 hybrid exchange functional */
 
 typedef struct{
   const double a[12], b[12];
@@ -46,7 +46,6 @@ mgga_x_m11_init(xc_func_type *p)
   xc_hyb_init_cam(p, 0.0, 0.0, 0.0);
 }
 
-#include "decl_mgga.h"
 #include "maple2c/mgga_exc/mgga_x_m11.c"
 #include "work_mgga.c"
 
@@ -63,7 +62,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_m11 = {
   1e-11,
   {N_PAR, names, desc, par_m11, set_ext_params_cpy_cam},
   mgga_x_m11_init, NULL,
-  NULL, NULL, work_mgga,
+  NULL, NULL, &work_mgga,
 };
 
 #ifdef __cplusplus
@@ -79,5 +78,5 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_revm11 = {
   1e-11,
   {N_PAR, names, desc, par_revm11, set_ext_params_cpy_cam},
   mgga_x_m11_init, NULL,
-  NULL, NULL, work_mgga,
+  NULL, NULL, &work_mgga,
 };

@@ -12,13 +12,13 @@
 #define XC_GGA_C_CHACHIYO  309   /* Chachiyo simple GGA correlation */
 
 typedef struct {
-  double ap, bp, af, bf, h;
+  double ap, bp, cp, af, bf, cf, h;
 } gga_c_chachiyo_params;
 
-#define N_PAR 5
-static const char  *names[N_PAR]  = {"_ap", "_bp", "_af", "_bf", "_h"};
-static const char  *desc[N_PAR]   = {"ap parameter", "bp parameter", "af parameter", "bf parameter", "h parameter"};
-static const double par_chachiyo[N_PAR] = {-0.01554535, 20.4562557, -0.007772675, 27.4203609, 0.06672632};
+#define N_PAR 7
+static const char  *names[N_PAR]  = {"_ap", "_bp", "_cp", "_af", "_bf", "_cf", "_h"};
+static const char  *desc[N_PAR]   = {"ap parameter", "bp parameter", "cp parameter", "af parameter", "bf parameter", "cf parameter", "h parameter"};
+static const double par_chachiyo[N_PAR] = {-0.01554535, 20.4562557, 20.4562557, -0.007772675, 27.4203609, 27.4203609, 0.06672632};
 
 static void
 gga_c_chachiyo_init(xc_func_type *p)
@@ -27,7 +27,6 @@ gga_c_chachiyo_init(xc_func_type *p)
   p->params = libxc_malloc(sizeof(gga_c_chachiyo_params));
 }
 
-#include "decl_gga.h"
 #include "maple2c/gga_exc/gga_c_chachiyo.c"
 #include "work_gga.c"
 
@@ -44,5 +43,5 @@ const xc_func_info_type xc_func_info_gga_c_chachiyo = {
   1e-14,
   {N_PAR, names, desc, par_chachiyo, set_ext_params_cpy},
   gga_c_chachiyo_init, NULL,
-  NULL, work_gga, NULL
+  NULL, &work_gga, NULL
 };

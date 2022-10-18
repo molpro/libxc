@@ -14,8 +14,8 @@ if HAVE_CUDA
 CC+="-dc"
 endif
 
-bin_PROGRAMS = xc-info xc-threshold
-noinst_PROGRAMS = genwiki xc-sanity
+bin_PROGRAMS = xc-info
+noinst_PROGRAMS = genwiki xc-sanity xc-threshold
 
 xc_info_SOURCES = xc-info.c
 xc_info_LDADD = libxc.la -lm
@@ -121,7 +121,8 @@ libxc_la_FUNC_SOURCES = \
 	mgga_k_gea4.c mgga_k_csk.c mgga_k_csk_loc.c mgga_x_r2scanl.c    \
         mgga_c_r2scanl.c mgga_k_pgslb.c mgga_c_kcisk.c mgga_x_regtm.c   \
 	mgga_c_rregtm.c mgga_x_mcml.c mgga_c_rmggac.c mgga_x_rppscan.c  \
-	mgga_c_rppscan.c mgga_x_r4scan.c mgga_x_ft98.c
+	mgga_c_rppscan.c mgga_x_r4scan.c mgga_x_ft98.c                  \
+	hyb_mgga_xc_br3p86.c mgga_x_vcml.c mgga_c_cc.c mgga_c_ccalda.c
 
 libxc_la_SOURCES = references.c $(libxc_la_FUNC_SOURCES)
 libxc_la_LDFLAGS = -version-info $(XC_LT_VERSION)
@@ -142,8 +143,8 @@ endif
 
 noinst_HEADERS = \
 	string_f.h references.h util.h \
-	decl_lda.h decl_gga.h decl_mgga.h \
-	work_lda.c work_gga.c work_mgga.c \
+	work_lda.c work_lda_inc.c work_gga.c work_gga_inc.c	\
+	work_mgga.c work_mgga_inc.c \
 	libxc_master.F90 libxc_master_f90.F90 \
         funcs_lda.c funcs_hyb_lda.c funcs_gga.c funcs_hyb_gga.c funcs_mgga.c funcs_hyb_mgga.c funcs_key.c \
 	libxc_inc.f90
@@ -171,8 +172,8 @@ CLEANFILES = *~ *.bak *.mod *.il *.d *.pc* ifc*
 
 xc_f.o : xc_f_inc.c
 
-funcs: $(srcdir)/../scripts/get_funcs.pl
-	$(srcdir)/../scripts/get_funcs.pl $(srcdir) $(top_builddir)/src
+funcs: $(srcdir)/../scripts/get_functional_info.py
+	$(srcdir)/../scripts/get_functional_info.py --srcdir=$(srcdir) --builddir=$(top_builddir)/src
 
 LTPREF = $(subst xc_f.lo,,$(firstword $(am_libxcf03_la_OBJECTS)))
 # Surprisingly, libtool/automake do not seem to provide a macro or variable for what the object names will be,

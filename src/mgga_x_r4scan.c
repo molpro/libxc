@@ -30,7 +30,6 @@ mgga_x_r4scan_init(xc_func_type *p)
   p->params = libxc_malloc(sizeof(mgga_x_r4scan_params));
 }
 
-#include "decl_mgga.h"
 #include "maple2c/mgga_exc/mgga_x_r4scan.c"
 #include "work_mgga.c"
 
@@ -40,12 +39,12 @@ extern "C"
 const xc_func_info_type xc_func_info_mgga_x_r4scan = {
   XC_MGGA_X_R4SCAN,
   XC_EXCHANGE,
-  "r^4SCAN, a functional that satisfies the same exact constraints that SCAN does",
+  "r$^{4}$SCAN, a functional that satisfies the same exact constraints that SCAN does",
   XC_FAMILY_MGGA,
-  {&xc_ref_Furness2021, NULL, NULL, NULL, NULL},
+  {&xc_ref_Furness2022_034109, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-11,
   {N_PAR, names, desc, par_r4scan, set_ext_params_cpy},
   mgga_x_r4scan_init, NULL,
-  NULL, NULL, work_mgga
+  NULL, NULL, &work_mgga
 };

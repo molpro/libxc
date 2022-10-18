@@ -10,7 +10,6 @@
 
 #define XC_GGA_X_HERMAN          104 /* Herman et al original GGA                  */
 
-#include "decl_gga.h"
 #include "maple2c/gga_exc/gga_x_herman.c"
 #include "work_gga.c"
 
@@ -22,10 +21,10 @@ const xc_func_info_type xc_func_info_gga_x_herman = {
   XC_EXCHANGE,
   "Herman Xalphabeta GGA",
   XC_FAMILY_GGA,
-  {&xc_ref_Herman1969_807, &xc_ref_Herman1969_827, NULL, NULL, NULL},
+  {&xc_ref_Herman1969_807, &xc_ref_Herman1970_827, NULL, NULL, NULL},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-15,
   {0, NULL, NULL, NULL, NULL},
   NULL, NULL,
-  NULL, work_gga, NULL
+  NULL, &work_gga, NULL
 };

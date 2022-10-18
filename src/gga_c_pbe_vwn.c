@@ -31,7 +31,6 @@ static const double pbevwn_values[PBEVWN_N_PAR] = {
   0.06672455060314922, 0.031090690869654895034, 1.0
 };
 
-#include "decl_gga.h"
 #include "maple2c/gga_exc/gga_c_pbe_vwn.c"
 #include "work_gga.c"
 
@@ -43,10 +42,10 @@ const xc_func_info_type xc_func_info_gga_c_pbe_vwn = {
   XC_CORRELATION,
   "Perdew, Burke & Ernzerhof based on VWN correlation",
   XC_FAMILY_GGA,
-  {&xc_ref_Kraisler2010_042516, &xc_ref_Perdew1996_3865, &xc_ref_Perdew1996_3865_err, NULL, NULL},
+  {&xc_ref_Kraisler2010_042516, &xc_ref_Perdew1996_3865, &xc_ref_Perdew1997_1396, NULL, NULL},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-12,
   {PBEVWN_N_PAR, pbevwn_names, pbevwn_desc, pbevwn_values, set_ext_params_cpy},
   gga_c_pbe_vwn_init, NULL,
-  NULL, work_gga, NULL
+  NULL, &work_gga, NULL
 };

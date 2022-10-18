@@ -94,8 +94,9 @@ host_triplet = @host@
 
 #this is a hack for nvcc, this should be improved.
 @HAVE_CUDA_TRUE@am__append_1 = "-dc"
-bin_PROGRAMS = xc-info$(EXEEXT) xc-threshold$(EXEEXT)
-noinst_PROGRAMS = genwiki$(EXEEXT) xc-sanity$(EXEEXT)
+bin_PROGRAMS = xc-info$(EXEEXT)
+noinst_PROGRAMS = genwiki$(EXEEXT) xc-sanity$(EXEEXT) \
+	xc-threshold$(EXEEXT)
 @COMPILE_FORTRAN_TRUE@am__append_2 = libxcf03.la libxcf90.la
 @COMPILE_FORTRAN_TRUE@am__append_3 = $(XCF03LIBMODS) $(XCF90LIBMODS)
 subdir = src
@@ -233,7 +234,9 @@ am__objects_1 = special_functions.lo bessel.lo expint_e1.lo \
 	mgga_x_r2scanl.lo mgga_c_r2scanl.lo mgga_k_pgslb.lo \
 	mgga_c_kcisk.lo mgga_x_regtm.lo mgga_c_rregtm.lo \
 	mgga_x_mcml.lo mgga_c_rmggac.lo mgga_x_rppscan.lo \
-	mgga_c_rppscan.lo mgga_x_r4scan.lo mgga_x_ft98.lo
+	mgga_c_rppscan.lo mgga_x_r4scan.lo mgga_x_ft98.lo \
+	hyb_mgga_xc_br3p86.lo mgga_x_vcml.lo mgga_c_cc.lo \
+	mgga_c_ccalda.lo
 am_libxc_la_OBJECTS = references.lo $(am__objects_1)
 libxc_la_OBJECTS = $(am_libxc_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -390,6 +393,7 @@ am__depfiles_remade = ./$(DEPDIR)/bessel.Plo \
 	./$(DEPDIR)/hyb_mgga_x_mvsh.Plo \
 	./$(DEPDIR)/hyb_mgga_x_pjs18.Plo \
 	./$(DEPDIR)/hyb_mgga_xc_b88b95.Plo \
+	./$(DEPDIR)/hyb_mgga_xc_br3p86.Plo \
 	./$(DEPDIR)/hyb_mgga_xc_kcis.Plo \
 	./$(DEPDIR)/hyb_mgga_xc_tpssh.Plo \
 	./$(DEPDIR)/hyb_mgga_xc_wb97mv.Plo ./$(DEPDIR)/hybrids.Plo \
@@ -418,6 +422,7 @@ am__depfiles_remade = ./$(DEPDIR)/bessel.Plo \
 	./$(DEPDIR)/lda_xc_zlp.Plo ./$(DEPDIR)/math_brent.Plo \
 	./$(DEPDIR)/mgga.Plo ./$(DEPDIR)/mgga_c_b88.Plo \
 	./$(DEPDIR)/mgga_c_b94.Plo ./$(DEPDIR)/mgga_c_bc95.Plo \
+	./$(DEPDIR)/mgga_c_cc.Plo ./$(DEPDIR)/mgga_c_ccalda.Plo \
 	./$(DEPDIR)/mgga_c_cs.Plo ./$(DEPDIR)/mgga_c_kcis.Plo \
 	./$(DEPDIR)/mgga_c_kcisk.Plo ./$(DEPDIR)/mgga_c_ltapw.Plo \
 	./$(DEPDIR)/mgga_c_m05.Plo ./$(DEPDIR)/mgga_c_m06l.Plo \
@@ -458,15 +463,15 @@ am__depfiles_remade = ./$(DEPDIR)/bessel.Plo \
 	./$(DEPDIR)/mgga_x_scanl.Plo ./$(DEPDIR)/mgga_x_task.Plo \
 	./$(DEPDIR)/mgga_x_tau_hcth.Plo ./$(DEPDIR)/mgga_x_tb09.Plo \
 	./$(DEPDIR)/mgga_x_th.Plo ./$(DEPDIR)/mgga_x_tm.Plo \
-	./$(DEPDIR)/mgga_x_tpss.Plo ./$(DEPDIR)/mgga_x_vt84.Plo \
-	./$(DEPDIR)/mgga_xc_b97mv.Plo ./$(DEPDIR)/mgga_xc_b98.Plo \
-	./$(DEPDIR)/mgga_xc_cc06.Plo ./$(DEPDIR)/mgga_xc_hle17.Plo \
-	./$(DEPDIR)/mgga_xc_lp90.Plo ./$(DEPDIR)/mgga_xc_otpss_d.Plo \
-	./$(DEPDIR)/mgga_xc_zlp.Plo ./$(DEPDIR)/mix_func.Plo \
-	./$(DEPDIR)/references.Plo ./$(DEPDIR)/special_functions.Plo \
-	./$(DEPDIR)/util.Plo ./$(DEPDIR)/version.Plo \
-	./$(DEPDIR)/xc-info.Po ./$(DEPDIR)/xc-sanity.Po \
-	./$(DEPDIR)/xc-threshold.Po
+	./$(DEPDIR)/mgga_x_tpss.Plo ./$(DEPDIR)/mgga_x_vcml.Plo \
+	./$(DEPDIR)/mgga_x_vt84.Plo ./$(DEPDIR)/mgga_xc_b97mv.Plo \
+	./$(DEPDIR)/mgga_xc_b98.Plo ./$(DEPDIR)/mgga_xc_cc06.Plo \
+	./$(DEPDIR)/mgga_xc_hle17.Plo ./$(DEPDIR)/mgga_xc_lp90.Plo \
+	./$(DEPDIR)/mgga_xc_otpss_d.Plo ./$(DEPDIR)/mgga_xc_zlp.Plo \
+	./$(DEPDIR)/mix_func.Plo ./$(DEPDIR)/references.Plo \
+	./$(DEPDIR)/special_functions.Plo ./$(DEPDIR)/util.Plo \
+	./$(DEPDIR)/version.Plo ./$(DEPDIR)/xc-info.Po \
+	./$(DEPDIR)/xc-sanity.Po ./$(DEPDIR)/xc-threshold.Po
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -809,7 +814,8 @@ libxc_la_FUNC_SOURCES = \
 	mgga_k_gea4.c mgga_k_csk.c mgga_k_csk_loc.c mgga_x_r2scanl.c    \
         mgga_c_r2scanl.c mgga_k_pgslb.c mgga_c_kcisk.c mgga_x_regtm.c   \
 	mgga_c_rregtm.c mgga_x_mcml.c mgga_c_rmggac.c mgga_x_rppscan.c  \
-	mgga_c_rppscan.c mgga_x_r4scan.c mgga_x_ft98.c
+	mgga_c_rppscan.c mgga_x_r4scan.c mgga_x_ft98.c                  \
+	hyb_mgga_xc_br3p86.c mgga_x_vcml.c mgga_c_cc.c mgga_c_ccalda.c
 
 libxc_la_SOURCES = references.c $(libxc_la_FUNC_SOURCES)
 libxc_la_LDFLAGS = -version-info $(XC_LT_VERSION)
@@ -821,8 +827,8 @@ libxc_la_LDFLAGS = -version-info $(XC_LT_VERSION)
 @COMPILE_FORTRAN_TRUE@libxcf90_la_LIBADD = libxc.la
 noinst_HEADERS = \
 	string_f.h references.h util.h \
-	decl_lda.h decl_gga.h decl_mgga.h \
-	work_lda.c work_gga.c work_mgga.c \
+	work_lda.c work_lda_inc.c work_gga.c work_gga_inc.c	\
+	work_mgga.c work_mgga_inc.c \
 	libxc_master.F90 libxc_master_f90.F90 \
         funcs_lda.c funcs_hyb_lda.c funcs_gga.c funcs_hyb_gga.c funcs_mgga.c funcs_hyb_mgga.c funcs_key.c \
 	libxc_inc.f90
@@ -1166,6 +1172,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_mgga_x_mvsh.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_mgga_x_pjs18.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_mgga_xc_b88b95.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_mgga_xc_br3p86.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_mgga_xc_kcis.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_mgga_xc_tpssh.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hyb_mgga_xc_wb97mv.Plo@am__quote@ # am--include-marker
@@ -1218,6 +1225,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_c_b88.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_c_b94.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_c_bc95.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_c_cc.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_c_ccalda.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_c_cs.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_c_kcis.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_c_kcisk.Plo@am__quote@ # am--include-marker
@@ -1296,6 +1305,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_th.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_tm.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_tpss.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_vcml.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_vt84.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_xc_b97mv.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_xc_b98.Plo@am__quote@ # am--include-marker
@@ -1764,6 +1774,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/hyb_mgga_x_mvsh.Plo
 	-rm -f ./$(DEPDIR)/hyb_mgga_x_pjs18.Plo
 	-rm -f ./$(DEPDIR)/hyb_mgga_xc_b88b95.Plo
+	-rm -f ./$(DEPDIR)/hyb_mgga_xc_br3p86.Plo
 	-rm -f ./$(DEPDIR)/hyb_mgga_xc_kcis.Plo
 	-rm -f ./$(DEPDIR)/hyb_mgga_xc_tpssh.Plo
 	-rm -f ./$(DEPDIR)/hyb_mgga_xc_wb97mv.Plo
@@ -1816,6 +1827,8 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/mgga_c_b88.Plo
 	-rm -f ./$(DEPDIR)/mgga_c_b94.Plo
 	-rm -f ./$(DEPDIR)/mgga_c_bc95.Plo
+	-rm -f ./$(DEPDIR)/mgga_c_cc.Plo
+	-rm -f ./$(DEPDIR)/mgga_c_ccalda.Plo
 	-rm -f ./$(DEPDIR)/mgga_c_cs.Plo
 	-rm -f ./$(DEPDIR)/mgga_c_kcis.Plo
 	-rm -f ./$(DEPDIR)/mgga_c_kcisk.Plo
@@ -1894,6 +1907,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/mgga_x_th.Plo
 	-rm -f ./$(DEPDIR)/mgga_x_tm.Plo
 	-rm -f ./$(DEPDIR)/mgga_x_tpss.Plo
+	-rm -f ./$(DEPDIR)/mgga_x_vcml.Plo
 	-rm -f ./$(DEPDIR)/mgga_x_vt84.Plo
 	-rm -f ./$(DEPDIR)/mgga_xc_b97mv.Plo
 	-rm -f ./$(DEPDIR)/mgga_xc_b98.Plo
@@ -2118,6 +2132,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/hyb_mgga_x_mvsh.Plo
 	-rm -f ./$(DEPDIR)/hyb_mgga_x_pjs18.Plo
 	-rm -f ./$(DEPDIR)/hyb_mgga_xc_b88b95.Plo
+	-rm -f ./$(DEPDIR)/hyb_mgga_xc_br3p86.Plo
 	-rm -f ./$(DEPDIR)/hyb_mgga_xc_kcis.Plo
 	-rm -f ./$(DEPDIR)/hyb_mgga_xc_tpssh.Plo
 	-rm -f ./$(DEPDIR)/hyb_mgga_xc_wb97mv.Plo
@@ -2170,6 +2185,8 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/mgga_c_b88.Plo
 	-rm -f ./$(DEPDIR)/mgga_c_b94.Plo
 	-rm -f ./$(DEPDIR)/mgga_c_bc95.Plo
+	-rm -f ./$(DEPDIR)/mgga_c_cc.Plo
+	-rm -f ./$(DEPDIR)/mgga_c_ccalda.Plo
 	-rm -f ./$(DEPDIR)/mgga_c_cs.Plo
 	-rm -f ./$(DEPDIR)/mgga_c_kcis.Plo
 	-rm -f ./$(DEPDIR)/mgga_c_kcisk.Plo
@@ -2248,6 +2265,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/mgga_x_th.Plo
 	-rm -f ./$(DEPDIR)/mgga_x_tm.Plo
 	-rm -f ./$(DEPDIR)/mgga_x_tpss.Plo
+	-rm -f ./$(DEPDIR)/mgga_x_vcml.Plo
 	-rm -f ./$(DEPDIR)/mgga_x_vt84.Plo
 	-rm -f ./$(DEPDIR)/mgga_xc_b97mv.Plo
 	-rm -f ./$(DEPDIR)/mgga_xc_b98.Plo
@@ -2312,8 +2330,8 @@ uninstall-am: uninstall-binPROGRAMS uninstall-fmodDATA \
 
 xc_f.o : xc_f_inc.c
 
-funcs: $(srcdir)/../scripts/get_funcs.pl
-	$(srcdir)/../scripts/get_funcs.pl $(srcdir) $(top_builddir)/src
+funcs: $(srcdir)/../scripts/get_functional_info.py
+	$(srcdir)/../scripts/get_functional_info.py --srcdir=$(srcdir) --builddir=$(top_builddir)/src
 libxcf03.f90 : libxc_master.F90 libxc_inc.f90
 	@FCCPP@ @CPPFLAGS@ $(AM_CPPFLAGS) -I$(top_builddir)/src $(srcdir)/libxc_master.F90 > $(top_builddir)/src/libxcf03.f90
 	@if [ "@F90_ACCEPTS_LINE_NUMBERS@" = "no" ]; then \

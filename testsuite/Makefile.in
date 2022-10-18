@@ -575,7 +575,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SUBDIRS = pytest
-dist_noinst_SCRIPTS = xc-run_testsuite xc-reference.pl
+dist_noinst_SCRIPTS = xc-run_testsuite
 TESTS = xc-run_testsuite
 TESTS_ENVIRONMENT = buildir=$(top_builddir)/testsuite
 xc_get_data_SOURCES = xc-get_data.c

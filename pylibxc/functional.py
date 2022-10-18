@@ -225,7 +225,7 @@ class LibXCFunctional(object):
 
         # Build the LibXC functional
         self.xc_func = core.xc_func_alloc()
-        self.xc_func_size_names = [x for x in dir(self.xc_func.contents.dim) if not "_" in x]
+        self.xc_func_size_names = [x for x in dir(self.xc_func.contents.dim) if "_" not in x]
 
         # Set all int attributes to zero (not all set to zero in libxc)
         for attr in self.xc_func_size_names:
@@ -288,6 +288,7 @@ class LibXCFunctional(object):
         self._refs = []
         self._bibtexs = []
         self._dois = []
+        self._keys = []
 
         for pos in range(flags.XC_MAX_REFERENCES):
             ref = core.xc_func_info_get_references(self.xc_func_info, pos)
@@ -296,6 +297,7 @@ class LibXCFunctional(object):
             self._refs.append(ref.contents.ref.decode("UTF-8"))
             self._bibtexs.append(ref.contents.bibtex.decode("UTF-8"))
             self._dois.append(ref.contents.doi.decode("UTF-8"))
+            self._keys.append(ref.contents.key.decode("UTF-8"))
 
     def __del__(self):
         """
@@ -391,6 +393,13 @@ class LibXCFunctional(object):
         """
 
         return self._dois
+
+    def get_key(self):
+        """
+        Returns the LibXCFunctional reference keys.
+        """
+
+        return self._keys
 
     def get_hyb_exx_coef(self):
         """
@@ -800,4 +809,4 @@ class LibXCFunctional(object):
         else:
             raise KeyError("Functional kind not recognized! (%d)" % self.get_kind())
 
-        return {k: v for k, v in zip(output_labels, args[2+input_num_args:]) if not v is None}
+        return {k: v for k, v in zip(output_labels, args[2+input_num_args:]) if v is not None}

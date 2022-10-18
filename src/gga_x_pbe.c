@@ -9,6 +9,8 @@
 #include "util.h"
 
 #define XC_GGA_X_PBE          101 /* Perdew, Burke & Ernzerhof exchange             */
+#define XC_GGA_X_PBE_MOD      320 /* Perdew, Burke & Ernzerhof exchange with beta = 0.066725 */
+#define XC_GGA_X_PBE_GAUSSIAN 321 /* Perdew, Burke & Ernzerhof exchange, parameters used in Gaussian */
 #define XC_GGA_X_PBE_R        102 /* Perdew, Burke & Ernzerhof exchange (revised)   */
 #define XC_GGA_X_PBE_SOL      116 /* Perdew, Burke & Ernzerhof exchange (solids)    */
 #define XC_GGA_X_XPBE         123 /* xPBE reparametrization by Xu & Goddard         */
@@ -50,6 +52,10 @@ static const char  *pbe_desc[PBE_N_PAR]   = {
 
 static const double pbe_values[PBE_N_PAR] =
   {0.8040, MU_PBE};
+static const double pbe_mod_values[PBE_N_PAR] =
+  {0.8040, 0.066725*M_PI*M_PI/3};
+static const double pbe_gaussian_values[PBE_N_PAR] =
+  {0.804000423825475, 0.219510240580611};
 static const double pbe_r_values[PBE_N_PAR] =
   {1.245, MU_PBE};
 static const double pbe_sol_values[PBE_N_PAR] =
@@ -71,7 +77,6 @@ static const double pbe_bcgp_values[PBE_N_PAR] =
 static const double pbe_fe_values[PBE_N_PAR] =
   {0.437, 0.346};
 
-#include "decl_gga.h"
 #include "maple2c/gga_exc/gga_x_pbe.c"
 #include "work_gga.c"
 
@@ -84,12 +89,44 @@ const xc_func_info_type xc_func_info_gga_x_pbe = {
   XC_EXCHANGE,
   "Perdew, Burke & Ernzerhof",
   XC_FAMILY_GGA,
-  {&xc_ref_Perdew1996_3865, &xc_ref_Perdew1996_3865_err, NULL, NULL, NULL},
+  {&xc_ref_Perdew1996_3865, &xc_ref_Perdew1997_1396, NULL, NULL, NULL},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-15,
   {PBE_N_PAR, pbe_names, pbe_desc, pbe_values, set_ext_params_cpy},
   gga_x_pbe_init, NULL,
-  NULL, work_gga, NULL
+  NULL, &work_gga, NULL
+};
+
+#ifdef __cplusplus
+extern "C"
+#endif
+const xc_func_info_type xc_func_info_gga_x_pbe_mod = {
+  XC_GGA_X_PBE_MOD,
+  XC_EXCHANGE,
+  "Perdew, Burke & Ernzerhof with less precise value for beta",
+  XC_FAMILY_GGA,
+  {&xc_ref_Perdew1996_3865, &xc_ref_Perdew1997_1396, NULL, NULL, NULL},
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  1e-15,
+  {PBE_N_PAR, pbe_names, pbe_desc, pbe_mod_values, set_ext_params_cpy},
+  gga_x_pbe_init, NULL,
+  NULL, &work_gga, NULL
+};
+
+#ifdef __cplusplus
+extern "C"
+#endif
+const xc_func_info_type xc_func_info_gga_x_pbe_gaussian = {
+  XC_GGA_X_PBE_GAUSSIAN,
+  XC_EXCHANGE,
+  "Perdew, Burke & Ernzerhof with parameter values used in Gaussian",
+  XC_FAMILY_GGA,
+  {&xc_ref_Perdew1996_3865, &xc_ref_Perdew1997_1396, &xc_ref_gaussianimplementation, NULL, NULL},
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  1e-15,
+  {PBE_N_PAR, pbe_names, pbe_desc, pbe_gaussian_values, set_ext_params_cpy},
+  gga_x_pbe_init, NULL,
+  NULL, &work_gga, NULL
 };
 
 #ifdef __cplusplus
@@ -105,7 +142,7 @@ const xc_func_info_type xc_func_info_gga_x_pbe_r = {
   1e-15,
   {PBE_N_PAR, pbe_names, pbe_desc, pbe_r_values, set_ext_params_cpy},
   gga_x_pbe_init, NULL,
-  NULL, work_gga, NULL
+  NULL, &work_gga, NULL
 };
 
 #ifdef __cplusplus
@@ -121,7 +158,7 @@ const xc_func_info_type xc_func_info_gga_x_pbe_sol = {
   1e-15,
   {PBE_N_PAR, pbe_names, pbe_desc, pbe_sol_values, set_ext_params_cpy},
   gga_x_pbe_init, NULL,
-  NULL, work_gga, NULL
+  NULL, &work_gga, NULL
 };
 
 #ifdef __cplusplus
@@ -137,7 +174,7 @@ const xc_func_info_type xc_func_info_gga_x_xpbe = {
   1e-15,
   {PBE_N_PAR, pbe_names, pbe_desc, pbe_xpbe_values, set_ext_params_cpy},
   gga_x_pbe_init, NULL,
-  NULL, work_gga, NULL
+  NULL, &work_gga, NULL
 };
 
 #ifdef __cplusplus
@@ -153,7 +190,7 @@ const xc_func_info_type xc_func_info_gga_x_pbe_jsjr = {
   1e-15,
   {PBE_N_PAR, pbe_names, pbe_desc, pbe_jsjr_values, set_ext_params_cpy},
   gga_x_pbe_init, NULL,
-  NULL, work_gga, NULL
+  NULL, &work_gga, NULL
 };
 
 #ifdef __cplusplus
@@ -169,7 +206,7 @@ const xc_func_info_type xc_func_info_gga_x_pbek1_vdw = {
   1e-15,
   {PBE_N_PAR, pbe_names, pbe_desc, pbe_k1_vdw_values, set_ext_params_cpy},
   gga_x_pbe_init, NULL,
-  NULL, work_gga, NULL
+  NULL, &work_gga, NULL
 };
 
 #ifdef __cplusplus
@@ -185,7 +222,7 @@ const xc_func_info_type xc_func_info_gga_x_apbe = {
   1e-15,
   {PBE_N_PAR, pbe_names, pbe_desc, pbe_apbe_values, set_ext_params_cpy},
   gga_x_pbe_init, NULL,
-  NULL, work_gga, NULL
+  NULL, &work_gga, NULL
 };
 
 #ifdef __cplusplus
@@ -201,7 +238,7 @@ const xc_func_info_type xc_func_info_gga_x_pbe_tca = {
   1e-15,
   {PBE_N_PAR, pbe_names, pbe_desc, pbe_tca_values, set_ext_params_cpy},
   gga_x_pbe_init, NULL,
-  NULL, work_gga, NULL
+  NULL, &work_gga, NULL
 };
 
 #ifdef __cplusplus
@@ -217,7 +254,7 @@ const xc_func_info_type xc_func_info_gga_x_pbe_mol = {
   1e-15,
   {PBE_N_PAR, pbe_names, pbe_desc, pbe_mol_values, set_ext_params_cpy},
   gga_x_pbe_init, NULL,
-  NULL, work_gga, NULL
+  NULL, &work_gga, NULL
 };
 
 #ifdef __cplusplus
@@ -233,7 +270,7 @@ const xc_func_info_type xc_func_info_gga_x_bcgp = {
   1e-15,
   {PBE_N_PAR, pbe_names, pbe_desc, pbe_bcgp_values, set_ext_params_cpy},
   gga_x_pbe_init, NULL,
-  NULL, work_gga, NULL
+  NULL, &work_gga, NULL
 };
 
 #ifdef __cplusplus
@@ -249,7 +286,7 @@ const xc_func_info_type xc_func_info_gga_x_pbefe = {
   1e-15,
   {PBE_N_PAR, pbe_names, pbe_desc, pbe_fe_values, set_ext_params_cpy},
   gga_x_pbe_init, NULL,
-  NULL, work_gga, NULL
+  NULL, &work_gga, NULL
 };
 
 #define PBEL_N_PAR 3
@@ -298,7 +335,7 @@ const xc_func_info_type xc_func_info_gga_x_lambda_lo_n = {
   1e-15,
   {PBEL_N_PAR, pbe_lambda_names, pbe_lambda_desc, pbe_lambda_lo_n_values, pbe_lambda_set_ext_params},
   gga_x_pbe_init, NULL,
-  NULL, work_gga, NULL
+  NULL, &work_gga, NULL
 };
 
 #ifdef __cplusplus
@@ -314,7 +351,7 @@ const xc_func_info_type xc_func_info_gga_x_lambda_ch_n = {
   1e-15,
   {PBEL_N_PAR, pbe_lambda_names, pbe_lambda_desc, pbe_lambda_ch_n_values, pbe_lambda_set_ext_params},
   gga_x_pbe_init, NULL,
-  NULL, work_gga, NULL
+  NULL, &work_gga, NULL
 };
 
 #ifdef __cplusplus
@@ -330,7 +367,7 @@ const xc_func_info_type xc_func_info_gga_x_lambda_oc2_n = {
   1e-15,
   {PBEL_N_PAR, pbe_lambda_names, pbe_lambda_desc, pbe_lambda_oc2_n_values, pbe_lambda_set_ext_params},
   gga_x_pbe_init, NULL,
-  NULL, work_gga, NULL
+  NULL, &work_gga, NULL
 };
 
 
