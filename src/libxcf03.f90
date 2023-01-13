@@ -472,9 +472,6 @@ module xc_f03_lib_m
  ! Becke 86
  integer(c_int), parameter, public :: XC_GGA_X_B86 = 103
 
- ! Herman Xalphabeta GGA
- integer(c_int), parameter, public :: XC_GGA_X_HERMAN = 104
-
  ! Becke 86 with modified gradient correction
  integer(c_int), parameter, public :: XC_GGA_X_B86_MGC = 105
 
@@ -1134,6 +1131,9 @@ module xc_f03_lib_m
 
  ! Nearly correct asymptotic potential revised
  integer(c_int), parameter, public :: XC_GGA_X_NCAPR = 324
+
+ ! relPBE0 a.k.a. relPBE: PBE0 refitted for actinide compounds
+ integer(c_int), parameter, public :: XC_HYB_GGA_XC_RELPBE0 = 325
 
  ! Becke 97-3c by Grimme et. al.
  integer(c_int), parameter, public :: XC_GGA_XC_B97_3C = 327
@@ -1935,6 +1935,18 @@ module xc_f03_lib_m
 
  ! VCML-rVV10 by Trepte and Voss
  integer(c_int), parameter, public :: XC_MGGA_XC_VCML_RVV10 = 652
+
+ ! Google Accelerated Science 22
+ integer(c_int), parameter, public :: XC_HYB_MGGA_XC_GAS22 = 658
+
+ ! r2SCANh: r2SCAN hybrid like TPSSh with 10% exact exchange
+ integer(c_int), parameter, public :: XC_HYB_MGGA_XC_R2SCANH = 659
+
+ ! r2SCAN0: r2SCAN hybrid like PBE0 with 25% exact exchange
+ integer(c_int), parameter, public :: XC_HYB_MGGA_XC_R2SCAN0 = 660
+
+ ! r2SCAN50: r2SCAN hybrid like PBE50 with 50% exact exchange
+ integer(c_int), parameter, public :: XC_HYB_MGGA_XC_R2SCAN50 = 661
 
  ! CAM hybrid screened exchange PBE version
  integer(c_int), parameter, public :: XC_HYB_GGA_XC_CAM_PBEH = 681

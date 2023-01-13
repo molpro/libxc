@@ -214,7 +214,6 @@ set(raw_sources_list
   gga_x_g96.c
   gga_x_gg99.c
   gga_x_hcth_a.c
-  gga_x_herman.c
   gga_x_hjs.c
   gga_x_hjs_b88_v2.c
   gga_x_htbs.c
@@ -292,6 +291,7 @@ set(raw_sources_list
   hyb_gga_xc_cam_o3lyp.c
   hyb_gga_x_cam_s12.c
   hyb_gga_xc_case21.c
+  hyb_mgga_xc_gas22.c
   integrate.c
   lda.c
   lda_c_1d_csc.c
@@ -431,6 +431,7 @@ set(raw_sources_list
   mgga_x_ft98.c
   hyb_mgga_xc_br3p86.c
   mgga_x_vcml.c
+  hyb_mgga_xc_r2scan.c
   mix_func.c
   deorbitalize_func.c
   references.c

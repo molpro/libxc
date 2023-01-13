@@ -101,7 +101,6 @@
 #define  XC_GGA_X_PBE                      101 /* Perdew, Burke & Ernzerhof */
 #define  XC_GGA_X_PBE_R                    102 /* Revised PBE from Zhang & Yang */
 #define  XC_GGA_X_B86                      103 /* Becke 86 */
-#define  XC_GGA_X_HERMAN                   104 /* Herman Xalphabeta GGA */
 #define  XC_GGA_X_B86_MGC                  105 /* Becke 86 with modified gradient correction */
 #define  XC_GGA_X_B88                      106 /* Becke 88 */
 #define  XC_GGA_X_G96                      107 /* Gill 96 */
@@ -322,6 +321,7 @@
 #define  XC_GGA_C_PBE_GAUSSIAN             322 /* Perdew, Burke & Ernzerhof with parameters from Gaussian */
 #define  XC_MGGA_C_TPSS_GAUSSIAN           323 /* Tao, Perdew, Staroverov & Scuseria with parameters from Gaussian */
 #define  XC_GGA_X_NCAPR                    324 /* Nearly correct asymptotic potential revised */
+#define  XC_HYB_GGA_XC_RELPBE0             325 /* relPBE0 a.k.a. relPBE: PBE0 refitted for actinide compounds */
 #define  XC_GGA_XC_B97_3C                  327 /* Becke 97-3c by Grimme et. al. */
 #define  XC_MGGA_C_CC                      387 /* Self-interaction corrected correlation functional by Schmidt et al */
 #define  XC_MGGA_C_CCALDA                  388 /* Iso-orbital corrected LDA correlation by Lebeda et al */
@@ -589,6 +589,10 @@
 #define  XC_MGGA_X_R4SCAN                  650 /* r$^{4}$SCAN, a functional that satisfies the same exact constraints that SCAN does */
 #define  XC_MGGA_X_VCML                    651 /* Exchange part of VCML-rVV10 by Trepte and Voss */
 #define  XC_MGGA_XC_VCML_RVV10             652 /* VCML-rVV10 by Trepte and Voss */
+#define  XC_HYB_MGGA_XC_GAS22              658 /* Google Accelerated Science 22 */
+#define  XC_HYB_MGGA_XC_R2SCANH            659 /* r2SCANh: r2SCAN hybrid like TPSSh with 10% exact exchange */
+#define  XC_HYB_MGGA_XC_R2SCAN0            660 /* r2SCAN0: r2SCAN hybrid like PBE0 with 25% exact exchange */
+#define  XC_HYB_MGGA_XC_R2SCAN50           661 /* r2SCAN50: r2SCAN hybrid like PBE50 with 50% exact exchange */
 #define  XC_HYB_GGA_XC_CAM_PBEH            681 /* CAM hybrid screened exchange PBE version */
 #define  XC_HYB_GGA_XC_CAMY_PBEH           682 /* CAMY hybrid screened exchange PBE version */
 #define  XC_LDA_C_UPW92                    683 /* Ruggeri, Rios, and Alavi unrestricted fit */
