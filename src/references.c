@@ -1343,6 +1343,13 @@ func_reference_type xc_ref_Kompaneets1956_427 = {
   "Kompaneets1956_427"
 };
 
+func_reference_type xc_ref_Kovacs2022_094110 = {
+  "P. Kovács, F. Tran, P. Blaha, and G. K. H. Madsen.,  J. Chem. Phys. 157, 094110 (2022)",
+  "10.1063/5.0098787",
+  "@article{Kovacs2022_094110,\n  author = {Kov\\'{a}cs, P\\'{e}ter and Tran, Fabien and Blaha, Peter and Madsen, Georg K. H.},\n  title = {{What is the optimal mGGA exchange functional for solids?}},\n  journal = {J. Chem. Phys.},\n  volume = {157},\n  number = {9},\n  year = {2022},\n  pages = {094110},\n  month = {09},\n  issn = {0021-9606},\n  doi = {10.1063/5.0098787},\n  url = {https://doi.org/10.1063/5.0098787}\n}\n",
+  "Kovacs2022_094110"
+};
+
 func_reference_type xc_ref_Kraisler2010_042516 = {
   "E. Kraisler, G. Makov, and I. Kelson.,  Phys. Rev. A 82, 042516 (2010)",
   "10.1103/PhysRevA.82.042516",

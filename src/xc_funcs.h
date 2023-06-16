@@ -628,3 +628,29 @@
 #define  XC_HYB_MGGA_XC_LC_TMLYP           720 /* Long-range corrected TM-LYP by Jana et al */
 #define  XC_MGGA_X_MTASK                   724 /* modified TASK exchange */
 #define  XC_GGA_X_Q1D                      734 /* Functional for quasi-1D systems */
+#define  XC_MGGA_X_KTBM_0                  735 /* KTBM learned exchange - 0 */
+#define  XC_MGGA_X_KTBM_1                  736 /* KTBM learned exchange - 1 */
+#define  XC_MGGA_X_KTBM_2                  737 /* KTBM learned exchange - 2 */
+#define  XC_MGGA_X_KTBM_3                  738 /* KTBM learned exchange - 3 */
+#define  XC_MGGA_X_KTBM_4                  739 /* KTBM learned exchange - 4 */
+#define  XC_MGGA_X_KTBM_5                  740 /* KTBM learned exchange - 5 */
+#define  XC_MGGA_X_KTBM_6                  741 /* KTBM learned exchange - 6 */
+#define  XC_MGGA_X_KTBM_7                  742 /* KTBM learned exchange - 7 */
+#define  XC_MGGA_X_KTBM_8                  743 /* KTBM learned exchange - 8 */
+#define  XC_MGGA_X_KTBM_9                  744 /* KTBM learned exchange - 9 */
+#define  XC_MGGA_X_KTBM_10                 745 /* KTBM learned exchange - 10 */
+#define  XC_MGGA_X_KTBM_11                 746 /* KTBM learned exchange - 11 */
+#define  XC_MGGA_X_KTBM_12                 747 /* KTBM learned exchange - 12 */
+#define  XC_MGGA_X_KTBM_13                 748 /* KTBM learned exchange - 13 */
+#define  XC_MGGA_X_KTBM_14                 749 /* KTBM learned exchange - 14 */
+#define  XC_MGGA_X_KTBM_15                 750 /* KTBM learned exchange - 15 */
+#define  XC_MGGA_X_KTBM_16                 751 /* KTBM learned exchange - 16 */
+#define  XC_MGGA_X_KTBM_17                 752 /* KTBM learned exchange - 17 */
+#define  XC_MGGA_X_KTBM_18                 753 /* KTBM learned exchange - 18 */
+#define  XC_MGGA_X_KTBM_19                 754 /* KTBM learned exchange - 19 */
+#define  XC_MGGA_X_KTBM_20                 755 /* KTBM learned exchange - 20 */
+#define  XC_MGGA_X_KTBM_21                 756 /* KTBM learned exchange - 21 */
+#define  XC_MGGA_X_KTBM_22                 757 /* KTBM learned exchange - 22 */
+#define  XC_MGGA_X_KTBM_23                 758 /* KTBM learned exchange - 23 */
+#define  XC_MGGA_X_KTBM_24                 759 /* KTBM learned exchange - 24 */
+#define  XC_MGGA_X_KTBM_GAP                760 /* KTBM learned exchange - GAP */

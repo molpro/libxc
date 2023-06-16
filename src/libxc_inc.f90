@@ -1888,3 +1888,81 @@
  ! Functional for quasi-1D systems
  integer(c_int), parameter, public :: XC_GGA_X_Q1D  =    734
 
+ ! KTBM learned exchange - 0
+ integer(c_int), parameter, public :: XC_MGGA_X_KTBM_0  =    735
+
+ ! KTBM learned exchange - 1
+ integer(c_int), parameter, public :: XC_MGGA_X_KTBM_1  =    736
+
+ ! KTBM learned exchange - 2
+ integer(c_int), parameter, public :: XC_MGGA_X_KTBM_2  =    737
+
+ ! KTBM learned exchange - 3
+ integer(c_int), parameter, public :: XC_MGGA_X_KTBM_3  =    738
+
+ ! KTBM learned exchange - 4
+ integer(c_int), parameter, public :: XC_MGGA_X_KTBM_4  =    739
+
+ ! KTBM learned exchange - 5
+ integer(c_int), parameter, public :: XC_MGGA_X_KTBM_5  =    740
+
+ ! KTBM learned exchange - 6
+ integer(c_int), parameter, public :: XC_MGGA_X_KTBM_6  =    741
+
+ ! KTBM learned exchange - 7
+ integer(c_int), parameter, public :: XC_MGGA_X_KTBM_7  =    742
+
+ ! KTBM learned exchange - 8
+ integer(c_int), parameter, public :: XC_MGGA_X_KTBM_8  =    743
+
+ ! KTBM learned exchange - 9
+ integer(c_int), parameter, public :: XC_MGGA_X_KTBM_9  =    744
+
+ ! KTBM learned exchange - 10
+ integer(c_int), parameter, public :: XC_MGGA_X_KTBM_10  =    745
+
+ ! KTBM learned exchange - 11
+ integer(c_int), parameter, public :: XC_MGGA_X_KTBM_11  =    746
+
+ ! KTBM learned exchange - 12
+ integer(c_int), parameter, public :: XC_MGGA_X_KTBM_12  =    747
+
+ ! KTBM learned exchange - 13
+ integer(c_int), parameter, public :: XC_MGGA_X_KTBM_13  =    748
+
+ ! KTBM learned exchange - 14
+ integer(c_int), parameter, public :: XC_MGGA_X_KTBM_14  =    749
+
+ ! KTBM learned exchange - 15
+ integer(c_int), parameter, public :: XC_MGGA_X_KTBM_15  =    750
+
+ ! KTBM learned exchange - 16
+ integer(c_int), parameter, public :: XC_MGGA_X_KTBM_16  =    751
+
+ ! KTBM learned exchange - 17
+ integer(c_int), parameter, public :: XC_MGGA_X_KTBM_17  =    752
+
+ ! KTBM learned exchange - 18
+ integer(c_int), parameter, public :: XC_MGGA_X_KTBM_18  =    753
+
+ ! KTBM learned exchange - 19
+ integer(c_int), parameter, public :: XC_MGGA_X_KTBM_19  =    754
+
+ ! KTBM learned exchange - 20
+ integer(c_int), parameter, public :: XC_MGGA_X_KTBM_20  =    755
+
+ ! KTBM learned exchange - 21
+ integer(c_int), parameter, public :: XC_MGGA_X_KTBM_21  =    756
+
+ ! KTBM learned exchange - 22
+ integer(c_int), parameter, public :: XC_MGGA_X_KTBM_22  =    757
+
+ ! KTBM learned exchange - 23
+ integer(c_int), parameter, public :: XC_MGGA_X_KTBM_23  =    758
+
+ ! KTBM learned exchange - 24
+ integer(c_int), parameter, public :: XC_MGGA_X_KTBM_24  =    759
+
+ ! KTBM learned exchange - GAP
+ integer(c_int), parameter, public :: XC_MGGA_X_KTBM_GAP  =    760
+

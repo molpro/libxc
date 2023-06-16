@@ -1,3 +1,31 @@
+## [6.2.2] - 2023-06-14
+
+Hotfix to fix the dimension of some of the fourth derivative arrays.
+
+### Fixed
+- Dimension of v4rhosigma2lapl, v4rhosigma2tau, v4rhosigmatau2, v4sigma3tau arrays was wrong (#472)
+
+## [6.2.1] - 2023-06-13
+
+Hotfix to disable use of host-specific instructions by default in CMake.
+
+### Fixed
+- CMake employed ENABLE_XHOST=ON by default, resulting in binaries specific to the host processor (#471)
+
+## [6.2.0] - 2023-05-26
+
+This is again a bugfix release, which also adds some functionals.
+
+### Fixed
+- CMake does not link standard math library in shared xc library (#465)
+- Taylor expansions used in GGA_C_REVTCA, GGA_K_VT84F, MGGA_X_FT98 were not of sufficient to guarantee accuracy of all derivatives (#449)
+- Replaced hard cutoff in MGGA_X_MBRXC_BG with a Taylor expansion (!607)
+- StandardMathLibraryC.cmake reusing variable names (!585)
+
+### Added
+- Machine learned functionals from Kovacs et al, kindly contributed by Peter Kovacs (!600 and !614)
+
+
 ## [6.1.0] - 2023-01-10
 
 This is a bugfix release, which also adds some functionals.

@@ -429,6 +429,7 @@ set(raw_sources_list
   mgga_c_rppscan.c
   mgga_x_r4scan.c
   mgga_x_ft98.c
+  mgga_x_ktbm.c
   hyb_mgga_xc_br3p86.c
   mgga_x_vcml.c
   hyb_mgga_xc_r2scan.c
@@ -469,7 +470,7 @@ set(CMAKE_INSTALL_RPATH ${base} ${base}/${relDir})
 
 # STATIC/SHARED on below governed by BUILD_SHARED_LIBS
 add_library(xc ${sources_list})
-target_link_libraries(xc INTERFACE ${STANDARD_MATH_LIBRARY})
+target_link_libraries(xc PUBLIC ${STANDARD_MATH_LIBRARY})
 set_target_properties(xc PROPERTIES POSITION_INDEPENDENT_CODE ${BUILD_FPIC}
   SOVERSION ${${PROJECT_NAME}_SOMAJOR})
 if(${BUILD_SHARED_LIBS})

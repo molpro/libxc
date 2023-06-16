@@ -236,7 +236,8 @@ am__objects_1 = special_functions.lo bessel.lo expint_e1.lo \
 	mgga_x_mcml.lo mgga_c_rmggac.lo mgga_x_rppscan.lo \
 	mgga_c_rppscan.lo mgga_x_r4scan.lo mgga_x_ft98.lo \
 	hyb_mgga_xc_br3p86.lo mgga_x_vcml.lo mgga_c_cc.lo \
-	mgga_c_ccalda.lo hyb_mgga_xc_gas22.lo hyb_mgga_xc_r2scan.lo
+	mgga_c_ccalda.lo hyb_mgga_xc_gas22.lo hyb_mgga_xc_r2scan.lo \
+	mgga_x_ktbm.lo
 am_libxc_la_OBJECTS = references.lo $(am__objects_1)
 libxc_la_OBJECTS = $(am_libxc_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
@@ -445,11 +446,11 @@ am__depfiles_remade = ./$(DEPDIR)/bessel.Plo \
 	./$(DEPDIR)/mgga_x_edmgga.Plo ./$(DEPDIR)/mgga_x_ft98.Plo \
 	./$(DEPDIR)/mgga_x_gdme.Plo ./$(DEPDIR)/mgga_x_gvt4.Plo \
 	./$(DEPDIR)/mgga_x_gx.Plo ./$(DEPDIR)/mgga_x_jk.Plo \
-	./$(DEPDIR)/mgga_x_lta.Plo ./$(DEPDIR)/mgga_x_m06l.Plo \
-	./$(DEPDIR)/mgga_x_m08.Plo ./$(DEPDIR)/mgga_x_m11.Plo \
-	./$(DEPDIR)/mgga_x_m11_l.Plo ./$(DEPDIR)/mgga_x_mbeef.Plo \
-	./$(DEPDIR)/mgga_x_mbeefvdw.Plo ./$(DEPDIR)/mgga_x_mbr.Plo \
-	./$(DEPDIR)/mgga_x_mbrxc_bg.Plo \
+	./$(DEPDIR)/mgga_x_ktbm.Plo ./$(DEPDIR)/mgga_x_lta.Plo \
+	./$(DEPDIR)/mgga_x_m06l.Plo ./$(DEPDIR)/mgga_x_m08.Plo \
+	./$(DEPDIR)/mgga_x_m11.Plo ./$(DEPDIR)/mgga_x_m11_l.Plo \
+	./$(DEPDIR)/mgga_x_mbeef.Plo ./$(DEPDIR)/mgga_x_mbeefvdw.Plo \
+	./$(DEPDIR)/mgga_x_mbr.Plo ./$(DEPDIR)/mgga_x_mbrxc_bg.Plo \
 	./$(DEPDIR)/mgga_x_mbrxh_bg.Plo ./$(DEPDIR)/mgga_x_mcml.Plo \
 	./$(DEPDIR)/mgga_x_mggac.Plo ./$(DEPDIR)/mgga_x_mn12.Plo \
 	./$(DEPDIR)/mgga_x_ms.Plo ./$(DEPDIR)/mgga_x_msb.Plo \
@@ -817,7 +818,7 @@ libxc_la_FUNC_SOURCES = \
 	mgga_c_rregtm.c mgga_x_mcml.c mgga_c_rmggac.c mgga_x_rppscan.c  \
 	mgga_c_rppscan.c mgga_x_r4scan.c mgga_x_ft98.c                  \
 	hyb_mgga_xc_br3p86.c mgga_x_vcml.c mgga_c_cc.c mgga_c_ccalda.c  \
-	hyb_mgga_xc_gas22.c hyb_mgga_xc_r2scan.c
+	hyb_mgga_xc_gas22.c hyb_mgga_xc_r2scan.c mgga_x_ktbm.c
 
 libxc_la_SOURCES = references.c $(libxc_la_FUNC_SOURCES)
 libxc_la_LDFLAGS = -version-info $(XC_LT_VERSION)
@@ -1270,6 +1271,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_gvt4.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_gx.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_jk.Plo@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_ktbm.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_lta.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_m06l.Plo@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mgga_x_m08.Plo@am__quote@ # am--include-marker
@@ -1873,6 +1875,7 @@ distclean: distclean-recursive
 	-rm -f ./$(DEPDIR)/mgga_x_gvt4.Plo
 	-rm -f ./$(DEPDIR)/mgga_x_gx.Plo
 	-rm -f ./$(DEPDIR)/mgga_x_jk.Plo
+	-rm -f ./$(DEPDIR)/mgga_x_ktbm.Plo
 	-rm -f ./$(DEPDIR)/mgga_x_lta.Plo
 	-rm -f ./$(DEPDIR)/mgga_x_m06l.Plo
 	-rm -f ./$(DEPDIR)/mgga_x_m08.Plo
@@ -2232,6 +2235,7 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f ./$(DEPDIR)/mgga_x_gvt4.Plo
 	-rm -f ./$(DEPDIR)/mgga_x_gx.Plo
 	-rm -f ./$(DEPDIR)/mgga_x_jk.Plo
+	-rm -f ./$(DEPDIR)/mgga_x_ktbm.Plo
 	-rm -f ./$(DEPDIR)/mgga_x_lta.Plo
 	-rm -f ./$(DEPDIR)/mgga_x_m06l.Plo
 	-rm -f ./$(DEPDIR)/mgga_x_m08.Plo
