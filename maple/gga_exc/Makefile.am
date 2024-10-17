@@ -8,7 +8,7 @@
 gga_order_4 = gga_k_exp4.mpl gga_x_hjs_b88_v2.mpl gga_k_lc94.mpl	\
   gga_x_hjs.mpl gga_k_llp.mpl gga_x_htbs.mpl gga_k_meyer.mpl		\
   gga_x_ityh.mpl gga_k_mpbe.mpl gga_x_kt.mpl gga_k_ol1.mpl		\
-  gga_x_lag.mpl gga_k_ol2.mpl gga_x_lg93.mpl gga_k_pearson.mpl		\
+  gga_k_ol2.mpl gga_x_lg93.mpl gga_k_pearson.mpl		\
   gga_x_lspbe.mpl gga_k_pw86.mpl gga_x_lsrpbe.mpl gga_k_tflw.mpl	\
   gga_x_lv_rpw86.mpl gga_k_thakkar.mpl gga_x_mpbe.mpl			\
   gga_x_2d_b86_mgc.mpl gga_x_n12.mpl gga_x_2d_b86.mpl gga_x_ol2.mpl	\
@@ -34,11 +34,12 @@ gga_order_4 = gga_k_exp4.mpl gga_x_hjs_b88_v2.mpl gga_k_lc94.mpl	\
   gga_c_tca.mpl gga_xc_th1.mpl gga_c_w94.mpl gga_xc_th2.mpl		\
   gga_c_wi.mpl gga_xc_th3.mpl gga_c_wl.mpl gga_c_zpbeint.mpl		\
   gga_c_zvpbeint.mpl hyb_gga_xc_wb97.mpl gga_c_zvpbeloc.mpl		\
-  gga_c_chachiyo.mpl gga_c_pbe_vwn.mpl gga_x_wpbeh.mpl gga_k_lgap.mpl	\
-  gga_k_vt84f.mpl gga_k_lgap_ge.mpl gga_c_ccdf.mpl gga_c_p86vwn.mpl	\
-  gga_x_ityh_optx.mpl gga_x_ityh_pbe.mpl gga_c_lypr.mpl gga_x_q1d.mpl	\
-  hyb_gga_x_cam_s12.mpl hyb_gga_xc_case21.mpl gga_k_rational_p.mpl	\
-  gga_k_pg.mpl
+  gga_c_chachiyo.mpl gga_c_pbe_vwn.mpl gga_x_wpbeh.mpl gga_k_lgap.mpl   \
+  gga_k_vt84f.mpl gga_k_lgap_ge.mpl gga_c_ccdf.mpl gga_c_p86vwn.mpl     \
+  gga_x_ityh_optx.mpl gga_x_ityh_pbe.mpl gga_c_lypr.mpl gga_x_q1d.mpl   \
+  hyb_gga_x_cam_s12.mpl hyb_gga_xc_case21.mpl            \
+  gga_k_rational_p.mpl gga_k_pg.mpl gga_c_pbe_erf_gws.mpl               \
+  gga_x_pbe_erf_gws.mpl gga_x_bkl.mpl
 
 dist_noinst_SCRIPTS = $(gga_order_4)
 

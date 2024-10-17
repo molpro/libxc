@@ -7,6 +7,7 @@
 */
 
 #include "util.h"
+#include "xc_funcs.h"
 
 #define XC_HYB_LDA_XC_CAM_LDA0    178 /* CAM version of LDA0 */
 

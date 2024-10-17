@@ -1,6 +1,7 @@
 /*
- Copyright (C) 2006-2007 M.A.L. Marques
- Copyright (C) 2019 X. Andrade
+ Copyright (C) 2006-2021 M.A.L. Marques
+               2015-2021 Susi Lehtola
+               2019 X. Andrade
 
  This Source Code Form is subject to the terms of the Mozilla Public
  License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -26,7 +27,6 @@ extern xc_func_info_type
   *xc_hyb_mgga_known_funct[];
 
 
-/*------------------------------------------------------*/
 int xc_functional_get_number(const char *name)
 {
   int ii;
@@ -53,7 +53,6 @@ int xc_functional_get_number(const char *name)
 }
 
 
-/*------------------------------------------------------*/
 char *xc_functional_get_name(int number)
 {
   int ii;
@@ -73,7 +72,6 @@ char *xc_functional_get_name(int number)
 }
 
 
-/*------------------------------------------------------*/
 int xc_family_from_id(int id, int *family, int *number)
 {
   int ii;
@@ -132,8 +130,7 @@ int xc_family_from_id(int id, int *family, int *number)
   return XC_FAMILY_UNKNOWN;
 }
 
-/*------------------------------------------------------*/
-int xc_number_of_functionals()
+int xc_number_of_functionals(void)
 {
   int num;
 
@@ -146,7 +143,7 @@ int xc_number_of_functionals()
   exit(1);
 }
 
-int xc_maximum_name_length()
+int xc_maximum_name_length(void)
 {
   int i, N, maxlen, tmp;
 
@@ -161,7 +158,6 @@ int xc_maximum_name_length()
   return maxlen;
 }
 
-/*------------------------------------------------------*/
 static int compare_int(const void *a, const void *b) {
   return *(int *)a - *(int *) b;
 }
@@ -243,8 +239,7 @@ void xc_available_functional_names(char **list)
   libxc_free(idlist);
 }
 
-/*------------------------------------------------------*/
-xc_func_type *xc_func_alloc()
+xc_func_type *xc_func_alloc(void)
 {
   xc_func_type *func;
 
@@ -252,7 +247,6 @@ xc_func_type *xc_func_alloc()
   return func;
 }
 
-/*------------------------------------------------------*/
 void xc_func_nullify(xc_func_type *func)
 {
   assert(func != NULL);
@@ -270,6 +264,7 @@ void xc_func_nullify(xc_func_type *func)
 
   func->nlc_b = func->nlc_C = 0.0;
 
+  func->ext_params = NULL;
   func->params     = NULL;
 
   func->dens_threshold  = 0.0;
@@ -278,7 +273,6 @@ void xc_func_nullify(xc_func_type *func)
   func->tau_threshold   = 0.0;
 }
 
-/*------------------------------------------------------*/
 int xc_func_init(xc_func_type *func, int functional, int nspin)
 {
   int number;
@@ -308,7 +302,7 @@ int xc_func_init(xc_func_type *func, int functional, int nspin)
     *finfo = *xc_hyb_lda_known_funct[number];
     internal_counters_set_lda(func->nspin, &(func->dim));
     break;
-    
+
   case(XC_FAMILY_GGA):
     *finfo = *xc_gga_known_funct[number];
     internal_counters_set_gga(func->nspin, &(func->dim));
@@ -332,8 +326,12 @@ int xc_func_init(xc_func_type *func, int functional, int nspin)
   default:
     return -2; /* family not found */
   }
-
   func->info = finfo;
+
+#ifdef XC_ENFORCE_FERMI_HOLE_CURVATURE
+  /* Set the flag to enforce Fermi curvature by default */
+  func->info->flags = func->info->flags | XC_FLAGS_ENFORCE_FHC;
+#endif
 
   /* this is initialized for each functional from the info */
   func->dens_threshold = func->info->dens_threshold;
@@ -352,7 +350,8 @@ int xc_func_init(xc_func_type *func, int functional, int nspin)
 
   /* see if we need to initialize the external parameters */
   if(func->info->ext_params.n > 0) {
-    func->info->ext_params.set(func, NULL);
+    func->ext_params = (double *) libxc_malloc(func->info->ext_params.n * sizeof(double));
+    xc_func_set_ext_params(func, func->info->ext_params.values);
 
     /* sanity check external parameter names and descriptions */
     for(int i=0; i<func->info->ext_params.n; i++) {
@@ -377,7 +376,6 @@ int xc_func_init(xc_func_type *func, int functional, int nspin)
 }
 
 
-/*------------------------------------------------------*/
 void xc_func_end(xc_func_type *func)
 {
   assert(func != NULL && func->info != NULL);
@@ -402,6 +400,8 @@ void xc_func_end(xc_func_type *func)
     libxc_free(func->mix_coef);
 
   /* deallocate any used parameter */
+  if(func->ext_params != NULL)
+    libxc_free(func->ext_params);
   if(func->params != NULL)
     libxc_free(func->params);
 
@@ -410,19 +410,16 @@ void xc_func_end(xc_func_type *func)
   xc_func_nullify(func);
 }
 
-/*------------------------------------------------------*/
 void  xc_func_free(xc_func_type *p)
 {
   libxc_free(p);
 }
 
-/*------------------------------------------------------*/
 const xc_func_info_type *xc_func_get_info(const xc_func_type *p)
 {
   return p->info;
 }
 
-/*------------------------------------------------------*/
 void xc_func_set_dens_threshold(xc_func_type *p, double t_dens)
 {
   int ii;
@@ -434,7 +431,7 @@ void xc_func_set_dens_threshold(xc_func_type *p, double t_dens)
     xc_func_set_dens_threshold(p->func_aux[ii], t_dens);
   }
 }
-/*------------------------------------------------------*/
+
 void xc_func_set_zeta_threshold(xc_func_type *p, double t_zeta)
 {
   int ii;
@@ -446,7 +443,7 @@ void xc_func_set_zeta_threshold(xc_func_type *p, double t_zeta)
     xc_func_set_zeta_threshold(p->func_aux[ii], t_zeta);
   }
 }
-/*------------------------------------------------------*/
+
 void xc_func_set_sigma_threshold(xc_func_type *p, double t_sigma)
 {
   int ii;
@@ -458,7 +455,7 @@ void xc_func_set_sigma_threshold(xc_func_type *p, double t_sigma)
     xc_func_set_sigma_threshold(p->func_aux[ii], t_sigma);
   }
 }
-/*------------------------------------------------------*/
+
 void xc_func_set_tau_threshold(xc_func_type *p, double t_tau)
 {
   int ii;
@@ -471,39 +468,76 @@ void xc_func_set_tau_threshold(xc_func_type *p, double t_tau)
   }
 }
 
-/*------------------------------------------------------*/
-/* get/set external parameters                          */
+void  xc_func_set_fhc_enforcement(xc_func_type *p, int on)
+{
+  if(on)
+    p->info->flags = p->info->flags | XC_FLAGS_ENFORCE_FHC;
+  // Turn flag off if only it was on; otherwise ^ can flip it back on
+  else if(p->info->flags & XC_FLAGS_ENFORCE_FHC)
+    p->info->flags = p->info->flags ^ XC_FLAGS_ENFORCE_FHC;
+}
+
 void
 xc_func_set_ext_params(xc_func_type *p, const double *ext_params)
 {
+  int ii;
+
   assert(p->info->ext_params.n > 0);
-  p->info->ext_params.set(p, ext_params);
+  /* We always store the current parameters in the functional instance */
+  for(ii=0; ii<p->info->ext_params.n; ii++)
+    p->ext_params[ii] = (ext_params[ii] == XC_EXT_PARAMS_DEFAULT) ? p->info->ext_params.values[ii] : ext_params[ii];
+  /* Update the parameters */
+  p->info->ext_params.set(p, p->ext_params);
+}
+
+void
+xc_func_get_ext_params(const xc_func_type *p, double *ext_params)
+{
+  int ii;
+  assert(p->info->ext_params.n > 0);
+  assert(ext_params != NULL);
+  for(ii=0; ii<p->info->ext_params.n; ii++)
+    ext_params[ii] = p->ext_params[ii];
+}
+
+static int
+xc_func_find_ext_params_name(const xc_func_type *p, const char *name) {
+  int ii;
+  assert(p != NULL && p->info->ext_params.n > 0);
+  for(ii=0; ii<p->info->ext_params.n; ii++){
+    if(strcmp(p->info->ext_params.names[ii], name) == 0) {
+      return ii;
+    }
+  }
+  return -1;
 }
 
 void
 xc_func_set_ext_params_name(xc_func_type *p, const char *name, double par)
 {
   int ii;
-  double *ext_params;
-  int name_found=0;
 
-  assert(p != NULL && p->info->ext_params.n > 0);
-
-  ext_params = (double *) libxc_malloc(p->info->ext_params.n*sizeof(double));
-  for(ii=0; ii<p->info->ext_params.n; ii++){
-    if(strcmp(p->info->ext_params.names[ii], name) == 0) {
-      ext_params[ii] = par;
-      name_found=1;
-    } else {
-      ext_params[ii] = XC_EXT_PARAMS_DEFAULT;
-    }
-  }
-  xc_func_set_ext_params(p, ext_params);
-  libxc_free(ext_params);
-  /* Check that we found the parameter */
-  assert(name_found);
+  ii = xc_func_find_ext_params_name(p, name);
+  assert(ii>=0);
+  p->ext_params[ii] = par;
+  xc_func_set_ext_params(p, p->ext_params);
 }
 
+double
+xc_func_get_ext_params_name(const xc_func_type *p, const char *name)
+{
+  int ii;
+
+  ii = xc_func_find_ext_params_name(p, name);
+  assert(ii>=0);
+  return p->ext_params[ii];
+}
+
+double
+xc_func_get_ext_params_value(const xc_func_type *p, int index)
+{
+  return p->ext_params[index];
+}
 
 /* returns the NLC parameters */
 void xc_nlc_coef(const xc_func_type *p, double *nlc_b, double *nlc_C)

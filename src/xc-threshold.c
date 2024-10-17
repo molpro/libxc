@@ -14,6 +14,7 @@
 
 #include "util.h"
 #include <xc.h>
+#include <xc_funcs.h>
 
 /* Get debug info by uncommenting the following line */
 //#define XC_DEBUG

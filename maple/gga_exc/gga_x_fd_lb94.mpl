@@ -14,8 +14,8 @@
   params = (gga_x_fd_lb94_params * )(p->params);
 *)
 
-(* replace: "fd_int0\(" -> "xc_integrate(func0, NULL, 0.0, " *)
-(* replace: "fd_int1\(" -> "xc_integrate(func1, NULL, 0.0, " *)
+(* replace: "fd_int0\(" -> "xc_integrate(func0, &(params->beta), 0.0, " *)
+(* replace: "fd_int1\(" -> "xc_integrate(func1, &(params->beta), 0.0, " *)
 
 `diff/fd_int0` := proc(g, x) diff(g, x) * fd_f_inter(0, g) end proc:
 `diff/fd_int1` := proc(g, x) diff(g, x) * fd_f_inter(1, g) end proc:
@@ -26,7 +26,6 @@ fd_csi  := 2^(1/3):
 fd_f_inter := (n, t) -> -3/4 * fd_beta*fd_csi*log(t)^n /
   (1 + 3*fd_beta*fd_csi*t*log(fd_csi*t + sqrt((fd_csi*t)^2 + 1))):
 
-fd_f0 := s -> 1 - s*(fd_int0(s)*log(s) - fd_int1(s)):
-fd_f  := x -> fd_f0(X2S*x):
+fd_f := x -> 1 - x/X_FACTOR_C*(fd_int0(x/fd_csi)*log(x/fd_csi) - fd_int1(x/fd_csi)):
 
 f  := (rs, z, xt, xs0, xs1) -> gga_exchange(fd_f, rs, z, xs0, xs1):

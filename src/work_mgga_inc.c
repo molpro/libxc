@@ -20,7 +20,7 @@
 /* macro to simpligy accessing the variables */
 #define VAR(var, ip, index)         var[ip*p->dim.var + index]
 #define WORK_MGGA_(order, spin)     work_mgga_ ## order ## _ ## spin
-#define WORK_MGGA_GPU_(order, spin) work_mgga_ ## order ## _ ## spin
+#define WORK_MGGA_GPU_(order, spin) work_mgga_gpu_ ## order ## _ ## spin
 #define FUNC_(order, spin)          func_     ## order ## _ ## spin
 
 /* we need double escaping of the preprocessor macros */
@@ -60,13 +60,13 @@ WORK_MGGA(ORDER_TXT, SPIN_TXT)
 
     /* Many functionals shamelessly divide by tau, so we set a reasonable threshold */
     /* skip all checks on tau for the kinetic functionals */
-    if(p->info->family != XC_KINETIC)
+    if(p->info->flags & XC_FLAGS_NEEDS_TAU){
       my_tau[0] = m_max(p->tau_threshold, VAR(tau, ip, 0));
-#ifdef XC_ENFORCE_FERMI_HOLE_CURVATURE
-    /* The Fermi hole curvature 1 - xs^2/(8*ts) must be positive */
-    if(p->info->family != XC_KINETIC)
-      my_sigma[0] = m_min(my_sigma[0], 8.0*my_rho[0]*my_tau[0]);
-#endif
+      if(p->info->flags & XC_FLAGS_ENFORCE_FHC) {
+        /* The Fermi hole curvature 1 - xs^2/(8*ts) must be positive */
+        my_sigma[0] = m_min(my_sigma[0], 8.0*my_rho[0]*my_tau[0]);
+      }
+    }
     /* lapl can have any values */
 
     if(p->nspin == XC_POLARIZED){
@@ -75,14 +75,14 @@ WORK_MGGA(ORDER_TXT, SPIN_TXT)
       my_rho[1] = m_max(p->dens_threshold, VAR(rho, ip, 1));
       my_sigma[2] = m_max(p->sigma_threshold * p->sigma_threshold, VAR(sigma, ip, 2));
 
-      if(p->info->family != XC_KINETIC)
+      if(p->info->flags & XC_FLAGS_NEEDS_TAU){
         my_tau[1] = m_max(p->tau_threshold, VAR(tau, ip, 1));
-#ifdef XC_ENFORCE_FERMI_HOLE_CURVATURE
-      /* The Fermi hole curvature 1 - xs^2/(8*ts) must be positive */
-      if(p->info->family != XC_KINETIC)
-        my_sigma[2] = m_min(my_sigma[2], 8.0*my_rho[1]*my_tau[1]);
-#endif
-
+        if(p->info->flags & XC_FLAGS_ENFORCE_FHC) {
+          /* The Fermi hole curvature 1 - xs^2/(8*ts) must be positive */
+          my_sigma[2] = m_min(my_sigma[2], 8.0*my_rho[1]*my_tau[1]);
+        }
+      }
+      
       my_sigma[1] = VAR(sigma, ip, 1);
       s_ave = 0.5*(my_sigma[0] + my_sigma[2]);
       /* | grad n |^2 = |grad n_up + grad n_down|^2 > 0 */
@@ -110,28 +110,37 @@ WORK_MGGA(ORDER_TXT, SPIN_TXT)
         if(p->info->flags & XC_FLAGS_NEEDS_LAPLACIAN)
           for(ii=0; ii < dim->vlapl; ii++)
             is_OK = is_OK && isfinite(out->VAR(vlapl, ip, ii));
-        for(ii=0; ii < dim->vtau; ii++)
-          is_OK = is_OK && isfinite(out->VAR(vtau, ip, ii));
+        if(p->info->flags & XC_FLAGS_NEEDS_TAU)
+          for(ii=0; ii < dim->vtau; ii++)
+            is_OK = is_OK && isfinite(out->VAR(vtau, ip, ii));
       }
 
       if(!is_OK){
         printf("Problem in the evaluation of the functional\n");
         if(p->nspin == XC_UNPOLARIZED){
           printf("./xc-get_data %d 1 ", p->info->number);
-          if(p->info->flags & XC_FLAGS_NEEDS_LAPLACIAN)
+          if(p->info->flags & (XC_FLAGS_NEEDS_LAPLACIAN | XC_FLAGS_NEEDS_TAU))
             printf("%le 0.0 %le 0.0 0.0 %le 0.0 %le 0.0\n",
                    VAR(rho, ip, 0), VAR(sigma, ip, 0), VAR(lapl, ip, 0), VAR(tau, ip, 0));
+          else if(p->info->flags & XC_FLAGS_NEEDS_LAPLACIAN)
+            printf("%le 0.0 %le 0.0 0.0 %le 0.0 0.0 0.0\n",
+                   VAR(rho, ip, 0), VAR(sigma, ip, 0), VAR(lapl, ip, 0));
           else
             printf("%le 0.0 %le 0.0 0.0 0.0 0.0 %le 0.0\n",
                    VAR(rho, ip, 0), VAR(sigma, ip, 0), VAR(tau, ip, 0));
         }else{
           printf("./xc-get_data %d 2 ", p->info->number);
-          if(p->info->flags & XC_FLAGS_NEEDS_LAPLACIAN)
+          if(p->info->flags & (XC_FLAGS_NEEDS_LAPLACIAN | XC_FLAGS_NEEDS_TAU))
             printf("%le %le %le %le %le %le %le %le %le\n",
                    VAR(rho, ip, 0), VAR(rho, ip, 1),
                    VAR(sigma, ip, 0), VAR(sigma, ip, 1), VAR(sigma, ip, 2),
                    VAR(lapl, ip, 0), VAR(lapl, ip, 1),
                    VAR(tau, ip, 0), VAR(tau, ip, 1));
+          else if(p->info->flags & XC_FLAGS_NEEDS_LAPLACIAN)
+            printf("%le %le %le %le %le %le %le 0.0 0.0\n",
+                   VAR(rho, ip, 0), VAR(rho, ip, 1),
+                   VAR(sigma, ip, 0), VAR(sigma, ip, 1), VAR(sigma, ip, 2),
+                   VAR(lapl, ip, 0), VAR(lapl, ip, 1));
           else
             printf("%le %le %le %le %le 0.0 0.0 %le %le\n",
                    VAR(rho, ip, 0), VAR(rho, ip, 1),
@@ -163,43 +172,44 @@ WORK_MGGA_GPU(ORDER_TXT, SPIN_TXT)
   if(ip >= np) return;
 
   /* Screen small densities */
-  dens = (p->nspin == XC_POLARIZED) ? rho[0]+rho[1] : rho[0];
-  if(dens >= p->dens_threshold) {
-    /* sanity check of input parameters */
-    my_rho[0] = m_max(p->dens_threshold, rho[0]);
-    /* Many functionals shamelessly divide by tau, so we set a reasonable threshold */
-    if(p->info->family != XC_KINETIC)
-      my_tau[0] = m_max(p->tau_threshold, tau[0]);
-    my_sigma[0] = m_max(p->sigma_threshold * p->sigma_threshold, sigma[0]);
-#ifdef XC_ENFORCE_FERMI_HOLE_CURVATURE
-    /* The Fermi hole curvature 1 - xs^2/(8*ts) must be positive */
-    if(p->info->family != XC_KINETIC)
-      my_sigma[0] = m_min(my_sigma[0], 8.0*my_rho[0]*my_tau[0]);
-#endif
-    /* lapl can have any values */
-    if(p->nspin == XC_POLARIZED){
-      double s_ave;
+  dens = (p->nspin == XC_POLARIZED) ? VAR(rho, ip, 0) + VAR(rho, ip, 1) : VAR(rho, ip, 0);
+  if(dens < p->dens_threshold)
+    return;
 
-      my_rho[1]   = m_max(p->dens_threshold, rho[1]);
-      if(p->info->family != XC_KINETIC)
-        my_tau[1] = m_max(p->tau_threshold, tau[1]);
-      my_sigma[2] = m_max(p->sigma_threshold * p->sigma_threshold, sigma[2]);
-#ifdef XC_ENFORCE_FERMI_HOLE_CURVATURE
+  /* sanity check of input parameters */
+  my_rho[0] = m_max(p->dens_threshold, VAR(rho, ip, 0));
+  my_sigma[0] = m_max(p->sigma_threshold * p->sigma_threshold, VAR(sigma, ip, 0));
+  
+  /* Many functionals shamelessly divide by tau, so we set a reasonable threshold */
+  if(p->info->flags & XC_FLAGS_NEEDS_TAU){
+    my_tau[0] = m_max(p->tau_threshold, VAR(tau, ip, 0));
+    if(p->info->flags & XC_FLAGS_ENFORCE_FHC) {
       /* The Fermi hole curvature 1 - xs^2/(8*ts) must be positive */
-      if(p->info->family != XC_KINETIC)
-        my_sigma[2] = m_min(my_sigma[2], 8.0*my_rho[1]*my_tau[1]);
-#endif
-
-      my_sigma[1] = sigma[1];
-      s_ave = 0.5*(my_sigma[0] + my_sigma[2]);
-      /* | grad n |^2 = |grad n_up + grad n_down|^2 > 0 */
-      my_sigma[1] = (my_sigma[1] >= -s_ave ? my_sigma[1] : -s_ave);
-      /* Since |grad n_up - grad n_down|^2 > 0 we also have */
-      my_sigma[1] = (my_sigma[1] <= +s_ave ? my_sigma[1] : +s_ave);
+      my_sigma[0] = m_min(my_sigma[0], 8.0*my_rho[0]*my_tau[0]);
     }
-
-    FUNC(ORDER_TXT, SPIN_TXT)(p, ip, my_rho, my_sigma, lapl, my_tau, out);
   }
+  /* lapl can have any values */
+  if(p->nspin == XC_POLARIZED){
+    double s_ave;
+
+    my_rho[1]   = m_max(p->dens_threshold, VAR(rho, ip, 1));
+    my_sigma[2] = m_max(p->sigma_threshold * p->sigma_threshold, VAR(sigma, ip, 2));
+    if(p->info->flags & XC_FLAGS_NEEDS_TAU){
+      my_tau[1] = m_max(p->tau_threshold, VAR(tau, ip, 1));
+      if(p->info->flags & XC_FLAGS_ENFORCE_FHC) {
+        /* The Fermi hole curvature 1 - xs^2/(8*ts) must be positive */
+        my_sigma[2] = m_min(my_sigma[2], 8.0*my_rho[1]*my_tau[1]);
+      }
+    }
+    my_sigma[1] = VAR(sigma, ip, 1);
+    s_ave = 0.5*(my_sigma[0] + my_sigma[2]);
+    /* | grad n |^2 = |grad n_up + grad n_down|^2 > 0 */
+    my_sigma[1] = (my_sigma[1] >= -s_ave ? my_sigma[1] : -s_ave);
+    /* Since |grad n_up - grad n_down|^2 > 0 we also have */
+    my_sigma[1] = (my_sigma[1] <= +s_ave ? my_sigma[1] : +s_ave);
+  }
+
+  FUNC(ORDER_TXT, SPIN_TXT)(p, ip, my_rho, my_sigma, &VAR(lapl, ip, 0), my_tau, out);
 }
 
 
@@ -207,12 +217,12 @@ static void
 WORK_MGGA(ORDER_TXT, SPIN_TXT)
 (const XC(func_type) *p, size_t np,
  const double *rho, const double *sigma, const double *lapl, const double *tau,
- xc_gga_out_params *out)
+ xc_mgga_out_params *out)
 {
   //make a copy of 'p' and 'out' since they might be in host-only memory
   XC(func_type) *pcuda = (XC(func_type) *) libxc_malloc(sizeof(XC(func_type)));
   xc_mgga_out_params *outcuda = (xc_mgga_out_params *) libxc_malloc(sizeof(xc_mgga_out_params));
-
+  
   cudaMemcpy(pcuda, p, sizeof(XC(func_type)), cudaMemcpyHostToDevice);
   cudaMemcpy(outcuda, out, sizeof(xc_mgga_out_params), cudaMemcpyHostToDevice);
 

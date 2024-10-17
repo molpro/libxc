@@ -7,6 +7,7 @@
 */
 
 #include "util.h"
+#include "xc_funcs.h"
 
 #define  XC_HYB_GGA_XC_LCY_BLYP 468  /* BLYP with yukawa screening */
 

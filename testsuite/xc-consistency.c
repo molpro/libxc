@@ -12,6 +12,7 @@
 #include <string.h>
 
 #include <xc.h>
+#include <xc_funcs.h>
 
 static double xc_trial_points[][5] = {
   /* rhoa      rhob    sigmaaa   sigmaab   sigmabb */

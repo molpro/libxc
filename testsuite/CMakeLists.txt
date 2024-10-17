@@ -4,6 +4,10 @@ add_executable(xc-error xc-error.c)
 add_executable(xc-get_data xc-get_data.c)
 add_executable(xc-regression xc-regression.c)
 
+if(ENABLE_CUDA)
+  set_source_files_properties(xc-consistency.c xc-error.c xc-get_data.c xc-regression.c PROPERTIES LANGUAGE CUDA)
+endif()
+
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/workdir)
 set(_sdirs lda_x lda_c lda_xc lda_k gga_x gga_c gga_xc gga_k mgga_x mgga_c mgga_xc mgga_k hyb_gga_x hyb_gga_xc hyb_mgga_x hyb_mgga_xc)
 foreach(_sdir ${_sdirs})
@@ -42,7 +46,7 @@ foreach(_sdir ${_sdirs})
         set(test "${PN}-${func}-${system}-${spin}-${order}")
         add_test(NAME ${test}-run
                  COMMAND xc-regression ${func} ${nspin} ${order} ${CMAKE_CURRENT_SOURCE_DIR}/input/${system} ${CMAKE_CURRENT_BINARY_DIR}/workdir/${_sdir}/${refname})
-        set_tests_properties(${test}-run PROPERTIES TIMEOUT 1)
+        set_tests_properties(${test}-run PROPERTIES TIMEOUT 3)
 
         # checke the tests values against the reference values
         add_test(NAME ${test}-check

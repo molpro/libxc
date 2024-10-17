@@ -7,6 +7,7 @@
 */
 
 #include "util.h"
+#include "xc_funcs.h"
 
 #define XC_HYB_GGA_XC_B3PW91        401 /* The original (ACM) hybrid of Becke    */
 #define XC_HYB_GGA_XC_B3LYP         402 /* The (in)famous B3LYP                  */
@@ -27,6 +28,7 @@
 #define XC_HYB_GGA_XC_QTP17         460 /* global hybrid for vertical ionization potentials */
 #define XC_HYB_GGA_XC_B3LYP_MCM1    461 /* B3LYP reoptimized in 6-31+G(2df,p) for enthalpies of formation */
 #define XC_HYB_GGA_XC_B3LYP_MCM2    462 /* B3LYP reoptimized in 6-31+G(2df,p) for enthalpies of formation */
+#define XC_HYB_GGA_XC_OPB3LYP       386 /* B3LYP reoptimized in 6-311++G(2d,2p) basis set */
 
 /*************************************************************/
 
@@ -42,6 +44,7 @@ static const double mpw3lyp_values[B3LYP_N_PAR]  = {0.218, 0.709, 0.871};
 static const double revb3lyp_values[B3LYP_N_PAR] = {0.20, 0.67, 0.84};
 static const double b3lyps_values[B3LYP_N_PAR]   = {0.15, 0.72, 0.81};
 static const double b5050lyp_values[B3LYP_N_PAR] = {0.50, 0.42, 0.81};
+static const double opb3lyp_values[B3LYP_N_PAR] = {0.20, 0.67, 0.84};
 
 void
 xc_hyb_gga_xc_b3pw91_init(xc_func_type *p)
@@ -111,6 +114,22 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_b3lyp = {
   XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
   1e-15,
   {B3LYP_N_PAR, b3lyp_names, b3lyp_desc, b3lyp_values, b3pw91_set_ext_params},
+  xc_hyb_gga_xc_b3lyp_init, NULL,
+  NULL, NULL, NULL
+};
+
+#ifdef __cplusplus
+extern "C"
+#endif
+const xc_func_info_type xc_func_info_hyb_gga_xc_opb3lyp = {
+  XC_HYB_GGA_XC_OPB3LYP,
+  XC_EXCHANGE_CORRELATION,
+  "opB3LYP: B3LYP reoptimized in 6-311++G(2d,2p) basis set",
+  XC_FAMILY_HYB_GGA,
+  {&xc_ref_Lu2015_502, NULL, NULL, NULL, NULL},
+  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  1e-15,
+  {B3LYP_N_PAR, b3lyp_names, b3lyp_desc, opb3lyp_values, b3pw91_set_ext_params},
   xc_hyb_gga_xc_b3lyp_init, NULL,
   NULL, NULL, NULL
 };

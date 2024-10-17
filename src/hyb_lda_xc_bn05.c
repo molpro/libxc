@@ -37,10 +37,9 @@ bn05_set_ext_params(xc_func_type *p, const double *ext_params)
   omega = get_ext_param(p, ext_params, 0);
 
   /* 100% long-range exchange */
-  p->cam_alpha =  1.0;
-  p->cam_beta  = -1.0;
-  p->cam_omega = omega;
+  set_ext_params_lcy(p, ext_params);
 }
+
 
 #ifdef __cplusplus
 extern "C"

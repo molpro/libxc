@@ -261,14 +261,17 @@ xc_mgga_evaluate_functional(const xc_func_type *func, size_t np,
   /* Evaluate the functional */
   switch(func->info->family){
   case XC_FAMILY_LDA:
+  case XC_FAMILY_HYB_LDA:
     xc_lda(func, np, rho,
            mzk LDA_OUT_PARAMS_NO_EXC(XC_COMMA, ));
     break;
   case XC_FAMILY_GGA:
+  case XC_FAMILY_HYB_GGA:
     xc_gga(func, np, rho, sigma,
            mzk GGA_OUT_PARAMS_NO_EXC(XC_COMMA, ));
     break;
   case XC_FAMILY_MGGA:
+  case XC_FAMILY_HYB_MGGA:
     xc_mgga(func, np, rho, sigma, lapl, tau,
             mzk MGGA_OUT_PARAMS_NO_EXC(XC_COMMA, ));
     break;
@@ -341,25 +344,23 @@ xc_deorbitalize_func_work(const xc_func_type *func, size_t np,
 
   /* evaluate the kinetic energy functional */
   if(func->nspin == XC_UNPOLARIZED){
-    xc_mgga_evaluate_functional(func->func_aux[1], np, rho, sigma, lapl, tau,
+    xc_mgga_evaluate_functional(func->func_aux[1], np, rho, sigma, lapl, NULL,
                            ked1_zk MGGA_OUT_PARAMS_NO_EXC(XC_COMMA, ked1_));
   }else{
     for(ii=0; ii<np; ii++){
       mrho  [2*ii] = rho  [2*ii]; mrho  [2*ii+1] = 0.0;
       msigma[3*ii] = sigma[3*ii]; msigma[3*ii+1] = 0.0; msigma[3*ii+2] = 0.0;
       mlapl [2*ii] = lapl [2*ii]; mlapl [2*ii+1] = 0.0;
-      mtau  [2*ii] = tau  [2*ii]; mtau  [2*ii+1] = 0.0;
     }
-    xc_mgga_evaluate_functional(func->func_aux[1], np, mrho, msigma, mlapl, mtau,
+    xc_mgga_evaluate_functional(func->func_aux[1], np, mrho, msigma, mlapl, NULL,
                            ked1_zk MGGA_OUT_PARAMS_NO_EXC(XC_COMMA, ked1_));
 
     for(ii=0; ii<np; ii++){
       mrho  [2*ii] = rho  [2*ii + 1];
       msigma[3*ii] = sigma[3*ii + 2];
       mlapl [2*ii] = lapl [2*ii + 1];
-      mtau  [2*ii] = tau  [2*ii + 1];
     }
-    xc_mgga_evaluate_functional(func->func_aux[1], np, mrho, msigma, mlapl, mtau,
+    xc_mgga_evaluate_functional(func->func_aux[1], np, mrho, msigma, mlapl, NULL,
                            ked2_zk MGGA_OUT_PARAMS_NO_EXC(XC_COMMA, ked2_));
 
   }

@@ -8,6 +8,7 @@
 */
 
 #include "util.h"
+#include "xc_funcs.h"
 
 #define XC_HYB_MGGA_X_PJS18       706 /* a screened version of TM */
 #define XC_HYB_MGGA_XC_LC_TMLYP  720 /* long-range corrected TM-LYP */
@@ -37,7 +38,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_pjs18 = {
   "Patra, Jana and Samal 2018, screened range-separated TM exchange",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Patra2018_8991, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HYB_CAM | MAPLE2C_FLAGS,
+  XC_FLAGS_3D | XC_FLAGS_HYB_CAM | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
   1e-14,
   {PJS18_N_PAR, pjs18_names, pjs18_desc, par_pjs18, set_ext_params_cpy_lc},
   hyb_mgga_x_pjs18_init, NULL,
@@ -67,9 +68,7 @@ static void lc_tmlyp_set_ext_params(xc_func_type *p, const double *ext_params) {
   omega = get_ext_param(p, ext_params, 0);
 
   /* 100% long-range exact exchange */
-  p->cam_alpha = 1.0;
-  p->cam_beta = -1.0;
-  p->cam_omega = omega;
+  set_ext_params_lc(p, ext_params);
 
   /* Set the parameters for js18 */
   xc_func_set_ext_params(p->func_aux[0], &omega);
@@ -84,7 +83,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_lc_tmlyp = {
   "Long-range corrected TM-LYP by Jana et al",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Jana2018_1, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HYB_CAM | MAPLE2C_FLAGS,
+  XC_FLAGS_3D | XC_FLAGS_HYB_CAM | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
   1e-14,
   {LC_TMLYP_N_PAR, lc_tmlyp_names, lc_tmlyp_desc, par_lc_tmlyp, lc_tmlyp_set_ext_params},
   hyb_mgga_xc_lc_tmlyp_init, NULL,

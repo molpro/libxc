@@ -18,6 +18,7 @@
 #define XC_MGGA_C_MN15_L      261 /* Minnesota MN15-L  correlation functional     */
 #define XC_MGGA_C_MN15        269 /* Minnesota MN15    correlation functional     */
 #define XC_MGGA_C_REVM11      172 /* Revised Minnesota M11 correlation functional */
+#define XC_MGGA_C_CF22D       341 /* Minnesota CF22D correlation functional    */
 
 typedef struct{
   const double m08_a[12], m08_b[12];
@@ -92,6 +93,13 @@ static const double par_revm11[N_PAR] = {
   -1.50663193600e+00,  0.00000000000e+00,  0.00000000000e+00,  0.00000000000e+00,  0.00000000000e+00,  0.00000000000e+00
 };
 
+static const double par_cf22d[N_PAR] = {
+  0.873863376,  0.078066142,  6.576550257, -1.126030147, -3.244797887, -2.186090839,
+ -3.489135041,  3.090689716,  3.866592474,  0.0,          0.0,          0.0,
+  0.828203832, -2.518707202, 10.436806314,  3.588267084, -5.789404145,  3.353560215,
+ -2.432384384, -1.147183331,  2.991316045,  0.0,          0.0,          0.0
+};
+
 static void
 mgga_c_m08_init(xc_func_type *p)
 {
@@ -112,7 +120,7 @@ const xc_func_info_type xc_func_info_mgga_c_m08_hx = {
   "Minnesota M08 correlation functional",
   XC_FAMILY_MGGA,
   {&xc_ref_Zhao2008_1849, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
   1e-15,
   {N_PAR, names, desc, par_m08_hx, set_ext_params_cpy},
   mgga_c_m08_init, NULL,
@@ -128,7 +136,7 @@ const xc_func_info_type xc_func_info_mgga_c_m08_so = {
   "Minnesota M08-SO correlation functional",
   XC_FAMILY_MGGA,
   {&xc_ref_Zhao2008_1849, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
   1e-15,
   {N_PAR, names, desc, par_m08_so, set_ext_params_cpy},
   mgga_c_m08_init, NULL,
@@ -144,7 +152,7 @@ const xc_func_info_type xc_func_info_mgga_c_m11 = {
   "Minnesota M11 correlation functional",
   XC_FAMILY_MGGA,
   {&xc_ref_Peverati2011_2810, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
   1e-15,
   {N_PAR, names, desc, par_m11, set_ext_params_cpy},
   mgga_c_m08_init, NULL,
@@ -160,7 +168,7 @@ const xc_func_info_type xc_func_info_mgga_c_m11_l = {
   "Minnesota M11-L correlation functional",
   XC_FAMILY_MGGA,
   {&xc_ref_Peverati2012_117, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
   1e-15,
   {N_PAR, names, desc, par_m11_l, set_ext_params_cpy},
   mgga_c_m08_init, NULL,
@@ -176,7 +184,7 @@ const xc_func_info_type xc_func_info_mgga_c_mn12_l = {
   "Minnesota MN12-L correlation functional",
   XC_FAMILY_MGGA,
   {&xc_ref_Peverati2012_13171, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
   1e-15,
   {N_PAR, names, desc, par_mn12_l, set_ext_params_cpy},
   mgga_c_m08_init, NULL,
@@ -192,7 +200,7 @@ const xc_func_info_type xc_func_info_mgga_c_mn12_sx = {
   "Minnesota MN12-SX correlation functional",
   XC_FAMILY_MGGA,
   {&xc_ref_Peverati2012_16187, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
   1e-15,
   {N_PAR, names, desc, par_mn12_sx, set_ext_params_cpy},
   mgga_c_m08_init, NULL,
@@ -208,7 +216,7 @@ const xc_func_info_type xc_func_info_mgga_c_mn15_l = {
   "Minnesota MN15-L correlation functional",
   XC_FAMILY_MGGA,
   {&xc_ref_Yu2016_1280, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
   1e-15,
   {N_PAR, names, desc, par_mn15_l, set_ext_params_cpy},
   mgga_c_m08_init, NULL,
@@ -224,7 +232,7 @@ const xc_func_info_type xc_func_info_mgga_c_mn15 = {
   "Minnesota MN15 correlation functional",
   XC_FAMILY_MGGA,
   {&xc_ref_Yu2016_5032, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
   1e-15,
   {N_PAR, names, desc, par_mn15, set_ext_params_cpy},
   mgga_c_m08_init, NULL,
@@ -240,9 +248,25 @@ const xc_func_info_type xc_func_info_mgga_c_revm11 = {
   "Revised Minnesota M11 correlation functional",
   XC_FAMILY_MGGA,
   {&xc_ref_Verma2019_2966, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
   1e-15,
   {N_PAR, names, desc, par_revm11, set_ext_params_cpy},
+  mgga_c_m08_init, NULL,
+  NULL, NULL, &work_mgga,
+};
+
+#ifdef __cplusplus
+extern "C"
+#endif
+const xc_func_info_type xc_func_info_mgga_c_cf22d = {
+  XC_MGGA_C_CF22D,
+  XC_CORRELATION,
+  "Minnesota CF22D correlation functional",
+  XC_FAMILY_MGGA,
+  {&xc_ref_Liu2022_48, NULL, NULL, NULL, NULL},
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
+  1e-15,
+  {N_PAR, names, desc, par_cf22d, set_ext_params_cpy},
   mgga_c_m08_init, NULL,
   NULL, NULL, &work_mgga,
 };

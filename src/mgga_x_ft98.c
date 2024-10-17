@@ -46,7 +46,7 @@ const xc_func_info_type xc_func_info_mgga_x_ft98 = {
   "Filatov and Thiel 1998 meta-GGA exchange",
   XC_FAMILY_MGGA,
   {&xc_ref_Filatov1998_189, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_NEEDS_LAPLACIAN | MAPLE2C_FLAGS,
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | XC_FLAGS_NEEDS_LAPLACIAN | MAPLE2C_FLAGS,
   1.0e-12,
   {N_PAR, names, desc, ft98_values, set_ext_params_cpy},
   mgga_x_ft98_init, NULL,

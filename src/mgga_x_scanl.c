@@ -8,6 +8,7 @@
 
 
 #include "util.h"
+#include "xc_funcs.h"
 
 #define XC_MGGA_X_SCANL         700 /* Deorbitalized SCAN exchange */
 #define XC_MGGA_X_REVSCANL      701 /* Deorbitalized revSCAN exchange */

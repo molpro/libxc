@@ -12,8 +12,6 @@ from argparse import ArgumentParser
 mparser = ArgumentParser(usage="Get information on all functionals")
 mparser.add_argument('--srcdir', type = str, default = ".",
                      help='Directory where to find the source code')
-mparser.add_argument('--builddir', type = str, default = "src",
-                     help='Directory where to the code is being build')
 params = mparser.parse_args()
 
 def read_infos(srcdir, family, all_ids):
@@ -139,7 +137,7 @@ for family in families:
     infos[func] = full_infos[func]
 
   # create funcs_family.c file
-  fh =  open(params.builddir + "/funcs_" + prefix + family + ".c", "w")
+  fh =  open("funcs_" + prefix + family + ".c", "w")
   fh.write('#include "util.h"\n\n')
   for info in sorted(infos.values(), key=lambda item: item["number"]):
     fh.write('extern xc_func_info_type xc_func_info_' + info["codename"] + ';\n')
@@ -150,7 +148,7 @@ for family in families:
   fh.close()
 
 # create funcs_key.c file
-fh =  open(params.builddir + "/funcs_key.c", "w")
+fh =  open("funcs_key.c", "w")
 fh.write('#include "util.h"\n\nxc_functional_key_t xc_functional_keys[] = {\n')
 for info in sorted(all_infos.values(), key=lambda item: item["number"]):
   fh.write('  {"' + info["codename"] + '", ' + str(info["number"]) + '},\n')
@@ -158,9 +156,9 @@ fh.write('{"", -1}\n};\n')
 fh.close()
 
 # create C and F90 files with list of functionals
-fh1 =  open(params.builddir + "/xc_funcs.h", "w")
-fh2 =  open(params.builddir + "/xc_funcs_worker.h", "w")
-fh3 =  open(params.builddir + "/libxc_inc.f90", "w")
+fh1 =  open("xc_funcs.h", "w")
+fh2 =  open("xc_funcs_worker.h", "w")
+fh3 =  open("libxc_inc.f90", "w")
 for info in sorted(all_infos.values(), key=lambda item: item["number"]):
   line_c = '{:40s} {:5d} {:s}'.format(
     '#define  XC_' + info["codename"].upper(),
@@ -180,5 +178,5 @@ fh1.close()
 fh2.close()
 
 # dump all information to a json file
-with open(params.builddir + "/libxc_docs.json", "w") as fh:
+with open("libxc_docs.json", "w") as fh:
   json.dump(all_infos, fh, indent=2)

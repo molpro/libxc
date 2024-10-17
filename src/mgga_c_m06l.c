@@ -8,6 +8,7 @@
 
 
 #include "util.h"
+#include "xc_funcs.h"
 
 #define XC_MGGA_C_M06_L         233 /* Minnesota M06-L  correlation functional         */
 #define XC_MGGA_C_M06_HF        234 /* Minnesota M06-HF correlation functional         */
@@ -124,7 +125,7 @@ const xc_func_info_type xc_func_info_mgga_c_m06_l = {
   "Minnesota M06-L correlation functional",
   XC_FAMILY_MGGA,
   {&xc_ref_Zhao2006_194101, &xc_ref_Zhao2008_215, NULL, NULL, NULL},
-  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
   1.0e-12,
   {M06L_N_PAR, m06l_names, m06l_desc, m06l_values, set_ext_params_cpy},
   mgga_c_m06l_init, NULL,
@@ -140,7 +141,7 @@ const xc_func_info_type xc_func_info_mgga_c_m06_hf = {
   "Minnesota M06-HF correlation functional",
   XC_FAMILY_MGGA,
   {&xc_ref_Zhao2006_13126, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
   1.0e-12,
   {M06L_N_PAR, m06l_names, m06l_desc, m06hf_values, set_ext_params_cpy},
   mgga_c_m06l_init, NULL,
@@ -156,7 +157,7 @@ const xc_func_info_type xc_func_info_mgga_c_m06 = {
   "Minnesota M06 correlation functional",
   XC_FAMILY_MGGA,
   {&xc_ref_Zhao2008_215, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
   1.0e-12,
   {M06L_N_PAR, m06l_names, m06l_desc, m06_values, set_ext_params_cpy},
   mgga_c_m06l_init, NULL,
@@ -172,7 +173,7 @@ const xc_func_info_type xc_func_info_mgga_c_m06_2x = {
   "Minnesota M06-2X correlation functional",
   XC_FAMILY_MGGA,
   {&xc_ref_Zhao2008_215, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
   1.0e-12,
   {M06L_N_PAR, m06l_names, m06l_desc, m062x_values, set_ext_params_cpy},
   mgga_c_m06l_init, NULL,
@@ -188,7 +189,7 @@ const xc_func_info_type xc_func_info_mgga_c_revm06_l = {
   "Minnesota revM06-L correlation functional",
   XC_FAMILY_MGGA,
   {&xc_ref_Wang2017_8487, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
   1.0e-12,
   {M06L_N_PAR, m06l_names, m06l_desc, revm06l_values, set_ext_params_cpy},
   mgga_c_m06l_init, NULL,
@@ -204,7 +205,7 @@ const xc_func_info_type xc_func_info_mgga_c_revm06 = {
   "Revised Minnesota M06 correlation functional",
   XC_FAMILY_MGGA,
   {&xc_ref_Wang2018_10257, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
   1.0e-12,
   {M06L_N_PAR, m06l_names, m06l_desc, revm06_values, set_ext_params_cpy},
   mgga_c_m06l_init, NULL,
@@ -220,7 +221,7 @@ const xc_func_info_type xc_func_info_mgga_c_m06_sx = {
   "Minnesota M06-SX correlation functional",
   XC_FAMILY_MGGA,
   {&xc_ref_Wang2020_2294, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
   1.0e-14,
   {M06L_N_PAR, m06l_names, m06l_desc, m06sx_values, set_ext_params_cpy},
   mgga_c_m06l_init, NULL,

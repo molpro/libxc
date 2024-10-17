@@ -52,7 +52,7 @@ class LibxcWriter(BibWriter):
     
 # Code starts here
 if len(sys.argv) != 2:
-  print("Usage: " + sys.argv[0] + "BIBFILE\n")
+  print(f"Usage: {sys.argv[0]} BIBFILE\n")
   sys.exit(1)
 
 # Load bibtex file

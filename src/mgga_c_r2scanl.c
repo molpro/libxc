@@ -9,6 +9,7 @@
 
 
 #include "util.h"
+#include "xc_funcs.h"
 
 #define XC_MGGA_C_R2SCANL        719 /* Deorbitalized r^2SCAN correlation */
 

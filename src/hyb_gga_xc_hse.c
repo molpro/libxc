@@ -7,6 +7,7 @@
 */
 
 #include "util.h"
+#include "xc_funcs.h"
 
 #define XC_HYB_GGA_XC_HSE03          427 /* the 2003 version of the screened hybrid HSE */
 #define XC_HYB_GGA_XC_HSE06          428 /* the 2006 version of the screened hybrid HSE */

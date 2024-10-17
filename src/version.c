@@ -23,18 +23,18 @@ void xc_version(int *major, int *minor, int *micro) {
 
 }
 
-const char *xc_version_string() {
+const char *xc_version_string(void) {
   return libxc_version;
 }
 
-const char *xc_reference() {
+const char *xc_reference(void) {
   return xc_ref_Lehtola2018_1.ref;
 }
 
-const char *xc_reference_doi() {
+const char *xc_reference_doi(void) {
   return xc_ref_Lehtola2018_1.doi;
 }
 
-const char *xc_reference_key() {
+const char *xc_reference_key(void) {
   return xc_ref_Lehtola2018_1.key;
 }

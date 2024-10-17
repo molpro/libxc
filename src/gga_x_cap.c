@@ -7,6 +7,7 @@
 */
 
 #include "util.h"
+#include "xc_funcs.h"
 
 #define XC_GGA_X_CAP         270 /* Correct Asymptotic Potential */
 #define XC_HYB_GGA_XC_CAP0   477 /* Correct Asymptotic Potential hybrid */

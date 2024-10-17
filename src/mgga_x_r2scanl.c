@@ -8,6 +8,7 @@
 */
 
 #include "util.h"
+#include "xc_funcs.h"
 
 #define XC_MGGA_X_R2SCANL       718 /* Deorbitalized r^2SCAN exchange */
 

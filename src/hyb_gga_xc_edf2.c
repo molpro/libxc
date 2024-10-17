@@ -8,6 +8,7 @@
 */
 
 #include "util.h"
+#include "xc_funcs.h"
 
 #define XC_HYB_GGA_XC_EDF2        476 /* Empirical functional from Lin, George and Gill */
 

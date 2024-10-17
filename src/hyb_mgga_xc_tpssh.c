@@ -7,6 +7,7 @@
 */
 
 #include "util.h"
+#include "xc_funcs.h"
 
 #define XC_HYB_MGGA_XC_TPSSH       457 /*    TPSS hybrid */
 #define XC_HYB_MGGA_XC_REVTPSSH    458 /* revTPSS hybrid */
@@ -50,7 +51,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_tpssh = {
   "TPSSh",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Staroverov2003_12129, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | XC_FLAGS_I_HAVE_ALL,
   1e-15,
   {N_PAR, names, desc, tpssh_values, tpssh_set_ext_params},
   hyb_mgga_xc_tpssh_init,
@@ -78,7 +79,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_revtpssh = {
   "revTPSSh",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Csonka2010_3688, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | XC_FLAGS_I_HAVE_ALL,
   1e-15,
   {N_PAR, names, desc, tpssh_values, tpssh_set_ext_params},
   hyb_mgga_xc_revtpssh_init,
@@ -104,7 +105,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_tpss0 = {
   "TPSS0 with 25% exact exchange",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Grimme2005_3067, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | XC_FLAGS_I_HAVE_ALL,
   1e-15,
   {N_PAR, names, desc, tpss0_values, tpssh_set_ext_params},
   hyb_mgga_xc_tpss0_init,

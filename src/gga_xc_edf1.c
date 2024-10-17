@@ -8,6 +8,7 @@
 */
 
 #include "util.h"
+#include "xc_funcs.h"
 
 #define XC_GGA_XC_EDF1        165 /* Empirical functionals from Adamson, Gill, and Pople */
 #define XC_GGA_X_OPTPBE_VDW   141 /* PBE reparametrization for vdW */
@@ -190,9 +191,7 @@ lb07_set_ext_params(xc_func_type *p, const double *ext_params)
   xc_func_set_ext_params_name(p->func_aux[0], "_omega", omega);
 
   /* 100% long-range exchange */
-  p->cam_alpha =  1.0;
-  p->cam_beta  = -1.0;
-  p->cam_omega = omega;
+  set_ext_params_lc(p, ext_params);
 }
 
 static void

@@ -87,19 +87,17 @@ case21_set_ext_params(xc_func_type *p, const double *ext_params)
     params->knots[k] = qmin+k*dq;
   }
 
-  const double *ep = (ext_params != NULL) ? ext_params: p->info->ext_params.values;
-
   /* External parameters */
   for(int i=0;i<params->Nsp;i++)
-    params->cx[i] = ep[i];
+    params->cx[i] = ext_params[i];
   for(int i=0;i<params->Nsp;i++)
-    params->cc[i] = ep[i + params->Nsp];
-  params->gammax = ep[2*params->Nsp];
-  params->gammac = ep[2*params->Nsp+1];
-  params->ax = ep[2*params->Nsp+2];
+    params->cc[i] = ext_params[i + params->Nsp];
+  params->gammax = ext_params[2*params->Nsp];
+  params->gammac = ext_params[2*params->Nsp+1];
+  params->ax = ext_params[2*params->Nsp+2];
 
   /* Exact exchange */
-  p->cam_alpha = params->ax;
+  set_ext_params_exx(p, ext_params);
 }
 
 static void

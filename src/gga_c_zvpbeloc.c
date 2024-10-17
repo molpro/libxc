@@ -7,6 +7,7 @@
 */
 
 #include "util.h"
+#include "xc_funcs.h"
 
 #define XC_GGA_C_ZVPBELOC       606 /* PBEloc variation with enhanced compatibility with exact exchange */
 #define XC_HYB_GGA_XC_APBE0     607 /* Hybrid based on APBE */

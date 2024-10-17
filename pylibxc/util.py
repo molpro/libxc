@@ -6,7 +6,6 @@ import ctypes
 import numpy as np
 
 from .core import core
-from . import flags
 
 ### Set required ctypes bindings
 

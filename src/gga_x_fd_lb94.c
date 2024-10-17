@@ -31,34 +31,36 @@ gga_x_fd_lb94_init(xc_func_type *p)
 }
 
 GPU_FUNCTION
-static inline double FT_inter(int n, double x)
+static inline double FT_inter(int n, double x, double fd_beta)
 {
-  static double fd_beta = 0.05, fd_csi = M_CBRT2;
-
+  static double fd_csi = M_CBRT2;
   double mlog;
-
   mlog = (n == 0) ? 1 : log(x);
 
-  return -3/4 * fd_beta*fd_csi*mlog /
-    (1 + 3*fd_beta*fd_csi*x*log(fd_csi*x + sqrt(fd_csi*fd_csi*x*x + 1)));
+  return -3.0/4.0 * fd_beta*fd_csi*mlog /
+    (1.0 + 3.0*fd_beta*fd_csi*x*log(fd_csi*x + sqrt(fd_csi*fd_csi*x*x + 1.0)));
 }
 
 GPU_FUNCTION
-static void func0(double *x, int n, void *dummy)
+static void func0(double *x, int n, void *beta)
 {
   int ii;
+  double b;
+  b = *((double *)beta);
 
   for(ii=0; ii<n; ii++)
-    x[ii] = FT_inter(0, x[ii]);
+    x[ii] = FT_inter(0, x[ii], b);
 }
 
 GPU_FUNCTION
-static void func1(double *x, int n, void *dummy)
+static void func1(double *x, int n, void *beta)
 {
   int ii;
+  double b;
+  b = *((double *)beta);
 
   for(ii=0; ii<n; ii++)
-    x[ii] = FT_inter(1, x[ii]);
+    x[ii] = FT_inter(1, x[ii], b);
 }
 
 #include "maple2c/gga_exc/gga_x_fd_lb94.c"

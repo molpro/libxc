@@ -8,9 +8,5 @@
 
 (* type: lda_exc *)
 
-a :=  0.0311:
-b := -0.048:
-c :=  0.009:
-d := -0.017:
-
-f := (rs, zeta) -> a*log(rs) + b + c*rs*log(rs) + d*rs:
+(* Carr & Maradudin 1964, eq 27, dividing by two to convert from Rydberg to Hartree *)
+f := (rs, zeta) -> ((0.0622*log(rs) - 0.096) + rs*(0.018*log(rs) - 0.036))/2:

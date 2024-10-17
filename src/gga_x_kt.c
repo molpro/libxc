@@ -7,6 +7,7 @@
 */
 
 #include "util.h"
+#include "xc_funcs.h"
 
 #define XC_GGA_X_KT1          145 /* Exchange part of Keal and Tozer version 1 */
 #define XC_GGA_XC_KT1         167 /* Keal and Tozer version 1                  */
@@ -127,7 +128,7 @@ gga_xc_kt3_init(xc_func_type *p)
   funcs_coef[3] = eps/b_optx; /* OPTX */
 
   xc_mix_init(p, 4, funcs_id, funcs_coef);
-  set_ext_params_cpy(p->func_aux[2], par_kt); /* kt parameters */
+  xc_func_set_ext_params(p->func_aux[2], par_kt); /* kt parameters */
 }
 
 #ifdef __cplusplus

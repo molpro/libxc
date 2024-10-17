@@ -8,6 +8,7 @@
 
 
 #include "util.h"
+#include "xc_funcs.h"
 
 #define XC_MGGA_C_SCANL          702 /* SCAN correlation */
 #define XC_MGGA_C_SCANL_RVV10    703 /* SCAN correlation + rVV10 correlation */

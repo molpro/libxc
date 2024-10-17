@@ -7,6 +7,7 @@
 */
 
 #include "util.h"
+#include "xc_funcs.h"
 
 #define  XC_HYB_GGA_XC_LC_BLYP    400  /* Long-range corrected BLYP */
 #define  XC_HYB_GGA_XC_LC_BLYP_EA 625  /* Long-range corrected BLYP, tuned for electron affinities */

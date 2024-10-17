@@ -153,8 +153,8 @@ int main(void) {
   char *fname;
 
   /* Families to print out */
-  const int families[] = {XC_FAMILY_LDA, XC_FAMILY_HYB_LDA, XC_FAMILY_GGA, XC_FAMILY_HYB_GGA, XC_FAMILY_MGGA, XC_FAMILY_HYB_MGGA};
-  const char *famleg[] = {"LDA", "hybrid LDA", "GGA", "hybrid GGA", "meta-GGA", "hybrid meta-GGA"};
+  const int families[] = {XC_FAMILY_LDA, XC_FAMILY_GGA, XC_FAMILY_MGGA};
+  const char *famleg[] = {"LDA", "GGA", "meta-GGA"};
   const int Nfam = sizeof(families)/sizeof(families[0]);
   int ifam;
   /* Types to print out */
@@ -228,7 +228,7 @@ int main(void) {
 	    if(func.info->refs[i]==NULL) break;
 	    if(strlen(func.info->refs[i]->doi) > 0) {
 	      char *h = sanitize_link(func.info->refs[i]->doi);
-	      printf("  - [%s](http://doi.org/%s) (doi: `%s`)\n", func.info->refs[i]->ref, h, func.info->refs[i]->doi);
+	      printf("  - [%s](https://doi.org/%s) (doi: `%s`)\n", func.info->refs[i]->ref, h, func.info->refs[i]->doi);
 	      libxc_free(h);
 	    } else
 	      printf("  - %s\n", func.info->refs[i]->ref);

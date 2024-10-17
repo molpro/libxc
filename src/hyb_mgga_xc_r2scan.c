@@ -7,6 +7,7 @@
 */
 
 #include "util.h"
+#include "xc_funcs.h"
 
 #define XC_HYB_MGGA_XC_R2SCANH       659 /* r2SCAN hybrid like TPSSh with 10% exact exchange */
 #define XC_HYB_MGGA_XC_R2SCAN0       660 /* r2SCAN hybrid like PBE0 with 25% exact exchange */
@@ -51,7 +52,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_r2scanh = {
   "r2SCANh: r2SCAN hybrid like TPSSh with 10% exact exchange",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Bursch2022_134105, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | XC_FLAGS_I_HAVE_ALL,
   1e-15,
   {N_PAR, names, desc, r2scanh_values, set_ext_params},
   hyb_mgga_xc_init,
@@ -67,7 +68,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_r2scan0 = {
   "r2SCAN0: r2SCAN hybrid like PBE0 with 25% exact exchange",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Bursch2022_134105, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | XC_FLAGS_I_HAVE_ALL,
   1e-15,
   {N_PAR, names, desc, r2scan0_values, set_ext_params},
   hyb_mgga_xc_init,
@@ -83,7 +84,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_r2scan50 = {
   "r2SCAN50: r2SCAN hybrid like PBE50 with 50% exact exchange",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Bursch2022_134105, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | XC_FLAGS_I_HAVE_ALL,
   1e-15,
   {N_PAR, names, desc, r2scan50_values, set_ext_params},
   hyb_mgga_xc_init,

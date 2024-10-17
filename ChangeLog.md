@@ -1,3 +1,35 @@
+## [7.0.0] - 2024-10-09
+
+This release introduces 23 new functionals, and fixes correctness issues in 5 functionals included in earlier releases.
+
+Importantly, the release introduces the XC_FLAGS_NEEDS_TAU flag for meta-GGAs, and moves the control of the enforcement of the Fermi hole curvature to a runtime option, controlled by the XC_FLAGS_ENFORCE_FHC flag. If Libxc is compiled with the --disable-fhc flag, XC_FLAGS_ENFORCE_FHC defaults to false, and the library works exactly as before. The function xc_func_set_fhc_enforcement() was added to control the enforcement of the Fermi hole curvature. Thanks to these changes, long standing issues with support for codes relying on the projector augmented wave (PAW) approach have been resolved.
+
+In addition, functionals' parameter values are now persistent. In previous versions, where calling e.g. xc_func_set_ext_params_name() would set the named parameter to the desired value - and all other parameters to their default values. Starting from Libxc 7.0.0, the other parameter values remain at their earlier values.
+
+The duplicate copy of libxcf03 under the name libxcf90, introduced to temporarily work around an erroneus change made in Libxc 5.0.0 has been removed. Libxc 5.0.0 renamed the Fortran 2003 interface library libxcf03 to libxcf90, even though a different library called libxcf90 which predated iso_c_binding existed before in Libxc. The Fortran 2003 interface libxcf03 has been available in Libxc at least since version 3.0.0, and was only briefly removed in Libxc 5.0.0, which also had other severe bugs that led to incorrect results. Any codes using libxcf90 while assuming the Fortran 2003 API should be rewritten to use libxcf03 instead, since unlike libxcf90 which had a different API in older versions of Libxc, the API of libxcf03 has been stable for at least 8 years.
+
+Another change to the Fortran interface is that the list of functionals has been split off into a separate module, xc_f03_funcs_m, in analogy to the C headers. Functional names should not be hardcoded in downstream codes; functional IDs should be parsed from human readable keywords like GGA_X_PBE by functionality included in Libxc (xc_functional_get_number() function). Similarly, e.g. hybrid functional coefficients should also not be hardcoded downstream, as these can be queried from Libxc.
+
+### Fixed
+- LDA_C_RPA (issue #539): term -0.017*rs instead of -0.018*rs as in original paper
+- GGA_X_SSB_SW (issue #535): a=1.0515 instead of 1.05151, c=0.254443 instead of 0.254433
+- GGA_X_LAG (issue #533): LDA exchange contribution missing
+- GGA_X_HCTH_A (issue #530): wrong sign for gradient contributions
+- GGA_X_FD_LB94 and GGA_X_FD_REVLB94 (issue #531): several issues in the definition of the functionals
+- MGGA_X_TASK (!658): improved numerical stability
+
+### Added
+- GGA_C: PBE_ERF_GWS (!542)
+- GGA_X: BKL1 and BKL2 (!649), PBE_ERF_GWS (!542)
+- HYB_GGA_XC: OPB3LYP (!630)
+- HYB_GGA_X: PBE_ERF_GWS (!542)
+- HYB_LDA_X: ERF (!542)
+- HYB_MGGA_X: CF22D (!646)
+- LDA_C: EPC17 and EPC17_2 (!623), EPC18_1 and EPC18_2 (!624), PW_ERF (!542)
+- MGGA_C: CF22D (!646)
+- MGGA_X: EEL (!627); LAK (!652); and MSB86BL, MSPBEL, MSRPBEL, RMSB86BL, RMSPBEL, and RMSRPBEL (!648)
+
+
 ## [6.2.2] - 2023-06-14
 
 Hotfix to fix the dimension of some of the fourth derivative arrays.

@@ -70,7 +70,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_gas22 = {
   "Google Accelerated Science 22",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Ma2022_eabq0279, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HYB_CAM | XC_FLAGS_VV10 | MAPLE2C_FLAGS,
+  XC_FLAGS_3D | XC_FLAGS_HYB_CAM | XC_FLAGS_NEEDS_TAU | XC_FLAGS_VV10 | MAPLE2C_FLAGS,
   1e-13,
   {N_PAR, names, desc, par_gas22, set_ext_params_cpy_cam},
   hyb_mgga_xc_gas22_init, NULL,

@@ -7,6 +7,7 @@
 */
 
 #include "util.h"
+#include "xc_funcs.h"
 
 #define XC_HYB_GGA_XC_CAMY_B3LYP        470 /* B3LYP with Yukawa screening */
 #define XC_HYB_GGA_XC_CAMY_PBEH         682 /* PBEH with Yukawa screening */

@@ -8,6 +8,7 @@
 */
 
 #include "util.h"
+#include "xc_funcs.h"
 
 #define XC_HYB_GGA_XC_O3LYP   404 /* hybrid using the optx functional */
 #define XC_HYB_GGA_XC_X3LYP   411 /* hybrid by Xu and Goddard */

@@ -970,8 +970,41 @@
  ! relPBE0 a.k.a. relPBE: PBE0 refitted for actinide compounds
  integer(c_int), parameter, public :: XC_HYB_GGA_XC_RELPBE0  =    325
 
+ ! Exact exchange-like exchange of Aschebrock et al
+ integer(c_int), parameter, public :: XC_MGGA_X_EEL  =    326
+
  ! Becke 97-3c by Grimme et. al.
  integer(c_int), parameter, public :: XC_GGA_XC_B97_3C  =    327
+
+ ! epc17(-1): electron-proton correlation 2017
+ integer(c_int), parameter, public :: XC_LDA_C_EPC17  =    328
+
+ ! epc17-2: electron-proton correlation 2017 for proton affinities
+ integer(c_int), parameter, public :: XC_LDA_C_EPC17_2  =    329
+
+ ! epc18-1: electron-proton correlation 2018
+ integer(c_int), parameter, public :: XC_LDA_C_EPC18_1  =    330
+
+ ! epc18-2: electron-proton correlation 2018 for proton affinities
+ integer(c_int), parameter, public :: XC_LDA_C_EPC18_2  =    331
+
+ ! Type-I band gap functional by Bhattacharjee, Koshi and Lee
+ integer(c_int), parameter, public :: XC_GGA_X_BKL1  =    338
+
+ ! Type-II band gap functional by Bhattacharjee, Koshi and Lee
+ integer(c_int), parameter, public :: XC_GGA_X_BKL2  =    339
+
+ ! Minnesota CF22D hybrid exchange functional
+ integer(c_int), parameter, public :: XC_HYB_MGGA_X_CF22D  =    340
+
+ ! Minnesota CF22D correlation functional
+ integer(c_int), parameter, public :: XC_MGGA_C_CF22D  =    341
+
+ ! Lebeda-Aschebrock-Kummel meta-GGA exchange
+ integer(c_int), parameter, public :: XC_MGGA_X_LAK  =    342
+
+ ! opB3LYP: B3LYP reoptimized in 6-311++G(2d,2p) basis set
+ integer(c_int), parameter, public :: XC_HYB_GGA_XC_OPB3LYP  =    386
 
  ! Self-interaction corrected correlation functional by Schmidt et al
  integer(c_int), parameter, public :: XC_MGGA_C_CC  =    387
@@ -1300,7 +1333,7 @@
  ! Swart 2012 GGA exchange
  integer(c_int), parameter, public :: XC_GGA_X_S12G  =    495
 
- ! Swart 2012 hybrid exchange
+ ! Swart 2012 hybrid GGA exchange
  integer(c_int), parameter, public :: XC_HYB_GGA_X_S12H  =    496
 
  ! Re-regularized SCAN exchange by Furness et al
@@ -1489,7 +1522,7 @@
  ! another spin-dependent correction to PBEsol
  integer(c_int), parameter, public :: XC_GGA_C_ZVPBESOL  =    558
 
- ! Takkar and McCarthy reparametrization
+ ! Takkar and McCarthy reparametrization, also known as reLYP
  integer(c_int), parameter, public :: XC_GGA_C_TM_LYP  =    559
 
  ! Thakkar and McCarthy reparametrization
@@ -1771,6 +1804,21 @@
  ! VCML-rVV10 by Trepte and Voss
  integer(c_int), parameter, public :: XC_MGGA_XC_VCML_RVV10  =    652
 
+ ! Long-range corrected functional based on short-range LDA exchange (erfc)
+ integer(c_int), parameter, public :: XC_HYB_LDA_X_ERF  =    653
+
+ ! Short ranged correlation LDA (erfc)
+ integer(c_int), parameter, public :: XC_LDA_C_PW_ERF  =    654
+
+ ! Short ranged PBE exchange (erfc)
+ integer(c_int), parameter, public :: XC_GGA_X_PBE_ERF_GWS  =    655
+
+ ! Short-range PBE (GWS) exchange (erfc) + long-range exact exchange
+ integer(c_int), parameter, public :: XC_HYB_GGA_X_PBE_ERF_GWS  =    656
+
+ ! Short ranged PBE correlation (erfc)
+ integer(c_int), parameter, public :: XC_GGA_C_PBE_ERF_GWS  =    657
+
  ! Google Accelerated Science 22
  integer(c_int), parameter, public :: XC_HYB_MGGA_XC_GAS22  =    658
 
@@ -1966,3 +2014,20 @@
  ! KTBM learned exchange - GAP
  integer(c_int), parameter, public :: XC_MGGA_X_KTBM_GAP  =    760
 
+ ! MS-PBEl, a PBE-like meta-GGA exchange
+ integer(c_int), parameter, public :: XC_MGGA_X_MSPBEL  =    761
+ 
+ ! regularized MS-PBEl
+ integer(c_int), parameter, public :: XC_MGGA_X_RMSPBEL  =    762
+
+ ! MS-RPBEl, a RPBE-like meta-GGA exchange
+ integer(c_int), parameter, public :: XC_MGGA_X_MSRPBEL  =    763
+ 
+ ! regularized MS-RPBEl
+ integer(c_int), parameter, public :: XC_MGGA_X_RMSRPBEL  =    764
+
+ ! MS-B86bl, a B86b-like meta-GGA exchange
+ integer(c_int), parameter, public :: XC_MGGA_X_MSB86BL  =    765
+ 
+ ! regularized MS-B86bl
+ integer(c_int), parameter, public :: XC_MGGA_X_RMSB86BL  =    766

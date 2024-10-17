@@ -10,6 +10,7 @@
 
 
 #include "util.h"
+#include "xc_funcs.h"
 
 #define XC_LDA_X             1   /* Exchange                            */
 #define XC_LDA_C_XALPHA      6   /* Slater Xalpha                       */

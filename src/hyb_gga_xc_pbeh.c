@@ -7,6 +7,7 @@
 */
 
 #include "util.h"
+#include "xc_funcs.h"
 
 #define XC_HYB_GGA_XC_PBEH      406 /* aka PBE0 or PBE1PBE */
 #define XC_HYB_GGA_XC_PBE0_13   456 /* PBE0-1/3            */

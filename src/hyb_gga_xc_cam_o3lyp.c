@@ -7,6 +7,7 @@
 */
 
 #include "util.h"
+#include "xc_funcs.h"
 
 #define XC_HYB_GGA_XC_CAM_O3LYP   395 /* range separated hybrid based on the optx functional */
 

@@ -9,6 +9,7 @@
 
 
 #include "util.h"
+#include "xc_funcs.h"
 
 #define XC_MGGA_X_VCML            651 /* VCML exchange, used in VCML-rVV10 by Trepte and Voss */
 #define XC_MGGA_XC_VCML_RVV10     652 /* VCML-rVV10 exchange-correlation by Trepte and Voss */
@@ -25,7 +26,7 @@ const xc_func_info_type xc_func_info_mgga_x_vcml = {
   "Exchange part of VCML-rVV10 by Trepte and Voss",
   XC_FAMILY_MGGA,
   {&xc_ref_Trepte2022_1104, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
   1e-14,
   {0, NULL, NULL, NULL, NULL},
   NULL, NULL,
@@ -52,7 +53,7 @@ const xc_func_info_type xc_func_info_mgga_xc_vcml_rvv10 = {
   "VCML-rVV10 by Trepte and Voss",
   XC_FAMILY_MGGA,
   {&xc_ref_Trepte2022_1104, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL | XC_FLAGS_VV10, /* TBD: this should be rvv10 */
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | XC_FLAGS_I_HAVE_ALL | XC_FLAGS_VV10, /* TBD: this should be rvv10 */
   1e-15,
   {0, NULL, NULL, NULL, NULL},
   mgga_xc_vcml_rvv10_init,

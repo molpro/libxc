@@ -7,6 +7,7 @@
 */
 
 #include "util.h"
+#include "xc_funcs.h"
 
 #define XC_GGA_XC_XLYP       166  /* XLYP functional */
 #define XC_GGA_XC_PBE1W      173  /* Functionals fitted for water */

@@ -7,6 +7,7 @@
 */
 
 #include "util.h"
+#include "xc_funcs.h"
 
 #define XC_GGA_K_GDS08     591 /* Combined analytical theory with Monte Carlo sampling */
 #define XC_GGA_K_GHDS10    592 /* As GDS08 but for an electron gas with spin */

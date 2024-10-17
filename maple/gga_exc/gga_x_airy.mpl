@@ -1,5 +1,6 @@
 (*
  Copyright (C) 2017 M.A.L. Marques
+               2024 Susi Lehtola
 
  This Source Code Form is subject to the terms of the Mozilla Public
  License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -7,18 +8,16 @@
 *)
 
 (* type: gga_exc *)
+(* prefix:
+  gga_x_airy_params *params;
 
-airy_a5  := 133.983631:
-airy_a6  :=   3.217063:
-airy_a7  := 136.707378:
-airy_a8  :=   3.223476:
-airy_a9  :=   2.675484:
-airy_a10 :=   3.473804:
+  assert(p->params != NULL);
+  params = (gga_x_airy_params * )(p->params);
+*)
 
-airy_f1 := s -> (1 - airy_a5*s^airy_a6 + airy_a7*s^airy_a8)/(1 + airy_a9*s^airy_a10):
+(* eq 18 *)
+airy_f0 := s -> params_a_a1 * s^params_a_a2/(1 + params_a_a3 * s^params_a_a2)^params_a_a4 + (1 - params_a_a5*s^params_a_a6 + params_a_a7*s^params_a_a8)/(1 + params_a_a9*s^params_a_a10):
 
-$include "gga_x_lag.mpl"
-
-airy_f := x -> lag_f0(X2S*x) + airy_f1(X2S*x):
+airy_f := x -> airy_f0(X2S*x):
 
 f := (rs, zeta, xt, xs0, xs1) -> gga_exchange(airy_f, rs, zeta, xs0, xs1):

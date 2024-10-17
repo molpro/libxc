@@ -14,16 +14,16 @@ extern "C" {
 #endif
 
 /* Get the literature reference for libxc */
-const char *xc_reference();
+const char *xc_reference(void);
 /* Get the doi for the literature reference for libxc */
-const char *xc_reference_doi();
+const char *xc_reference_doi(void);
 /* Get the key for the literature reference for libxc */
-const char *xc_reference_key();
+const char *xc_reference_key(void);
 
 /* Get the major, minor, and micro version of libxc */
 void xc_version(int *major, int *minor, int *micro);
 /* Get the version of libxc as a string */
-const char *xc_version_string();
+const char *xc_version_string(void);
 
 #include <xc_version.h>
 #include <stddef.h>
@@ -72,17 +72,17 @@ const char *xc_version_string();
 /* functionals marked with the development flag may have significant problems in the implementation */
 #define XC_FLAGS_DEVELOPMENT      (1 << 14) /* 16384 */
 #define XC_FLAGS_NEEDS_LAPLACIAN  (1 << 15) /* 32768 */
+#define XC_FLAGS_NEEDS_TAU        (1 << 16) /* 65536 */
+/* enforce Fermi hole curvature? (Only affects meta-GGA routines) */
+#define XC_FLAGS_ENFORCE_FHC      (1 << 17) /* 131072 */
 
-  /* This is the case for most functionals in libxc */
+/* This is the case for most functionals in libxc */
 #define XC_FLAGS_HAVE_ALL         (XC_FLAGS_HAVE_EXC | XC_FLAGS_HAVE_VXC | \
                                    XC_FLAGS_HAVE_FXC | XC_FLAGS_HAVE_KXC | \
                                    XC_FLAGS_HAVE_LXC)
 
-  /* This magic value means use default parameter */
+/* This magic value means use default parameter */
 #define XC_EXT_PARAMS_DEFAULT   -999998888
-
-#define XC_TAU_EXPLICIT         0
-#define XC_TAU_EXPANSION        1
 
 #define XC_MAX_REFERENCES       5
 
@@ -310,7 +310,7 @@ typedef struct xc_dimensions xc_dimensions;
 
 
 struct xc_func_type{
-  const xc_func_info_type *info;       /* all the information concerning this functional */
+  xc_func_info_type *info;             /* all the information concerning this functional */
   int nspin;                           /* XC_UNPOLARIZED or XC_POLARIZED  */
 
   int n_func_aux;                      /* how many auxiliary functions we need */
@@ -337,7 +337,10 @@ struct xc_func_type{
 
   xc_dimensions dim;           /* the dimensions of all input and output arrays */
 
-  void *params;                /* this allows us to fix parameters in the functional */
+  /* This is where the values of the external parameters are stored */
+  double *ext_params;
+  /* This is a placeholder for structs of parameters that are used in the Maple generated sources */
+  void *params;
 
   double dens_threshold;       /* functional is put to zero for spin-densities smaller than this */
   double zeta_threshold;       /* idem for the absolute value of zeta */
@@ -356,9 +359,9 @@ char *xc_functional_get_name(int number);
 int   xc_family_from_id(int id, int *family, int *number);
 
 /** The number of functionals implemented in this version of libxc */
-int   xc_number_of_functionals();
+int   xc_number_of_functionals(void);
 /** The maximum name length of any functional */
-int   xc_maximum_name_length();
+int   xc_maximum_name_length(void);
 /** Returns the available functional number sorted by id */
 void  xc_available_functional_numbers(int *list);
 /** Returns the available functional number sorted by the functionals'
@@ -369,7 +372,7 @@ void  xc_available_functional_numbers_by_name(int *list);
 void  xc_available_functional_names(char **list);
 
 /** Dynamically allocates a libxc functional; which will also need to be initialized. */
-xc_func_type *xc_func_alloc();
+xc_func_type *xc_func_alloc(void);
 /** Initializes a functional by id with nspin spin channels */
 int   xc_func_init(xc_func_type *p, int functional, int nspin);
 /** Destructor for an initialized functional */
@@ -387,21 +390,28 @@ void  xc_func_set_zeta_threshold(xc_func_type *p, double t_zeta);
 void  xc_func_set_sigma_threshold(xc_func_type *p, double t_sigma);
 /** Sets the kinetic energy density threshold for a functional */
 void  xc_func_set_tau_threshold(xc_func_type *p, double t_tau);
+/** Turns the Fermi hole curvature enforcement on or off: 0 is off, != 0 is on */
+void  xc_func_set_fhc_enforcement(xc_func_type *p, int on);
 
 /** Sets all external parameters for a functional */
 void  xc_func_set_ext_params(xc_func_type *p, const double *ext_params);
+/** Gets all external parameters for a functional. Array needs to be preallocated  */
+void  xc_func_get_ext_params(const xc_func_type *p, double *ext_params);
 /** Sets an external parameter by name for a functional */
 void  xc_func_set_ext_params_name(xc_func_type *p, const char *name, double par);
-
-
-#include "xc_funcs.h"
-#include "xc_funcs_removed.h"
+/** Gets an external parameter by name for a functional */
+double xc_func_get_ext_params_name(const xc_func_type *p, const char *name);
+/** Gets an external parameter by index */
+double xc_func_get_ext_params_value(const xc_func_type *p, int number);
 
 /** New API */
 void xc_lda_new (const xc_func_type *p, int order, size_t np,
              const double *rho, xc_lda_out_params *out);
 void xc_gga_new (const xc_func_type *p, int order, size_t np,
              const double *rho, const double *sigma, xc_gga_out_params *out);
+void xc_mgga_new(const xc_func_type *func, int order, size_t np,
+             const double *rho, const double *sigma, const double *lapl,
+             const double *tau, xc_mgga_out_params *out);
 
 /** Evaluate an     LDA functional */
 void xc_lda (const xc_func_type *p, size_t np, const double *rho,

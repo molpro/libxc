@@ -11,6 +11,16 @@ cmake_minimum_required(VERSION 3.1)
 set(CMAKE_C_STANDARD 99)
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
+if(ENABLE_CUDA)
+  cmake_minimum_required(VERSION 3.8)
+  set(CMAKE_VERBOSE_MAKEFILE ON)
+  enable_language(CUDA)
+  set(CMAKE_CUDA_STANDARD 98)
+  if(POLICY CMP0104)
+    cmake_policy(SET CMP0104 OLD)
+  endif()
+endif()
+
 ################################### Options ####################################
 include(psi4OptionsTools)
 option_with_default(CMAKE_BUILD_TYPE "Build type" Release)
@@ -111,7 +121,7 @@ configure_file(config.h.cmake.in config.h @ONLY)
 # special substitutions for pkgconfig files
 include(JoinPaths)
 join_paths(libdir_for_pc_file "\${exec_prefix}" "${CMAKE_INSTALL_LIBDIR}")
-join_paths(includedir_for_pc_file "\${prefix}" "${CMAKE_INSTALL_INCLUDEDIR}")
+join_paths(includedir_for_pc_file "\${prefix}" "${CMAKE_INSTALL_INCLUDEDIR}${NAMESPACE_INSTALL_INCLUDEDIR}")
 configure_file(cmake/libxc.pc.in libxc.pc @ONLY)
 
 # extract project soversion from source
@@ -159,6 +169,7 @@ set(raw_sources_list
   gga_c_pbe.c
   gga_c_pbe_vwn.c
   gga_c_pbeloc.c
+  gga_c_pbe_erf_gws.c
   gga_c_pw91.c
   gga_c_q2d.c
   gga_c_regtpss.c
@@ -221,7 +232,6 @@ set(raw_sources_list
   gga_x_ityh_optx.c
   gga_x_ityh_pbe.c
   gga_x_kt.c
-  gga_x_lag.c
   gga_x_lb.c
   gga_x_lg93.c
   gga_x_lspbe.c
@@ -236,6 +246,7 @@ set(raw_sources_list
   gga_x_pbeint.c
   gga_x_pbepow.c
   gga_x_pbetrans.c
+  gga_x_pbe_erf_gws.c
   gga_x_pw86.c
   gga_x_pw91.c
   gga_x_q1d.c
@@ -264,6 +275,7 @@ set(raw_sources_list
   gga_k_lgap.c
   gga_k_lgap_ge.c
   gga_c_ccdf.c
+  gga_x_bkl.c
   hyb_gga_xc_b1wc.c
   hyb_gga_xc_b3lyp.c
   hyb_gga_xc_cam_b3lyp.c
@@ -318,6 +330,7 @@ set(raw_sources_list
   lda_c_wigner.c
   lda_c_gk72.c
   lda_c_w20.c
+  lda_c_pw_erf.c
   lda_k_tf.c
   lda_k_zlp.c
   lda_k_gds08_worker.c
@@ -335,6 +348,8 @@ set(raw_sources_list
   lda_xc_tih.c
   lda_x_sloc.c
   lda_x_yukawa.c
+  lda_c_epc17.c
+  lda_c_epc18.c
   mgga.c
   mgga_c_b88.c
   mgga_c_b94.c
@@ -430,9 +445,14 @@ set(raw_sources_list
   mgga_x_r4scan.c
   mgga_x_ft98.c
   mgga_x_ktbm.c
+  mgga_x_mspbel.c
+  mgga_x_msrpbel.c
+  mgga_x_msb86bl.c
   hyb_mgga_xc_br3p86.c
   mgga_x_vcml.c
   hyb_mgga_xc_r2scan.c
+  mgga_x_eel.c
+  mgga_x_lak.c
   mix_func.c
   deorbitalize_func.c
   references.c
@@ -445,11 +465,13 @@ set(raw_sources_list
 set(src_prefix "src/")
 string(REGEX REPLACE "([^;]+)" "${src_prefix}\\1" sources_list "${raw_sources_list}")
 
-set(raw_sources_list_f03
-  src/libxc_master.F90
-  )
+
+if(ENABLE_CUDA)
+  set_source_files_properties(${sources_list} PROPERTIES LANGUAGE CUDA)
+endif()
+
 set(raw_sources_list_f90
-  src/libxc_master_f90.F90
+  src/libxc_master.F90
   )
 
 # when headers namespaced, xc_version include in xc.h needs to be local, not
@@ -470,6 +492,7 @@ set(CMAKE_INSTALL_RPATH ${base} ${base}/${relDir})
 
 # STATIC/SHARED on below governed by BUILD_SHARED_LIBS
 add_library(xc ${sources_list})
+set_target_properties(xc PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 target_link_libraries(xc PUBLIC ${STANDARD_MATH_LIBRARY})
 set_target_properties(xc PROPERTIES POSITION_INDEPENDENT_CODE ${BUILD_FPIC}
   SOVERSION ${${PROJECT_NAME}_SOMAJOR})
@@ -482,22 +505,22 @@ endif()
 
 if(ENABLE_FORTRAN)
   enable_language(Fortran)
-  configure_file(cmake/libxcf03.pc.in libxcf03.pc @ONLY)
-  configure_file(cmake/libxcf90.pc.in libxcf90.pc @ONLY)
-  add_library(xcf03 ${raw_sources_list_f03})
+  add_library(xcf03 ${raw_sources_list_f90})
   target_link_libraries(xcf03 xc)
   set_target_properties(xcf03 PROPERTIES POSITION_INDEPENDENT_CODE ${BUILD_FPIC}
-    SOVERSION ${${PROJECT_NAME}_SOMAJOR})
-  add_library(xcf90 ${raw_sources_list_f90})
-  target_link_libraries(xcf90 xc)
-  set_target_properties(xcf90 PROPERTIES POSITION_INDEPENDENT_CODE ${BUILD_FPIC}
     SOVERSION ${${PROJECT_NAME}_SOMAJOR})
 endif()
 
 add_executable(xc-info "${src_prefix}/xc-info.c")
+if(ENABLE_CUDA)
+  set_source_files_properties("${src_prefix}/xc-info.c" PROPERTIES LANGUAGE CUDA)
+endif()
 target_link_libraries(xc-info xc)
 
 add_executable(xc-threshold "${src_prefix}/xc-threshold.c")
+if(ENABLE_CUDA)
+  set_source_files_properties("${src_prefix}/xc-threshold.c" PROPERTIES LANGUAGE CUDA)
+endif()
 target_link_libraries(xc-threshold xc)
 
 
@@ -535,22 +558,20 @@ install(TARGETS xc
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}${NAMESPACE_INSTALL_INCLUDEDIR})
 
 if(ENABLE_FORTRAN)
-  install(TARGETS xc xcf03 xcf90
+  configure_file(cmake/libxcf03.pc.in libxcf03.pc @ONLY)
+  install(TARGETS xc xcf03
     EXPORT f_interface
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-  install(FILES "${PROJECT_BINARY_DIR}/xc_f03_lib_m.mod"
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}${NAMESPACE_INSTALL_INCLUDEDIR})
-  install(FILES "${PROJECT_BINARY_DIR}/xc_f90_lib_m.mod"
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}${NAMESPACE_INSTALL_INCLUDEDIR})
+  install(FILES "${PROJECT_BINARY_DIR}/xc_f03_lib_m.mod" "${PROJECT_BINARY_DIR}/xc_f03_funcs_m.mod"
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}${NAMESPACE_INSTALL_INCLUDEDIR})
   if(NOT MSVC)
     install(FILES ${PROJECT_BINARY_DIR}/libxcf03.pc
-                  ${PROJECT_BINARY_DIR}/libxcf90.pc
       DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig/)
   endif()
 endif()
@@ -559,7 +580,7 @@ endif()
 
 target_compile_definitions(xc INTERFACE USING_${PN})
 target_include_directories(xc INTERFACE
-  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}${NAMESPACE_INSTALL_INCLUDEDIR}>)
 
 # <<<  Export Config  >>>
 

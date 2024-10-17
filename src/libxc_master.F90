@@ -55,6 +55,7 @@ module xc_f03_lib_m
     xc_f03_func_set_tau_threshold, &
     xc_f03_func_set_ext_params, &
     xc_f03_func_set_ext_params_name, &
+    xc_f03_func_set_fhc_enforcement, &
     ! mixed functional interfaces
     xc_f03_num_aux_funcs, &
     xc_f03_aux_func_ids, &
@@ -129,48 +130,28 @@ module xc_f03_lib_m
     XC_FAMILY_HYB_LDA       = 128
 
   integer(c_int), parameter, public :: &
-    XC_FLAGS_HAVE_EXC        =     1,   &
-    XC_FLAGS_HAVE_VXC        =     2,   &
-    XC_FLAGS_HAVE_FXC        =     4,   &
-    XC_FLAGS_HAVE_KXC        =     8,   &
-    XC_FLAGS_HAVE_LXC        =    16,   &
-    XC_FLAGS_HAVE_ALL        =    31,   & ! The most common case
-    XC_FLAGS_1D              =    32,   &
-    XC_FLAGS_2D              =    64,   &
-    XC_FLAGS_3D              =   128,   &
-    XC_FLAGS_HYB_CAM         =   256,   &
-    XC_FLAGS_HYB_CAMY        =   512,   &
-    XC_FLAGS_VV10            =  1024,   &
-    XC_FLAGS_HYB_LC          =  2048,   &
-    XC_FLAGS_HYB_LCY         =  4096,   &
-    XC_FLAGS_STABLE          =  8192,   &
-    XC_FLAGS_DEVELOPMENT     = 16384,   &
-    XC_FLAGS_NEEDS_LAPLACIAN = 32768
-
-  integer(c_int), parameter, public :: &
-    XC_TAU_EXPLICIT         =     0,   &
-    XC_TAU_EXPANSION        =     1
+    XC_FLAGS_HAVE_EXC        =      1,   &
+    XC_FLAGS_HAVE_VXC        =      2,   &
+    XC_FLAGS_HAVE_FXC        =      4,   &
+    XC_FLAGS_HAVE_KXC        =      8,   &
+    XC_FLAGS_HAVE_LXC        =     16,   &
+    XC_FLAGS_HAVE_ALL        =     31,   & ! The most common case
+    XC_FLAGS_1D              =     32,   &
+    XC_FLAGS_2D              =     64,   &
+    XC_FLAGS_3D              =    128,   &
+    XC_FLAGS_HYB_CAM         =    256,   &
+    XC_FLAGS_HYB_CAMY        =    512,   &
+    XC_FLAGS_VV10            =   1024,   &
+    XC_FLAGS_HYB_LC          =   2048,   &
+    XC_FLAGS_HYB_LCY         =   4096,   &
+    XC_FLAGS_STABLE          =   8192,   &
+    XC_FLAGS_DEVELOPMENT     =  16384,   &
+    XC_FLAGS_NEEDS_LAPLACIAN =  32768,   &
+    XC_FLAGS_NEEDS_TAU       =  65536,   &
+    XC_FLAGS_ENFORCE_FHC     = 131072
 
   integer(c_int), parameter, public :: &
     XC_MAX_REFERENCES       =     5
-
-  ! List of functionals
-#include "libxc_inc.f90"
-
-  ! These are old names kept for compatibility
-  integer(c_int), parameter, public :: &
-    XC_LDA_X_1D             =  21,     &
-    XC_GGA_X_BGCP           =  38,     &
-    XC_GGA_C_BGCP           =  39,     &
-    XC_GGA_C_BCGP           =  39,     &
-    XC_GGA_C_VPBE           =  83,     &
-    XC_GGA_XC_LB            = 160,     &
-    XC_MGGA_C_CC06          = 229,     &
-    XC_GGA_K_ABSR1          = 506,     &
-    XC_GGA_K_ABSR2          = 507,     &
-    XC_LDA_C_LP_A           = 547,     &
-    XC_LDA_C_LP_B           = 548,     &
-    XC_MGGA_C_LP90          = 564
 
   !----------------------------------------------------------------
   interface
@@ -382,6 +363,12 @@ module xc_f03_lib_m
       type(c_ptr), value :: p
       real(c_double), value :: tau_threshold
     end subroutine xc_func_set_tau_threshold
+
+    subroutine xc_func_set_fhc_enforcement(p, on) bind(c)
+      import
+      type(c_ptr), value :: p
+      integer(c_int), value :: on
+    end subroutine xc_func_set_fhc_enforcement
 
     subroutine xc_func_set_ext_params(p, ext_params) bind(c)
       import
@@ -629,21 +616,21 @@ end interface
       real(c_double), intent(out) :: nlc_b, nlc_c
     end subroutine xc_nlc_coef
 
-    integer(c_int) function xc_num_aux_funcs(p) bind(c, name="xc_num_aux_funcs")
+    integer(c_int) function xc_num_aux_funcs(p) bind(c)
       import
       type(c_ptr), value :: p
     end function xc_num_aux_funcs
 
-    subroutine xc_aux_func_ids(p, ids) bind(c, name="xc_aux_func_ids")
+    subroutine xc_aux_func_ids(p, ids) bind(c)
       import
       type(c_ptr), value :: p
       integer(c_int), intent(out) :: ids(*)
     end subroutine xc_aux_func_ids
 
-    subroutine xc_aux_func_weights(p, weights) bind(c, name="xc_aux_func_weights")
+    subroutine xc_aux_func_weights(p, weights) bind(c)
       import
       type(c_ptr), value :: p
-      real(c_double), intent(in) :: weights(*)
+      real(c_double), intent(out) :: weights(*)
     end subroutine xc_aux_func_weights
   end interface
 
@@ -1125,6 +1112,18 @@ end interface
     call xc_func_set_tau_threshold(p%ptr, tau_threshold)
 
   end subroutine xc_f03_func_set_tau_threshold
+
+  subroutine xc_f03_func_set_fhc_enforcement(p, on)
+    type(xc_f03_func_t), intent(in) :: p
+    logical,             intent(in) :: on
+
+    if(on) then
+       call xc_func_set_fhc_enforcement(p%ptr, 1_c_int)
+    else
+       call xc_func_set_fhc_enforcement(p%ptr, 0_c_int)
+    end if
+
+  end subroutine xc_f03_func_set_fhc_enforcement
 
   subroutine xc_f03_func_set_ext_params(p, ext_params)
     type(xc_f03_func_t), intent(in) :: p
@@ -1695,9 +1694,9 @@ end interface
 
     strlen = len_trim(f_string)
 
-    forall (i=1:strlen)
+    do concurrent (i=1:strlen)
       c_string(i) = f_string(i:i)
-    end forall
+    end do
     c_string(strlen+1) = C_NULL_CHAR
 
   end function f_to_c_string
@@ -1739,6 +1738,31 @@ end interface
   end subroutine c_to_f_string_ptr
 
 end module xc_f03_lib_m
+
+module xc_f03_funcs_m
+  use, intrinsic :: iso_c_binding
+  implicit none
+
+  public
+       ! List of functionals
+#include "libxc_inc.f90"
+
+  ! These are old names kept for compatibility
+  integer(c_int), parameter, public :: &
+    XC_LDA_X_1D             =  21,     &
+    XC_GGA_X_BGCP           =  38,     &
+    XC_GGA_C_BGCP           =  39,     &
+    XC_GGA_C_BCGP           =  39,     &
+    XC_GGA_C_VPBE           =  83,     &
+    XC_GGA_XC_LB            = 160,     &
+    XC_MGGA_C_CC06          = 229,     &
+    XC_GGA_K_ABSR1          = 506,     &
+    XC_GGA_K_ABSR2          = 507,     &
+    XC_LDA_C_LP_A           = 547,     &
+    XC_LDA_C_LP_B           = 548,     &
+    XC_MGGA_C_LP90          = 564
+
+end module xc_f03_funcs_m
 
 !! Local Variables:
 !! mode: f90

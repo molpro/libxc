@@ -7,6 +7,7 @@
 */
 
 #include "util.h"
+#include "xc_funcs.h"
 
 #define XC_GGA_X_NCAP  180 /* Nearly correct asymptotic potential */
 #define XC_GGA_XC_NCAP 181 /* Nearly correct asymptotic potential + P86 correlation */

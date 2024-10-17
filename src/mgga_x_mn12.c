@@ -13,6 +13,7 @@
 #define XC_HYB_MGGA_X_MN12_SX   248 /* Minnesota MN12-SX hybrid exchange functional  */
 #define XC_MGGA_X_MN15_L        260 /* Minnesota MN15-L exhange functional           */
 #define XC_HYB_MGGA_X_MN15      268 /* Minnesota MN15 hybrid exchange functional     */
+#define XC_HYB_MGGA_X_CF22D     340 /* Minnesota CF22D hybrid exchange functional    */
 
 /* the ordering is
 CC000 [ 0], CC001 [ 1], CC002 [ 2], CC003 [ 3], CC004 [ 4], CC005 [ 5]
@@ -167,6 +168,20 @@ static const double par_mn15[N_PAR_H] = {
    0.44
 };
 
+static const double par_cf22d[N_PAR_H] = {
+  0.24416116,  -0.389728151, -1.829675858, 1.396044771, 2.315047133, 0.397552547, // a000-a005
+  1.082144406, -7.894560034, -3.656253030, 2.574496508, 4.031038406, // a010-a014
+  -3.931389433,  0.333519075, -3.032270318, 3.673752289, // a020-a023
+  3.005997956, -6.463733874, -4.596755225, // a030-a032
+  0.964839180,  0.363791944,  1.646506623, -3.504641550, -3.922228074, // a100-a104
+  0.843718076, 10.779373313,  2.293612669, 7.088363286, // a110-a113
+  2.598770741, -0.088522116, 7.180809030, // a120-a122
+  -1.017514009, 1.735020310, 3.499241561, 0.922224945, // a200-a203
+  -2.212903920, 0.243080429, 17.306321840,  // a210-a212
+  0.311402396, -3.257126009, -3.372399742, // a300-a302
+  0.462806 // hf exchange
+};
+
 static void
 mgga_x_mn12_init(xc_func_type *p)
 {
@@ -176,6 +191,8 @@ mgga_x_mn12_init(xc_func_type *p)
   if(p->info->number == XC_HYB_MGGA_X_MN12_SX)
     xc_hyb_init_cam(p, 0.0, 0.0, 0.0);
   else if(p->info->number == XC_HYB_MGGA_X_MN15)
+    xc_hyb_init_hybrid(p, 0.0);
+  else if(p->info->number == XC_HYB_MGGA_X_CF22D)
     xc_hyb_init_hybrid(p, 0.0);
 }
 
@@ -191,7 +208,7 @@ const xc_func_info_type xc_func_info_mgga_x_mn12_l = {
   "Minnesota MN12-L exchange functional",
   XC_FAMILY_MGGA,
   {&xc_ref_Peverati2012_13171, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
   1e-15,
   {N_PAR_L, names_l, desc_l, par_mn12_l, set_ext_params_cpy},
   mgga_x_mn12_init, NULL,
@@ -207,7 +224,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_mn12_sx = {
   "Minnesota MN12-SX hybrid exchange functional",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Peverati2012_16187, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HYB_CAM | MAPLE2C_FLAGS,
+  XC_FLAGS_3D | XC_FLAGS_HYB_CAM | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
   1e-15,
   {N_PAR_C, names_c, desc_c, par_mn12_sx, set_ext_params_cpy_cam},
   mgga_x_mn12_init, NULL,
@@ -223,7 +240,7 @@ const xc_func_info_type xc_func_info_mgga_x_mn15_l = {
   "Minnesota MN15-L exchange functional",
   XC_FAMILY_MGGA,
   {&xc_ref_Yu2016_1280, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
   1e-15,
   {N_PAR_L, names_l, desc_l, par_mn15_l, set_ext_params_cpy},
   mgga_x_mn12_init, NULL,
@@ -239,9 +256,25 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_mn15 = {
   "Minnesota MN15 hybrid exchange functional",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Yu2016_5032, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
   1e-15,
   {N_PAR_H, names_h, desc_h, par_mn15, set_ext_params_cpy_exx},
+  mgga_x_mn12_init, NULL,
+  NULL, NULL, &work_mgga,
+};
+
+#ifdef __cplusplus
+extern "C"
+#endif
+const xc_func_info_type xc_func_info_hyb_mgga_x_cf22d = {
+  XC_HYB_MGGA_X_CF22D,
+  XC_EXCHANGE,
+  "Minnesota CF22D hybrid exchange functional",
+  XC_FAMILY_HYB_MGGA,
+  {&xc_ref_Liu2022_48, NULL, NULL, NULL, NULL},
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
+  1e-15,
+  {N_PAR_H, names_h, desc_h, par_cf22d, set_ext_params_cpy_exx},
   mgga_x_mn12_init, NULL,
   NULL, NULL, &work_mgga,
 };

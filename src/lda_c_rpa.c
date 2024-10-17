@@ -25,7 +25,7 @@ const xc_func_info_type xc_func_info_lda_c_rpa = {
   XC_CORRELATION,
   "Random Phase Approximation (RPA)",
   XC_FAMILY_LDA,
-  {&xc_ref_GellMann1957_364, NULL, NULL, NULL, NULL},
+  {&xc_ref_GellMann1957_364, &xc_ref_Carr1964_371, NULL, NULL, NULL},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-32,
   {0, NULL, NULL, NULL, NULL},

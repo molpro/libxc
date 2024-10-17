@@ -322,7 +322,18 @@
 #define  XC_MGGA_C_TPSS_GAUSSIAN           323 /* Tao, Perdew, Staroverov & Scuseria with parameters from Gaussian */
 #define  XC_GGA_X_NCAPR                    324 /* Nearly correct asymptotic potential revised */
 #define  XC_HYB_GGA_XC_RELPBE0             325 /* relPBE0 a.k.a. relPBE: PBE0 refitted for actinide compounds */
+#define  XC_MGGA_X_EEL                     326 /* Exact exchange-like exchange of Aschebrock et al */
 #define  XC_GGA_XC_B97_3C                  327 /* Becke 97-3c by Grimme et. al. */
+#define  XC_LDA_C_EPC17                    328 /* epc17(-1): electron-proton correlation 2017 */
+#define  XC_LDA_C_EPC17_2                  329 /* epc17-2: electron-proton correlation 2017 for proton affinities */
+#define  XC_LDA_C_EPC18_1                  330 /* epc18-1: electron-proton correlation 2018 */
+#define  XC_LDA_C_EPC18_2                  331 /* epc18-2: electron-proton correlation 2018 for proton affinities */
+#define  XC_GGA_X_BKL1                     338 /* Type-I band gap functional by Bhattacharjee, Koshi and Lee */
+#define  XC_GGA_X_BKL2                     339 /* Type-II band gap functional by Bhattacharjee, Koshi and Lee */
+#define  XC_HYB_MGGA_X_CF22D               340 /* Minnesota CF22D hybrid exchange functional */
+#define  XC_MGGA_C_CF22D                   341 /* Minnesota CF22D correlation functional */
+#define  XC_MGGA_X_LAK                     342 /* Lebeda-Aschebrock-Kummel meta-GGA exchange */
+#define  XC_HYB_GGA_XC_OPB3LYP             386 /* opB3LYP: B3LYP reoptimized in 6-311++G(2d,2p) basis set */
 #define  XC_MGGA_C_CC                      387 /* Self-interaction corrected correlation functional by Schmidt et al */
 #define  XC_MGGA_C_CCALDA                  388 /* Iso-orbital corrected LDA correlation by Lebeda et al */
 #define  XC_HYB_MGGA_XC_BR3P86             389 /* BR3P86 hybrid meta-GGA from Neumann and Handy */
@@ -432,7 +443,7 @@
 #define  XC_MGGA_X_RSCAN                   493 /* Regularized SCAN exchange by Bartok and Yates */
 #define  XC_MGGA_C_RSCAN                   494 /* Regularized SCAN correlation by Bartok and Yates */
 #define  XC_GGA_X_S12G                     495 /* Swart 2012 GGA exchange */
-#define  XC_HYB_GGA_X_S12H                 496 /* Swart 2012 hybrid exchange */
+#define  XC_HYB_GGA_X_S12H                 496 /* Swart 2012 hybrid GGA exchange */
 #define  XC_MGGA_X_R2SCAN                  497 /* Re-regularized SCAN exchange by Furness et al */
 #define  XC_MGGA_C_R2SCAN                  498 /* Re-regularized SCAN correlation by Furness et al */
 #define  XC_HYB_GGA_XC_BLYP35              499 /* BLYP35 */
@@ -495,7 +506,7 @@
 #define  XC_GGA_C_GAPLOC                   556 /* Gaploc */
 #define  XC_GGA_C_ZVPBEINT                 557 /* another spin-dependent correction to PBEint */
 #define  XC_GGA_C_ZVPBESOL                 558 /* another spin-dependent correction to PBEsol */
-#define  XC_GGA_C_TM_LYP                   559 /* Takkar and McCarthy reparametrization */
+#define  XC_GGA_C_TM_LYP                   559 /* Takkar and McCarthy reparametrization, also known as reLYP */
 #define  XC_GGA_C_TM_PBE                   560 /* Thakkar and McCarthy reparametrization */
 #define  XC_GGA_C_W94                      561 /* Wilson 94 (Eq. 25) */
 #define  XC_MGGA_C_KCIS                    562 /* Krieger, Chen, Iafrate, and Savin */
@@ -589,6 +600,11 @@
 #define  XC_MGGA_X_R4SCAN                  650 /* r$^{4}$SCAN, a functional that satisfies the same exact constraints that SCAN does */
 #define  XC_MGGA_X_VCML                    651 /* Exchange part of VCML-rVV10 by Trepte and Voss */
 #define  XC_MGGA_XC_VCML_RVV10             652 /* VCML-rVV10 by Trepte and Voss */
+#define  XC_HYB_LDA_X_ERF                  653 /* Long-range corrected functional based on short-range LDA exchange (erfc) */
+#define  XC_LDA_C_PW_ERF                   654 /* Short ranged correlation LDA (erfc) */
+#define  XC_GGA_X_PBE_ERF_GWS              655 /* Short ranged PBE exchange (erfc) */
+#define  XC_HYB_GGA_X_PBE_ERF_GWS          656 /* Short-range PBE (GWS) exchange (erfc) + long-range exact exchange */
+#define  XC_GGA_C_PBE_ERF_GWS              657 /* Short ranged PBE correlation (erfc) */
 #define  XC_HYB_MGGA_XC_GAS22              658 /* Google Accelerated Science 22 */
 #define  XC_HYB_MGGA_XC_R2SCANH            659 /* r2SCANh: r2SCAN hybrid like TPSSh with 10% exact exchange */
 #define  XC_HYB_MGGA_XC_R2SCAN0            660 /* r2SCAN0: r2SCAN hybrid like PBE0 with 25% exact exchange */
@@ -654,3 +670,9 @@
 #define  XC_MGGA_X_KTBM_23                 758 /* KTBM learned exchange - 23 */
 #define  XC_MGGA_X_KTBM_24                 759 /* KTBM learned exchange - 24 */
 #define  XC_MGGA_X_KTBM_GAP                760 /* KTBM learned exchange - GAP */
+#define  XC_MGGA_X_MSPBEL  		   761 /* MS-PBEl, a PBE-like meta-GGA exchange */
+#define  XC_MGGA_X_RMSPBEL  		   762 /* regularized MS-PBEl */
+#define  XC_MGGA_X_MSRPBEL  		   763 /* MS-RPBEl, a RPBE-like meta-GGA exchange */
+#define  XC_MGGA_X_RMSRPBEL  		   764 /* regularized MS-RPBEl */
+#define  XC_MGGA_X_MSB86BL  		   765 /* MS-B86bl, a B86b-like meta-GGA exchange */
+#define  XC_MGGA_X_RMSB86BL  		   766 /* regularized MS-B86bl */

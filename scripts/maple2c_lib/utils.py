@@ -429,14 +429,13 @@ $include <{}.mpl>
             new_c_code[total_order] += "  " + line + "\n\n"
 
             # build the if clause to assign the variable
-            test = "out->" + test_1[total_order] + " != NULL"
+            test = "out->" + varname + " != NULL"
 
             if not re.search(r"lapl", der[1]) is None:
               test += " && (p->info->flags & XC_FLAGS_NEEDS_LAPLACIAN)"
 
-            # this flag does not exist in older releases
-            #if not re.search(r"tau", der[1]) is None:
-            #  test += " && (p->info->flags & XC_FLAGS_NEEDS_TAU)"
+            if not re.search(r"tau", der[1]) is None:
+              test += " && (p->info->flags & XC_FLAGS_NEEDS_TAU)"
 
             test += " && (p->info->flags & XC_FLAGS_HAVE_" + \
               der_name[total_order] + ")"
