@@ -13,31 +13,25 @@
 #include "funcs_hyb_mgga.c"
 
 /* macro to check is a buffer exists */
-#define check_out_var(VAR) if(out->VAR == NULL){fprintf(stderr, "error: output variable, out->" #VAR ", is a null pointer\n"); exit(1);}
+#define check_out_var(VAR) if(out->VAR == NULL){fprintf(stderr, "error: output variable, out->" #VAR ", is a null pointer\n"); abort();}
 
 void
 xc_mgga_sanity_check(const xc_func_info_type *info, int order, xc_mgga_out_params *out)
 {
+  traceRangePush(__func__);
+
   /* sanity check */
   if(order < 0 || order > 4){
     fprintf(stderr, "Order of derivatives '%d' not implemented\n",
             order);
-    exit(1);
+    abort();
   }
   
   /* sanity check */
-  if(out->zk != NULL && !(info->flags & XC_FLAGS_HAVE_EXC)){
-    fprintf(stderr, "Functional '%s' does not provide an implementation of Exc\n",
-	    info->name);
-    exit(1);
-  }
+  xc_require_implementation(out->zk, info->flags, XC_FLAGS_HAVE_EXC, info->name, "Exc");
 
   if(out->vrho != NULL){
-    if(!(info->flags & XC_FLAGS_HAVE_VXC)){
-      fprintf(stderr, "Functional '%s' does not provide an implementation of vxc\n",
-              info->name);
-      exit(1);
-    }
+    xc_require_implementation(out->vrho, info->flags, XC_FLAGS_HAVE_VXC, info->name, "vxc");
     check_out_var(vsigma);
     if(info->flags & XC_FLAGS_NEEDS_LAPLACIAN){
       check_out_var(vlapl);
@@ -48,11 +42,7 @@ xc_mgga_sanity_check(const xc_func_info_type *info, int order, xc_mgga_out_param
   }
 
   if(out->v2rho2 != NULL){
-    if(!(info->flags & XC_FLAGS_HAVE_FXC)){
-      fprintf(stderr, "Functional '%s' does not provide an implementation of fxc\n",
-              info->name);
-      exit(1);
-    }
+    xc_require_implementation(out->v2rho2, info->flags, XC_FLAGS_HAVE_FXC, info->name, "fxc");
     check_out_var(v2rhosigma); 
     check_out_var(v2sigma2);
     if(info->flags & XC_FLAGS_NEEDS_LAPLACIAN){
@@ -71,11 +61,7 @@ xc_mgga_sanity_check(const xc_func_info_type *info, int order, xc_mgga_out_param
   }
 
   if(out->v3rho3 != NULL){
-    if(!(info->flags & XC_FLAGS_HAVE_KXC)){
-      fprintf(stderr, "Functional '%s' does not provide an implementation of kxc\n",
-              info->name);
-      exit(1);
-    }
+    xc_require_implementation(out->v3rho3, info->flags, XC_FLAGS_HAVE_KXC, info->name, "kxc");
     check_out_var(v3rho2sigma);
     check_out_var(v3rhosigma2);
     check_out_var(v3sigma3);
@@ -104,11 +90,7 @@ xc_mgga_sanity_check(const xc_func_info_type *info, int order, xc_mgga_out_param
   }
 
   if(out->v4rho4 != NULL){
-    if(!(info->flags & XC_FLAGS_HAVE_LXC)){
-      fprintf(stderr, "Functional '%s' does not provide an implementation of lxc\n",
-              info->name);
-      exit(1);
-    }
+    xc_require_implementation(out->v4rho4, info->flags, XC_FLAGS_HAVE_LXC, info->name, "lxc");
     check_out_var(v4rho3sigma);
     check_out_var(v4rho2sigma2);
     check_out_var(v4rhosigma3);
@@ -150,129 +132,135 @@ xc_mgga_sanity_check(const xc_func_info_type *info, int order, xc_mgga_out_param
       check_out_var(v4lapltau3); 
     }
   }
+
+  traceRangePop(); // __func__
 }
 
 void
 xc_mgga_initalize(const xc_func_type *func, size_t np, xc_mgga_out_params *out)
 {
+  traceRangePush(__func__);
+
   const xc_dimensions *dim = &(func->dim);
 
   /* initialize output to zero */
   if(out->zk != NULL)
-    libxc_memset(out->zk, 0, dim->zk*np*sizeof(double));
+    libxc_memset_flags(out->zk, 0, dim->zk*np*sizeof(double), func->info->flags);
 
   if(out->vrho != NULL){
-    libxc_memset(out->vrho,   0, dim->vrho  *np*sizeof(double));
-    libxc_memset(out->vsigma, 0, dim->vsigma*np*sizeof(double));
+    libxc_memset_flags(out->vrho,   0, dim->vrho  *np*sizeof(double), func->info->flags);
+    libxc_memset_flags(out->vsigma, 0, dim->vsigma*np*sizeof(double), func->info->flags);
 
     if(func->info->flags & XC_FLAGS_NEEDS_LAPLACIAN) {
-      libxc_memset(out->vlapl,  0, dim->vlapl *np*sizeof(double));
+      libxc_memset_flags(out->vlapl,  0, dim->vlapl *np*sizeof(double), func->info->flags);
     }
     if(func->info->flags & XC_FLAGS_NEEDS_TAU) {
-      libxc_memset(out->vtau,   0, dim->vtau  *np*sizeof(double));
+      libxc_memset_flags(out->vtau,   0, dim->vtau  *np*sizeof(double), func->info->flags);
     }
   }
 
   if(out->v2rho2 != NULL){
-    libxc_memset(out->v2rho2,     0, dim->v2rho2     *np*sizeof(double));
-    libxc_memset(out->v2rhosigma, 0, dim->v2rhosigma *np*sizeof(double));
-    libxc_memset(out->v2sigma2,   0, dim->v2sigma2   *np*sizeof(double));
+    libxc_memset_flags(out->v2rho2,     0, dim->v2rho2     *np*sizeof(double), func->info->flags);
+    libxc_memset_flags(out->v2rhosigma, 0, dim->v2rhosigma *np*sizeof(double), func->info->flags);
+    libxc_memset_flags(out->v2sigma2,   0, dim->v2sigma2   *np*sizeof(double), func->info->flags);
 
     if(func->info->flags & XC_FLAGS_NEEDS_LAPLACIAN){
-      libxc_memset(out->v2rholapl,   0, dim->v2rholapl  *np*sizeof(double));
-      libxc_memset(out->v2sigmalapl, 0, dim->v2sigmalapl*np*sizeof(double));
-      libxc_memset(out->v2lapl2,     0, dim->v2lapl2    *np*sizeof(double));
+      libxc_memset_flags(out->v2rholapl,   0, dim->v2rholapl  *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v2sigmalapl, 0, dim->v2sigmalapl*np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v2lapl2,     0, dim->v2lapl2    *np*sizeof(double), func->info->flags);
     }
     
     if(func->info->flags & XC_FLAGS_NEEDS_TAU){
-      libxc_memset(out->v2rhotau,   0, dim->v2rhotau   *np*sizeof(double));
-      libxc_memset(out->v2sigmatau, 0, dim->v2sigmatau *np*sizeof(double));
-      libxc_memset(out->v2tau2,     0, dim->v2tau2     *np*sizeof(double));
+      libxc_memset_flags(out->v2rhotau,   0, dim->v2rhotau   *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v2sigmatau, 0, dim->v2sigmatau *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v2tau2,     0, dim->v2tau2     *np*sizeof(double), func->info->flags);
     }
     
     if((func->info->flags & XC_FLAGS_NEEDS_LAPLACIAN) && (func->info->flags & XC_FLAGS_NEEDS_TAU)) {
-      libxc_memset(out->v2lapltau,   0, dim->v2lapltau  *np*sizeof(double));
+      libxc_memset_flags(out->v2lapltau,   0, dim->v2lapltau  *np*sizeof(double), func->info->flags);
     }
   }
 
   if(out->v3rho3 != NULL){
-    libxc_memset(out->v3rho3,        0, dim->v3rho3       *np*sizeof(double));
-    libxc_memset(out->v3rho2sigma,   0, dim->v3rho2sigma  *np*sizeof(double));
-    libxc_memset(out->v3rhosigma2,   0, dim->v3rhosigma2  *np*sizeof(double));
-    libxc_memset(out->v3sigma3,      0, dim->v3sigma3     *np*sizeof(double));
+    libxc_memset_flags(out->v3rho3,        0, dim->v3rho3       *np*sizeof(double), func->info->flags);
+    libxc_memset_flags(out->v3rho2sigma,   0, dim->v3rho2sigma  *np*sizeof(double), func->info->flags);
+    libxc_memset_flags(out->v3rhosigma2,   0, dim->v3rhosigma2  *np*sizeof(double), func->info->flags);
+    libxc_memset_flags(out->v3sigma3,      0, dim->v3sigma3     *np*sizeof(double), func->info->flags);
 
     if(func->info->flags & XC_FLAGS_NEEDS_LAPLACIAN){
-      libxc_memset(out->v3rho2lapl,     0, dim->v3rho2lapl    *np*sizeof(double));
-      libxc_memset(out->v3rhosigmalapl, 0, dim->v3rhosigmalapl*np*sizeof(double));
-      libxc_memset(out->v3rholapl2,     0, dim->v3rholapl2    *np*sizeof(double));
-      libxc_memset(out->v3sigma2lapl,   0, dim->v3sigma2lapl  *np*sizeof(double));
-      libxc_memset(out->v3sigmalapl2,   0, dim->v3sigmalapl2  *np*sizeof(double));
-      libxc_memset(out->v3lapl3,        0, dim->v3lapl3       *np*sizeof(double));
+      libxc_memset_flags(out->v3rho2lapl,     0, dim->v3rho2lapl    *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v3rhosigmalapl, 0, dim->v3rhosigmalapl*np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v3rholapl2,     0, dim->v3rholapl2    *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v3sigma2lapl,   0, dim->v3sigma2lapl  *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v3sigmalapl2,   0, dim->v3sigmalapl2  *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v3lapl3,        0, dim->v3lapl3       *np*sizeof(double), func->info->flags);
     }
 
     if(func->info->flags & XC_FLAGS_NEEDS_TAU){
-      libxc_memset(out->v3rho2tau,     0, dim->v3rho2tau    *np*sizeof(double));
-      libxc_memset(out->v3rhosigmatau, 0, dim->v3rhosigmatau*np*sizeof(double));
-      libxc_memset(out->v3rhotau2,     0, dim->v3rhotau2    *np*sizeof(double));
-      libxc_memset(out->v3sigma2tau,   0, dim->v3sigma2tau  *np*sizeof(double));
-      libxc_memset(out->v3sigmatau2,   0, dim->v3sigmatau2  *np*sizeof(double));
-      libxc_memset(out->v3tau3,        0, dim->v3tau3       *np*sizeof(double));
+      libxc_memset_flags(out->v3rho2tau,     0, dim->v3rho2tau    *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v3rhosigmatau, 0, dim->v3rhosigmatau*np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v3rhotau2,     0, dim->v3rhotau2    *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v3sigma2tau,   0, dim->v3sigma2tau  *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v3sigmatau2,   0, dim->v3sigmatau2  *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v3tau3,        0, dim->v3tau3       *np*sizeof(double), func->info->flags);
     }
 
     if((func->info->flags & XC_FLAGS_NEEDS_LAPLACIAN) && (func->info->flags & XC_FLAGS_NEEDS_TAU)) {
-      libxc_memset(out->v3rholapltau,   0, dim->v3rholapltau  *np*sizeof(double));
-      libxc_memset(out->v3sigmalapltau, 0, dim->v3sigmalapltau*np*sizeof(double));
-      libxc_memset(out->v3lapl2tau,     0, dim->v3lapl2tau    *np*sizeof(double));
-      libxc_memset(out->v3lapltau2,     0, dim->v3lapltau2    *np*sizeof(double));
+      libxc_memset_flags(out->v3rholapltau,   0, dim->v3rholapltau  *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v3sigmalapltau, 0, dim->v3sigmalapltau*np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v3lapl2tau,     0, dim->v3lapl2tau    *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v3lapltau2,     0, dim->v3lapltau2    *np*sizeof(double), func->info->flags);
     }
   }
 
   if(out->v4rho4 != NULL){
-    libxc_memset(out->v4rho4,         0, dim->v4rho4        *np*sizeof(double));
-    libxc_memset(out->v4rho3sigma,    0, dim->v4rho3sigma   *np*sizeof(double));
-    libxc_memset(out->v4rho2sigma2,   0, dim->v4rho2sigma2  *np*sizeof(double));
-    libxc_memset(out->v4rhosigma3,    0, dim->v4rhosigma3   *np*sizeof(double));
-    libxc_memset(out->v4sigma4,       0, dim->v4sigma4      *np*sizeof(double));
+    libxc_memset_flags(out->v4rho4,         0, dim->v4rho4        *np*sizeof(double), func->info->flags);
+    libxc_memset_flags(out->v4rho3sigma,    0, dim->v4rho3sigma   *np*sizeof(double), func->info->flags);
+    libxc_memset_flags(out->v4rho2sigma2,   0, dim->v4rho2sigma2  *np*sizeof(double), func->info->flags);
+    libxc_memset_flags(out->v4rhosigma3,    0, dim->v4rhosigma3   *np*sizeof(double), func->info->flags);
+    libxc_memset_flags(out->v4sigma4,       0, dim->v4sigma4      *np*sizeof(double), func->info->flags);
 
     if(func->info->flags & XC_FLAGS_NEEDS_LAPLACIAN){
-      libxc_memset(out->v4rho3lapl,        0, dim->v4rho3lapl       *np*sizeof(double));
-      libxc_memset(out->v4rho2sigmalapl,   0, dim->v4rho2sigmalapl  *np*sizeof(double));
-      libxc_memset(out->v4rho2lapl2,       0, dim->v4rho2lapl2      *np*sizeof(double));
-      libxc_memset(out->v4rhosigma2lapl,   0, dim->v4rhosigma2lapl  *np*sizeof(double));
-      libxc_memset(out->v4rhosigmalapl2,   0, dim->v4rhosigmalapl2  *np*sizeof(double));
-      libxc_memset(out->v4rholapl3,        0, dim->v4rholapl3       *np*sizeof(double));
-      libxc_memset(out->v4sigma3lapl,      0, dim->v4sigma3lapl     *np*sizeof(double));
-      libxc_memset(out->v4sigma2lapl2,     0, dim->v4sigma2lapl2    *np*sizeof(double));
-      libxc_memset(out->v4sigmalapl3,      0, dim->v4sigmalapl3     *np*sizeof(double));
-      libxc_memset(out->v4lapl4,           0, dim->v4lapl4          *np*sizeof(double));
+      libxc_memset_flags(out->v4rho3lapl,        0, dim->v4rho3lapl       *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v4rho2sigmalapl,   0, dim->v4rho2sigmalapl  *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v4rho2lapl2,       0, dim->v4rho2lapl2      *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v4rhosigma2lapl,   0, dim->v4rhosigma2lapl  *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v4rhosigmalapl2,   0, dim->v4rhosigmalapl2  *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v4rholapl3,        0, dim->v4rholapl3       *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v4sigma3lapl,      0, dim->v4sigma3lapl     *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v4sigma2lapl2,     0, dim->v4sigma2lapl2    *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v4sigmalapl3,      0, dim->v4sigmalapl3     *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v4lapl4,           0, dim->v4lapl4          *np*sizeof(double), func->info->flags);
     }
 
     if(func->info->flags & XC_FLAGS_NEEDS_TAU){
-      libxc_memset(out->v4rho3tau,      0, dim->v4rho3tau     *np*sizeof(double));
-      libxc_memset(out->v4rho2sigmatau, 0, dim->v4rho2sigmatau*np*sizeof(double));
-      libxc_memset(out->v4rho2tau2,     0, dim->v4rho2tau2    *np*sizeof(double));
-      libxc_memset(out->v4rhosigma2tau, 0, dim->v4rhosigma2tau*np*sizeof(double));
-      libxc_memset(out->v4rhosigmatau2, 0, dim->v4rhosigmatau2*np*sizeof(double));
-      libxc_memset(out->v4rhotau3,      0, dim->v4rhotau3     *np*sizeof(double));
-      libxc_memset(out->v4sigma3tau,    0, dim->v4sigma3tau   *np*sizeof(double));
-      libxc_memset(out->v4sigma2tau2,   0, dim->v4sigma2tau2  *np*sizeof(double));
-      libxc_memset(out->v4sigmatau3,    0, dim->v4sigmatau3   *np*sizeof(double));
-      libxc_memset(out->v4tau4,         0, dim->v4tau4        *np*sizeof(double));
+      libxc_memset_flags(out->v4rho3tau,      0, dim->v4rho3tau     *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v4rho2sigmatau, 0, dim->v4rho2sigmatau*np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v4rho2tau2,     0, dim->v4rho2tau2    *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v4rhosigma2tau, 0, dim->v4rhosigma2tau*np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v4rhosigmatau2, 0, dim->v4rhosigmatau2*np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v4rhotau3,      0, dim->v4rhotau3     *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v4sigma3tau,    0, dim->v4sigma3tau   *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v4sigma2tau2,   0, dim->v4sigma2tau2  *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v4sigmatau3,    0, dim->v4sigmatau3   *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v4tau4,         0, dim->v4tau4        *np*sizeof(double), func->info->flags);
     }
 
     if((func->info->flags & XC_FLAGS_NEEDS_LAPLACIAN) && (func->info->flags & XC_FLAGS_NEEDS_TAU)) {
-      libxc_memset(out->v4rho2lapltau,     0, dim->v4rho2lapltau    *np*sizeof(double));
-      libxc_memset(out->v4rhosigmalapltau, 0, dim->v4rhosigmalapltau*np*sizeof(double));
-      libxc_memset(out->v4rholapl2tau,     0, dim->v4rholapl2tau    *np*sizeof(double));
-      libxc_memset(out->v4rholapltau2,     0, dim->v4rholapltau2    *np*sizeof(double));
-      libxc_memset(out->v4sigma2lapltau,   0, dim->v4sigma2lapltau  *np*sizeof(double));
-      libxc_memset(out->v4sigmalapl2tau,   0, dim->v4sigmalapl2tau  *np*sizeof(double));
-      libxc_memset(out->v4sigmalapltau2,   0, dim->v4sigmalapltau2  *np*sizeof(double));
-      libxc_memset(out->v4lapl3tau,        0, dim->v4lapl3tau       *np*sizeof(double));
-      libxc_memset(out->v4lapl2tau2,       0, dim->v4lapl2tau2      *np*sizeof(double));
-      libxc_memset(out->v4lapltau3,        0, dim->v4lapltau3       *np*sizeof(double));
+      libxc_memset_flags(out->v4rho2lapltau,     0, dim->v4rho2lapltau    *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v4rhosigmalapltau, 0, dim->v4rhosigmalapltau*np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v4rholapl2tau,     0, dim->v4rholapl2tau    *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v4rholapltau2,     0, dim->v4rholapltau2    *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v4sigma2lapltau,   0, dim->v4sigma2lapltau  *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v4sigmalapl2tau,   0, dim->v4sigmalapl2tau  *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v4sigmalapltau2,   0, dim->v4sigmalapltau2  *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v4lapl3tau,        0, dim->v4lapl3tau       *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v4lapl2tau2,       0, dim->v4lapl2tau2      *np*sizeof(double), func->info->flags);
+      libxc_memset_flags(out->v4lapltau3,        0, dim->v4lapltau3       *np*sizeof(double), func->info->flags);
     }
   }
+
+  traceRangePop(); // __func__
 
 }
 
@@ -280,10 +268,13 @@ void xc_mgga_new(const xc_func_type *func, int order, size_t np,
                 const double *rho, const double *sigma, const double *lapl, const double *tau,
                 xc_mgga_out_params *out)
 {
+  traceRangePush(__func__);
+
   xc_mgga_sanity_check(func->info, order, out);
   xc_mgga_initalize(func, np, out);
 
   /* call the mGGA routines */
+  traceRangePush("evaluate_functional");
   if(func->info->mgga != NULL){
     if(func->nspin == XC_UNPOLARIZED){
       if(func->info->mgga->unpol[order] != NULL)
@@ -293,6 +284,7 @@ void xc_mgga_new(const xc_func_type *func, int order, size_t np,
         func->info->mgga->pol[order](func, np, rho, sigma, lapl, tau, out);
     }
   }
+  traceRangePop(); // "evaluate_functional"
     
   if(func->mix_coef != NULL)
     xc_mix_func(func, np, rho, sigma, lapl, tau,
@@ -317,6 +309,8 @@ void xc_mgga_new(const xc_func_type *func, int order, size_t np,
                 out->v4sigmalapltau2, out->v4sigmatau3, out->v4lapl4, out->v4lapl3tau,
                 out->v4lapl2tau2, out->v4lapltau3, out->v4tau4
                 );
+
+  traceRangePop(); // __func__
 }
 
 /* old API */
@@ -434,7 +428,7 @@ xc_mgga(const xc_func_type *p, size_t np,
   if(order < 0) return;
 
   xc_mgga_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_mgga_out_params));
+  memset(&out, 0, sizeof(xc_mgga_out_params));
 
   SET_ORDER_0;
   SET_ORDER_1;
@@ -447,166 +441,39 @@ xc_mgga(const xc_func_type *p, size_t np,
 }
 
 
-/* specializations */
-void
-xc_mgga_exc(const xc_func_type *p, size_t np,
-            const double *rho, const double *sigma, const double *lapl, const double *tau,
-            double *zk)
-{
-  xc_mgga_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_mgga_out_params));
-  SET_ORDER_0;
+/* specializations -- generated from a table (see gga.c for the rationale).
+   The per-order assignments reuse the existing SET_ORDER_n macros; only the
+   parameter declarations (MGGA_Pn) are added. */
+#define MGGA_P0 double *zk
+#define MGGA_P1 double *vrho, double *vsigma, double *vlapl, double *vtau
+#define MGGA_P2 double *v2rho2, double *v2rhosigma, double *v2rholapl, double *v2rhotau, double *v2sigma2, double *v2sigmalapl, double *v2sigmatau, double *v2lapl2, double *v2lapltau, double *v2tau2
+#define MGGA_P3 double *v3rho3, double *v3rho2sigma, double *v3rho2lapl, double *v3rho2tau, double *v3rhosigma2, double *v3rhosigmalapl, double *v3rhosigmatau, double *v3rholapl2, double *v3rholapltau, double *v3rhotau2, double *v3sigma3, double *v3sigma2lapl, double *v3sigma2tau, double *v3sigmalapl2, double *v3sigmalapltau, double *v3sigmatau2, double *v3lapl3, double *v3lapl2tau, double *v3lapltau2, double *v3tau3
+#define MGGA_P4 double *v4rho4, double *v4rho3sigma, double *v4rho3lapl, double *v4rho3tau, double *v4rho2sigma2, double *v4rho2sigmalapl, double *v4rho2sigmatau, double *v4rho2lapl2, double *v4rho2lapltau, double *v4rho2tau2, double *v4rhosigma3, double *v4rhosigma2lapl, double *v4rhosigma2tau, double *v4rhosigmalapl2, double *v4rhosigmalapltau, double *v4rhosigmatau2, double *v4rholapl3, double *v4rholapl2tau, double *v4rholapltau2, double *v4rhotau3, double *v4sigma4, double *v4sigma3lapl, double *v4sigma3tau, double *v4sigma2lapl2, double *v4sigma2lapltau, double *v4sigma2tau2, double *v4sigmalapl3, double *v4sigmalapl2tau, double *v4sigmalapltau2, double *v4sigmatau3, double *v4lapl4, double *v4lapl3tau, double *v4lapl2tau2, double *v4lapltau3, double *v4tau4
 
-  xc_mgga_new(p, 0, np, rho, sigma, lapl, tau, &out);
-}
+#define XC_MGGA_WRAPPER(suffix, order, ASGN, ...)                            \
+  void xc_mgga_##suffix(const xc_func_type *p, size_t np, const double *rho, \
+                        const double *sigma, const double *lapl,             \
+                        const double *tau, __VA_ARGS__) {                    \
+    xc_mgga_out_params out;                                                  \
+    memset(&out, 0, sizeof(xc_mgga_out_params));                           \
+    ASGN                                                                     \
+    xc_mgga_new(p, order, np, rho, sigma, lapl, tau, &out);                 \
+  }
 
-void
-xc_mgga_exc_vxc(const xc_func_type *p, size_t np,
-                const double *rho, const double *sigma, const double *lapl, const double *tau,
-                double *zk, double *vrho, double *vsigma, double *vlapl, double *vtau)
-{
-  xc_mgga_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_mgga_out_params));
-  SET_ORDER_0;
-  SET_ORDER_1;
+XC_MGGA_WRAPPER(exc,             0, SET_ORDER_0,                                     MGGA_P0)
+XC_MGGA_WRAPPER(vxc,             1, SET_ORDER_1,                                     MGGA_P1)
+XC_MGGA_WRAPPER(fxc,             2, SET_ORDER_2,                                     MGGA_P2)
+XC_MGGA_WRAPPER(kxc,             3, SET_ORDER_3,                                     MGGA_P3)
+XC_MGGA_WRAPPER(lxc,             4, SET_ORDER_4,                                     MGGA_P4)
+XC_MGGA_WRAPPER(exc_vxc,         1, SET_ORDER_0 SET_ORDER_1,                         MGGA_P0, MGGA_P1)
+XC_MGGA_WRAPPER(vxc_fxc,         2, SET_ORDER_1 SET_ORDER_2,                         MGGA_P1, MGGA_P2)
+XC_MGGA_WRAPPER(exc_vxc_fxc,     2, SET_ORDER_0 SET_ORDER_1 SET_ORDER_2,             MGGA_P0, MGGA_P1, MGGA_P2)
+XC_MGGA_WRAPPER(vxc_fxc_kxc,     3, SET_ORDER_1 SET_ORDER_2 SET_ORDER_3,             MGGA_P1, MGGA_P2, MGGA_P3)
+XC_MGGA_WRAPPER(exc_vxc_fxc_kxc, 3, SET_ORDER_0 SET_ORDER_1 SET_ORDER_2 SET_ORDER_3, MGGA_P0, MGGA_P1, MGGA_P2, MGGA_P3)
 
-  xc_mgga_new(p, 1, np, rho, sigma, lapl, tau, &out);
-}
-
-void xc_mgga_exc_vxc_fxc(const xc_func_type *p, size_t np,
-                         const double *rho, const double *sigma, const double *lapl, const double *tau,
-                         double *zk, double *vrho, double *vsigma, double *vlapl, double *vtau,
-                         double *v2rho2, double *v2rhosigma, double *v2rholapl, double *v2rhotau,
-                         double *v2sigma2, double *v2sigmalapl, double *v2sigmatau, double *v2lapl2,
-                         double *v2lapltau, double *v2tau2)
-{
-  xc_mgga_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_mgga_out_params));
-  SET_ORDER_0;
-  SET_ORDER_1;
-  SET_ORDER_2;
-
-  xc_mgga_new(p, 2, np, rho, sigma, lapl, tau, &out);
-}
-
-void xc_mgga_vxc_fxc(const xc_func_type *p, size_t np,
-                         const double *rho, const double *sigma, const double *lapl, const double *tau,
-                         double *vrho, double *vsigma, double *vlapl, double *vtau,
-                         double *v2rho2, double *v2rhosigma, double *v2rholapl, double *v2rhotau,
-                         double *v2sigma2, double *v2sigmalapl, double *v2sigmatau, double *v2lapl2,
-                         double *v2lapltau, double *v2tau2)
-{
-  xc_mgga_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_mgga_out_params));
-  SET_ORDER_1;
-  SET_ORDER_2;
-
-  xc_mgga_new(p, 2, np, rho, sigma, lapl, tau, &out);
-}
-
-void xc_mgga_exc_vxc_fxc_kxc(const xc_func_type *p, size_t np,
-                             const double *rho, const double *sigma, const double *lapl, const double *tau,
-                             double *zk, double *vrho, double *vsigma, double *vlapl, double *vtau,
-                             double *v2rho2, double *v2rhosigma, double *v2rholapl, double *v2rhotau,
-                             double *v2sigma2, double *v2sigmalapl, double *v2sigmatau, double *v2lapl2,
-                             double *v2lapltau, double *v2tau2,
-                             double *v3rho3, double *v3rho2sigma, double *v3rho2lapl, double *v3rho2tau,
-                             double *v3rhosigma2, double *v3rhosigmalapl, double *v3rhosigmatau,
-                             double *v3rholapl2, double *v3rholapltau, double *v3rhotau2, double *v3sigma3,
-                             double *v3sigma2lapl, double *v3sigma2tau, double *v3sigmalapl2, double *v3sigmalapltau,
-                             double *v3sigmatau2, double *v3lapl3, double *v3lapl2tau, double *v3lapltau2,
-                             double *v3tau3)
-{
-  xc_mgga_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_mgga_out_params));
-  SET_ORDER_0;
-  SET_ORDER_1;
-  SET_ORDER_2;
-  SET_ORDER_3;
-
-  xc_mgga_new(p, 3, np, rho, sigma, lapl, tau, &out);
-}
-
-void xc_mgga_vxc_fxc_kxc(const xc_func_type *p, size_t np,
-                         const double *rho, const double *sigma, const double *lapl, const double *tau,
-                         double *vrho, double *vsigma, double *vlapl, double *vtau,
-                         double *v2rho2, double *v2rhosigma, double *v2rholapl, double *v2rhotau,
-                         double *v2sigma2, double *v2sigmalapl, double *v2sigmatau, double *v2lapl2,
-                         double *v2lapltau, double *v2tau2,
-                         double *v3rho3, double *v3rho2sigma, double *v3rho2lapl, double *v3rho2tau,
-                         double *v3rhosigma2, double *v3rhosigmalapl, double *v3rhosigmatau,
-                         double *v3rholapl2, double *v3rholapltau, double *v3rhotau2, double *v3sigma3,
-                         double *v3sigma2lapl, double *v3sigma2tau, double *v3sigmalapl2, double *v3sigmalapltau,
-                         double *v3sigmatau2, double *v3lapl3, double *v3lapl2tau, double *v3lapltau2,
-                         double *v3tau3)
-{
-  xc_mgga_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_mgga_out_params));
-  SET_ORDER_1;
-  SET_ORDER_2;
-  SET_ORDER_3;
-
-  xc_mgga_new(p, 3, np, rho, sigma, lapl, tau, &out);
-}
-
-
-void
-xc_mgga_vxc(const xc_func_type *p, size_t np,
-            const double *rho, const double *sigma, const double *lapl, const double *tau,
-            double *vrho, double *vsigma, double *vlapl, double *vtau)
-{
-  xc_mgga_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_mgga_out_params));
-  SET_ORDER_1;
-
-  xc_mgga_new(p, 1, np, rho, sigma, lapl, tau, &out);
-}
-
-void
-xc_mgga_fxc(const xc_func_type *p, size_t np,
-            const double *rho, const double *sigma, const double *lapl, const double *tau,
-            double *v2rho2, double *v2rhosigma, double *v2rholapl, double *v2rhotau,
-            double *v2sigma2, double *v2sigmalapl, double *v2sigmatau, double *v2lapl2,
-            double *v2lapltau, double *v2tau2)
-{
-  xc_mgga_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_mgga_out_params));
-  SET_ORDER_2;
-
-  xc_mgga_new(p, 2, np, rho, sigma, lapl, tau, &out);
-}
-
-void xc_mgga_kxc(const xc_func_type *p, size_t np,
-                 const double *rho, const double *sigma, const double *lapl, const double *tau,
-                 double *v3rho3, double *v3rho2sigma, double *v3rho2lapl, double *v3rho2tau,
-                 double *v3rhosigma2, double *v3rhosigmalapl, double *v3rhosigmatau,
-                 double *v3rholapl2, double *v3rholapltau,  double *v3rhotau2,
-                 double *v3sigma3, double *v3sigma2lapl, double *v3sigma2tau,
-                 double *v3sigmalapl2, double *v3sigmalapltau, double *v3sigmatau2,
-                 double *v3lapl3, double *v3lapl2tau, double *v3lapltau2, double *v3tau3)
-{
-  xc_mgga_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_mgga_out_params));
-  SET_ORDER_3;
-
-  xc_mgga_new(p, 3, np, rho, sigma, lapl, tau, &out);
-}
-
-void xc_mgga_lxc(const xc_func_type *p, size_t np,
-                 const double *rho, const double *sigma, const double *lapl, const double *tau,
-                 double *v4rho4, double *v4rho3sigma, double *v4rho3lapl, double *v4rho3tau, double *v4rho2sigma2,
-                 double *v4rho2sigmalapl, double *v4rho2sigmatau, double *v4rho2lapl2, double *v4rho2lapltau,
-                 double *v4rho2tau2, double *v4rhosigma3, double *v4rhosigma2lapl, double *v4rhosigma2tau,
-                 double *v4rhosigmalapl2, double *v4rhosigmalapltau, double *v4rhosigmatau2,
-                 double *v4rholapl3, double *v4rholapl2tau, double *v4rholapltau2, double *v4rhotau3,
-                 double *v4sigma4, double *v4sigma3lapl, double *v4sigma3tau, double *v4sigma2lapl2,
-                 double *v4sigma2lapltau, double *v4sigma2tau2, double *v4sigmalapl3, double *v4sigmalapl2tau,
-                 double *v4sigmalapltau2, double *v4sigmatau3, double *v4lapl4, double *v4lapl3tau,
-                 double *v4lapl2tau2, double *v4lapltau3, double *v4tau4)
-{
-  xc_mgga_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_mgga_out_params));
-  SET_ORDER_4;
-
-  xc_mgga_new(p, 4, np, rho, sigma, lapl, tau, &out);
-}
+#undef MGGA_P0
+#undef MGGA_P1
+#undef MGGA_P2
+#undef MGGA_P3
+#undef MGGA_P4
+#undef XC_MGGA_WRAPPER

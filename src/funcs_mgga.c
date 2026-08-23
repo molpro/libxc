@@ -34,7 +34,7 @@ extern xc_func_info_type xc_func_info_mgga_x_m11_l;
 extern xc_func_info_type xc_func_info_mgga_x_mn12_l;
 extern xc_func_info_type xc_func_info_mgga_x_ms2_rev;
 extern xc_func_info_type xc_func_info_mgga_xc_cc06;
-extern xc_func_info_type xc_func_info_mgga_x_mk00;
+extern xc_func_info_type xc_func_info_mgga_x_gp86;
 extern xc_func_info_type xc_func_info_mgga_c_tpss;
 extern xc_func_info_type xc_func_info_mgga_c_vsxc;
 extern xc_func_info_type xc_func_info_mgga_c_m06_l;
@@ -69,16 +69,17 @@ extern xc_func_info_type xc_func_info_mgga_x_revm06_l;
 extern xc_func_info_type xc_func_info_mgga_c_revm06_l;
 extern xc_func_info_type xc_func_info_mgga_x_rtpss;
 extern xc_func_info_type xc_func_info_mgga_x_ms2b;
-extern xc_func_info_type xc_func_info_mgga_x_ms2bs;
-extern xc_func_info_type xc_func_info_mgga_x_mvsb;
-extern xc_func_info_type xc_func_info_mgga_x_mvsbs;
 extern xc_func_info_type xc_func_info_mgga_c_revm06;
 extern xc_func_info_type xc_func_info_mgga_c_m06_sx;
 extern xc_func_info_type xc_func_info_mgga_x_ft98;
 extern xc_func_info_type xc_func_info_mgga_c_tpss_gaussian;
 extern xc_func_info_type xc_func_info_mgga_x_eel;
+extern xc_func_info_type xc_func_info_mgga_x_mscan;
+extern xc_func_info_type xc_func_info_mgga_c_mscan;
 extern xc_func_info_type xc_func_info_mgga_c_cf22d;
 extern xc_func_info_type xc_func_info_mgga_x_lak;
+extern xc_func_info_type xc_func_info_mgga_c_lak;
+extern xc_func_info_type xc_func_info_mgga_xc_t_hle17;
 extern xc_func_info_type xc_func_info_mgga_c_cc;
 extern xc_func_info_type xc_func_info_mgga_c_ccalda;
 extern xc_func_info_type xc_func_info_mgga_c_rregtm;
@@ -181,6 +182,11 @@ extern xc_func_info_type xc_func_info_mgga_x_msrpbel;
 extern xc_func_info_type xc_func_info_mgga_x_rmsrpbel;
 extern xc_func_info_type xc_func_info_mgga_x_msb86bl;
 extern xc_func_info_type xc_func_info_mgga_x_rmsb86bl;
+extern xc_func_info_type xc_func_info_mgga_c_pi_m06_2x_dl;
+extern xc_func_info_type xc_func_info_mgga_c_pi_m06_2x;
+extern xc_func_info_type xc_func_info_mgga_x_sregtm_v1;
+extern xc_func_info_type xc_func_info_mgga_x_sregtm_v2;
+extern xc_func_info_type xc_func_info_mgga_x_sregtm_v3;
 
 const xc_func_info_type *xc_mgga_known_funct[] = {
   &xc_func_info_mgga_c_dldf,
@@ -217,7 +223,7 @@ const xc_func_info_type *xc_mgga_known_funct[] = {
   &xc_func_info_mgga_x_mn12_l,
   &xc_func_info_mgga_x_ms2_rev,
   &xc_func_info_mgga_xc_cc06,
-  &xc_func_info_mgga_x_mk00,
+  &xc_func_info_mgga_x_gp86,
   &xc_func_info_mgga_c_tpss,
   &xc_func_info_mgga_c_vsxc,
   &xc_func_info_mgga_c_m06_l,
@@ -252,16 +258,17 @@ const xc_func_info_type *xc_mgga_known_funct[] = {
   &xc_func_info_mgga_c_revm06_l,
   &xc_func_info_mgga_x_rtpss,
   &xc_func_info_mgga_x_ms2b,
-  &xc_func_info_mgga_x_ms2bs,
-  &xc_func_info_mgga_x_mvsb,
-  &xc_func_info_mgga_x_mvsbs,
   &xc_func_info_mgga_c_revm06,
   &xc_func_info_mgga_c_m06_sx,
   &xc_func_info_mgga_x_ft98,
   &xc_func_info_mgga_c_tpss_gaussian,
   &xc_func_info_mgga_x_eel,
+  &xc_func_info_mgga_x_mscan,
+  &xc_func_info_mgga_c_mscan,
   &xc_func_info_mgga_c_cf22d,
   &xc_func_info_mgga_x_lak,
+  &xc_func_info_mgga_c_lak,
+  &xc_func_info_mgga_xc_t_hle17,
   &xc_func_info_mgga_c_cc,
   &xc_func_info_mgga_c_ccalda,
   &xc_func_info_mgga_c_rregtm,
@@ -364,5 +371,10 @@ const xc_func_info_type *xc_mgga_known_funct[] = {
   &xc_func_info_mgga_x_rmsrpbel,
   &xc_func_info_mgga_x_msb86bl,
   &xc_func_info_mgga_x_rmsb86bl,
+  &xc_func_info_mgga_c_pi_m06_2x_dl,
+  &xc_func_info_mgga_c_pi_m06_2x,
+  &xc_func_info_mgga_x_sregtm_v1,
+  &xc_func_info_mgga_x_sregtm_v2,
+  &xc_func_info_mgga_x_sregtm_v3,
   NULL
 };

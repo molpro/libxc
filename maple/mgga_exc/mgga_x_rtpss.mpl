@@ -23,6 +23,6 @@ $include "tpss_x.mpl"
 
 (* Equation (6) *)
 
-rtpss_f := (x, u, t) -> 1 + tpss_kappa(x, t)*(1 - exp(-tpss_fx(x, t)/tpss_kappa(x,t))):
+rtpss_f := (x, u, t) -> 1 + tpss_kappa(x, t)*(-xc_expm1(-tpss_fx(x, t)/tpss_kappa(x,t))):
 
 f := (rs, z, xt, xs0, xs1, u0, u1, t0, t1) -> mgga_exchange(rtpss_f, rs, z, xs0, xs1, u0, u1, t0, t1):

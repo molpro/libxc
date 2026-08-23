@@ -40,11 +40,25 @@ pbe_c_erf_gws_kS := (rs) -> (3/(4*Pi*n_total(rs)))^(1/3):
 (*eq. (6)*)
 pbe_c_erf_gws_beta := (rs, z) -> pbe_c_erf_gws_beta_orig * (lda_c_pw_erf_f(rs,z)/f_pw(rs,z))^pbe_c_erf_gws_a_c:
 
-(* third eq. of eq. (6)*)
-pbe_c_erf_gws_A := (rs, z) -> pbe_c_erf_gws_beta(rs, z)/(pbe_c_erf_gws_gamma*(exp(-lda_c_pw_erf_f(rs,z)/((mphi(z)^3)*pbe_c_erf_gws_gamma))-1)):
+(* third eq. of eq. (6): A = beta/(gamma*E), E = expm1(...).  A diverges where
+   the attenuated LDA correlation lda_c_pw_erf_f crosses zero (E -> 0), which the
+   plain (always-negative) f_pw never does -- so H below keeps E in the
+   numerator instead of forming A, staying finite and pole-free there. *)
+pbe_c_erf_gws_E := (rs, z) -> xc_expm1(-lda_c_pw_erf_f(rs,z)/((mphi(z)^3)*pbe_c_erf_gws_gamma)):
+pbe_c_erf_gws_A := (rs, z) -> pbe_c_erf_gws_beta(rs, z)/(pbe_c_erf_gws_gamma*pbe_c_erf_gws_E(rs, z)):
 
-(* second eq. of eq. (6)*)
-pbe_c_erf_gws_H := (rs, z, t) -> pbe_c_erf_gws_gamma*(mphi(z)^3)*ln(1 + pbe_c_erf_gws_beta(rs,z)*t^2/pbe_c_erf_gws_gamma*((1+pbe_c_erf_gws_A(rs,z)*t^2)/(1+pbe_c_erf_gws_A(rs,z)*t^2+pbe_c_erf_gws_A(rs,z)^2*t^4))):
+(* second eq. of eq. (6).  The H argument (beta t^2/gamma)(1+A t^2)/(1+A t^2+A^2 t^4),
+   multiplied top and bottom by (gamma E)^2, is the algebraically identical
+   beta t^2 E (gamma E + beta t^2)/(gamma^2 E^2 + gamma beta t^2 E + beta^2 t^4),
+   whose denominator has discriminant -3 gamma^2 beta^2 t^4 < 0 (strictly
+   positive, never zero) and whose numerator carries an E factor -- so it is
+   finite at the E=0 crossing where the A form is 0/0 -> NaN. *)
+pbe_c_erf_gws_H := (rs, z, t) -> pbe_c_erf_gws_gamma*(mphi(z)^3)*xc_log1p(
+  pbe_c_erf_gws_beta(rs,z)*t^2*pbe_c_erf_gws_E(rs,z)
+    *(pbe_c_erf_gws_gamma*pbe_c_erf_gws_E(rs,z) + pbe_c_erf_gws_beta(rs,z)*t^2)
+  /(pbe_c_erf_gws_gamma^2*pbe_c_erf_gws_E(rs,z)^2
+    + pbe_c_erf_gws_gamma*pbe_c_erf_gws_beta(rs,z)*t^2*pbe_c_erf_gws_E(rs,z)
+    + pbe_c_erf_gws_beta(rs,z)^2*t^4)):
 
 (* first eq. of eq. (6)*)
 f := (rs, z, xt, xs0, xs1) -> lda_c_pw_erf_f(rs,z) + pbe_c_erf_gws_H(rs, z, tt(rs,z,xt)):

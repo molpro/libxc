@@ -31,7 +31,7 @@ static void
 mgga_x_ft98_init(xc_func_type *p)
 {
   assert(p != NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(mgga_x_ft98_params));
+  p->params = libxc_malloc_flags(sizeof(mgga_x_ft98_params), p->info->flags);
 }
 
 #include "maple2c/mgga_exc/mgga_x_ft98.c"

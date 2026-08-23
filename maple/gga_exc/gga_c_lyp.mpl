@@ -24,22 +24,30 @@ lyp_aux4 := lyp_aux6/4:
 lyp_aux5 := lyp_aux4/(9*2):
 
 lyp_t1 := (rr, z) ->
-  -(1 - z^2)/(1 + params_a_d*rr):
-lyp_t2 := (rr, z, xt) ->
-  -xt^2*((1 - z^2)*(47 - 7*lyp_delta(rr))/(4*18) - 2/3):
+  -one_minus_z_pow_n(z, 2)/(1 + params_a_d*rr):
+(* The gradient terms enter only through the SQUARE of the reduced gradient, so
+   the helpers take xt^2/xs0^2/xs1^2 rather than xt/xs0/xs1. The square is
+   rational in sigma (sqrt(sigma) folds), so differentiating the opaque helper
+   with respect to sigma stays cancellation-free; passing the bare reduced
+   gradient routes the chain rule through d(sqrt(sigma)), whose 1/sigma terms
+   cancel only in exact arithmetic and lose all precision at a small gradient --
+   catastrophically here, where LYP is linear in sigma and v2sigma2 is exactly
+   zero. *)
+lyp_t2 := (rr, z, xt2) ->
+  -xt2*(one_minus_z_pow_n(z, 2)*(47 - 7*lyp_delta(rr))/(4*18) - 2/3):
 lyp_t3 := (z) ->
-  -lyp_Cf/2*(1 - z^2)*(opz_pow_n(z,8/3) + opz_pow_n(-z,8/3)):
-lyp_t4 := (rr, z, xs0, xs1) ->
-  lyp_aux4*(1 - z^2)*(5/2 - lyp_delta(rr)/18)*(xs0^2*opz_pow_n(z,8/3) + xs1^2*opz_pow_n(-z,8/3)):
-lyp_t5 := (rr, z, xs0, xs1) ->
-  lyp_aux5*(1 - z^2)*(lyp_delta(rr) - 11)*(xs0^2*opz_pow_n(z,11/3) + xs1^2*opz_pow_n(-z,11/3)):
-lyp_t6 := (z, xs0, xs1) ->
-  -lyp_aux6*(2/3*(xs0^2*opz_pow_n(z,8/3) + xs1^2*opz_pow_n(-z,8/3))
-  -opz_pow_n(z,2)*xs1^2*opz_pow_n(-z,8/3)/4 - opz_pow_n(-z,2)*xs0^2*opz_pow_n(z,8/3)/4):
+  -lyp_Cf/2*one_minus_z_pow_n(z, 2)*(opz_pow_n(z,8/3) + opz_pow_n(-z,8/3)):
+lyp_t4 := (rr, z, xs02, xs12) ->
+  lyp_aux4*one_minus_z_pow_n(z, 2)*(5/2 - lyp_delta(rr)/18)*(xs02*opz_pow_n(z,8/3) + xs12*opz_pow_n(-z,8/3)):
+lyp_t5 := (rr, z, xs02, xs12) ->
+  lyp_aux5*one_minus_z_pow_n(z, 2)*(lyp_delta(rr) - 11)*(xs02*opz_pow_n(z,11/3) + xs12*opz_pow_n(-z,11/3)):
+lyp_t6 := (z, xs02, xs12) ->
+  -lyp_aux6*(2/3*(xs02*opz_pow_n(z,8/3) + xs12*opz_pow_n(-z,8/3))
+  -opz_pow_n(z,2)*xs12*opz_pow_n(-z,8/3)/4 - opz_pow_n(-z,2)*xs02*opz_pow_n(z,8/3)/4):
 
 f_lyp_rr := (rr, z, xt, xs0, xs1) -> params_a_a*(lyp_t1(rr, z) + lyp_omega(rr)*(
-  + lyp_t2(rr, z, xt) + lyp_t3(z) + lyp_t4(rr, z, xs0, xs1)
-  + lyp_t5(rr, z, xs0, xs1) + lyp_t6(z, xs0, xs1)
+  + lyp_t2(rr, z, xt^2) + lyp_t3(z) + lyp_t4(rr, z, xs0^2, xs1^2)
+  + lyp_t5(rr, z, xs0^2, xs1^2) + lyp_t6(z, xs0^2, xs1^2)
 )):
 
 (* rr = rs/RS_FACTOR is equal to n_total(rs)^(-1/3) *)

@@ -30,13 +30,13 @@ tp   := (rs, z, xt) -> tt(rs, z, xt):
 
 (* Equation (8) *)
 A := (rs, z, t) ->
-  mbeta(rs, t)/(mgamma*(exp(-f_vwn(rs, z)/(mgamma*mphi(z)^3)) - 1)):
+  mbeta(rs, t)/(mgamma*xc_expm1(-f_vwn(rs, z)/(mgamma*mphi(z)^3))):
 
 (* Equation (7) *)
 f1 := (rs, z, t) -> t^2 + BB*A(rs, z, t)*t^4:
 f2 := (rs, z, t) -> mbeta(rs, t)*f1(rs, z, t)/(mgamma*(1 + A(rs, z, t)*f1(rs, z, t))):
 
-fH := (rs, z, t) -> mgamma*mphi(z)^3*log(1 + f2(rs, z, t)):
+fH := (rs, z, t) -> mgamma*mphi(z)^3*xc_log1p(f2(rs, z, t)):
 
 f_pbe  := (rs, z, xt, xs0, xs1) ->
   f_vwn(rs, z) + fH(rs, z, tp(rs, z, xt)):

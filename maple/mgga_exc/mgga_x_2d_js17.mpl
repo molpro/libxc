@@ -23,10 +23,15 @@ Notes:
 js17_ff := s ->
   (1 + 90*(2*js17_lambda - 1)^2*s^2 + js17_beta*(2*js17_lambda - 1)^4*s^4)^(1/15):
 
-(* Eq. (23) *)
+(* Eq. (23).  Algebraic identity (let c = js17_lambda^2 - js17_lambda
+   + 1/2):
+     1 + (3c*(t - 4 Pi) - t)/(4 Pi) = (1 - 3c)*(4 Pi - t)/(4 Pi),
+   at the 2D uniform-gas limit t -> 4 Pi the residual 4 Pi - t is a
+   direct subtraction (exact by Sterbenz near the limit), so it stays
+   relative-accurate, unlike the 1 - close-to-1 forms. *)
 js17_R := (s, t) ->
-  1 + 128/21*(2*js17_lambda - 1)^2*s^2 +
-  (3*(js17_lambda^2 - js17_lambda + 1/2)*(t - 4*Pi) - t)/(4*Pi):
+  + (1 - 3*(js17_lambda^2 - js17_lambda + 1/2))*(4*Pi - t)/(4*Pi)
+  + 128/21*(2*js17_lambda - 1)^2*s^2:
 
 js17_f := (x, u, t) -> 1/js17_ff(X2S_2D*x)
   + 2/5 * js17_R(X2S_2D*x, t)/js17_ff(X2S_2D*x)^3:

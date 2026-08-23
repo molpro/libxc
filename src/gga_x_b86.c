@@ -13,6 +13,7 @@
 #define XC_GGA_X_B86_MGC      105 /* Becke 86 Xalpha,beta,gamma (with mod. grad. correction) */
 #define XC_GGA_X_B86_R         41 /* Revised Becke 86 Xalpha,beta,gamma (with mod. grad. correction) */
 #define XC_GGA_X_OPTB86B_VDW  171 /* Becke 86 reoptimized for use with vdW functional of Dion et al */
+#define XC_GGA_X_DF3_OPT2     347 /* Becke 86 reoptimized by Chakraborty et al for use with vdW functional */
 
 typedef struct{
   double beta, gamma, omega;
@@ -23,7 +24,7 @@ static void
 gga_x_b86_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(gga_x_b86_params));
+  p->params = libxc_malloc_flags(sizeof(gga_x_b86_params), p->info->flags);
 }
 
 #define B86_N_PAR 3
@@ -40,6 +41,8 @@ static const double b86_r_values[B86_N_PAR] =
   {MU_GE*X2S*X2S, MU_GE*X2S*X2S/0.7114, 4.0/5.0};
 static const double b86_optb86b_values[B86_N_PAR] =
   {MU_GE*X2S*X2S, MU_GE*X2S*X2S, 4.0/5.0};
+static const double b86_df3_opt2_values[B86_N_PAR] =
+  {MU_GE*X2S*X2S, MU_GE*X2S*X2S/0.58, 4.0/5.0};
 
 
 #include "maple2c/gga_exc/gga_x_b86.c"
@@ -106,6 +109,22 @@ const xc_func_info_type xc_func_info_gga_x_optb86b_vdw = {
   XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-15,
   {B86_N_PAR, b86_names, b86_desc, b86_optb86b_values, set_ext_params_cpy},
+  gga_x_b86_init, NULL,
+  NULL, &work_gga, NULL
+};
+
+#ifdef __cplusplus
+extern "C"
+#endif
+const xc_func_info_type xc_func_info_gga_x_df3_opt2 = {
+  XC_GGA_X_DF3_OPT2,
+  XC_EXCHANGE,
+  "Becke 86 reoptimized by Chakraborty et al for use with vdW functional",
+  XC_FAMILY_GGA,
+  {&xc_ref_Chakraborty2020_5893, NULL, NULL, NULL, NULL},
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  1e-15,
+  {B86_N_PAR, b86_names, b86_desc, b86_df3_opt2_values, set_ext_params_cpy},
   gga_x_b86_init, NULL,
   NULL, &work_gga, NULL
 };

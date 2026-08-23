@@ -7,6 +7,12 @@
 *)
 
 (* type: gga_exc *)
+
+(* exchange-correlation functional: the correlation part does not obey
+   exact spin scaling, so keep the whole functional off the
+   spin-density evaluation path. *)
+(* spin_scaled: false *)
+
 (* prefix:
   hyb_gga_xc_case21_params *params;
 
@@ -26,7 +32,7 @@ $include "lda_x.mpl"
 (* text after eq 3, B86-type descriptor for exchange *)
 case21_ux0 := s -> params_a_gammax*s^2/(1 + params_a_gammax*s^2):
 (* enhancement function, eq 6 *)
-case21_fx := x -> xbspline(case21_ux0(X2S*x), 0, params):
+case21_fx := x -> xbspline(case21_ux0(gga_s(x)), 0, params):
 (* exchange energy, eq 3 *)
 case21_Ex := (rs, z, xs0, xs1) -> gga_exchange(case21_fx, rs, z, xs0, xs1):
 

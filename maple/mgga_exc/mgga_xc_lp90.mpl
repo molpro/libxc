@@ -7,14 +7,19 @@
 *)
 
 (* type: mgga_exc *)
+(* prefix:
+  mgga_xc_lp90_params *params;
 
-lp90_c0 := 0.80569:
-lp90_d0 := 3.0124e-3:
-lp90_k  := 4.0743e-3:
+  assert(p->params != NULL);
+  params = (mgga_xc_lp90_params * )(p->params);
+*)
 
 (* Equation (60) *)
-lp90_f := (rs, z, xt, us0, us1) ->
-  - (lp90_c0 + lp90_d0*t_vw(z, xt, us0, us1))/(rs/RS_FACTOR + lp90_k):
+(* lp90_f is an opaque helper taking the squared reduced gradient xt2 = xt^2
+   (t_vw takes the square; see maple/util.mpl) so the vW term stays
+   cancellation-free -- lp90 is linear in it and v2sigma2 is exactly zero. *)
+lp90_f := (rs, z, xt2, us0, us1) ->
+  - (params_a_c0 + params_a_d0*t_vw(z, xt2, us0, us1))/(rs/RS_FACTOR + params_a_k):
 
 f := (rs, z, xt, xs0, xs1, us0, us1, ts0, ts1) ->
-  lp90_f(rs, z, xt, us0, us1):
+  lp90_f(rs, z, xt^2, us0, us1):

@@ -11,26 +11,46 @@
 
 #include "util.h"
 
+#include <stdio.h>
 
-/* this function converts the spin-density into total density and
-	 relative magnetization */
-/* inline */ GPU_FUNCTION void
-xc_rho2dzeta(int nspin, const double *rho, double *d, double *zeta)
+#ifdef __has_include
+#if __has_include(<execinfo.h>)
+#include <execinfo.h>
+#include <unistd.h>
+#define HAVE_EXECINFO
+#endif
+#endif
+
+#ifdef HAVE_EXECINFO
+#define abort_with_backtrace() do {                     \
+    void *buf[512];                                     \
+    int n = backtrace(buf, sizeof(buf) / sizeof(*buf)); \
+    backtrace_symbols_fd(buf, n, STDOUT_FILENO);        \
+    abort();                                            \
+  } while (0)
+#else
+#define abort_with_backtrace() do { abort(); } while (0)
+#endif
+
+/* x - log(1 + x): cancellation-free at small x (where the direct
+   form loses precision in x - x + x^2/2 - x^3/3 + ...) and falls
+   back to the direct evaluation outside the cancellation regime. */
+GPU_FUNCTION double
+xc_x_minus_log1p(double x)
 {
-  if(nspin==XC_UNPOLARIZED){
-    *d    = m_max(rho[0], 0.0);
-    *zeta = 0.0;
-  }else{
-    *d = rho[0] + rho[1];
-    if(*d > 0.0){
-      *zeta = (rho[0] - rho[1])/(*d);
-      *zeta = m_min(*zeta,  1.0);
-      *zeta = m_max(*zeta, -1.0);
-    }else{
-      *d    = 0.0;
-      *zeta = 0.0;
-    }
+  if(fabs(x) < 0.25) {
+    /* Taylor series x - log(1 + x) = sum_{k>=2} (-1)^k x^k / k.
+       Evaluated by Horner from the highest term down so the tail
+       contribution is accumulated before the leading x^2/2.  We
+       carry the series out to k = 24, giving truncation error
+       < 0.25^25 / 25 ~ 3.6e-17 (below DBL_EPSILON) at the cutoff. */
+    double s = 0.0;
+    int k;
+    for(k = 24; k >= 2; k--)
+      s = (k & 1 ? -1.0 : 1.0) / k + s * x;
+    return s * x * x;
   }
+  return x - log1p(x);
 }
 
 const char *get_kind(const xc_func_type *func) {
@@ -97,6 +117,22 @@ get_ext_param(const xc_func_type *func, const double *values, int index)
   return func->ext_params[index];
 }
 
+/* Abort with a clear message when an output is requested (out_ptr != NULL)
+   that the functional does not implement.  Centralises the per-order check
+   shared verbatim by the lda/gga/mgga sanity checks, so the error policy
+   lives in one place. */
+void
+xc_require_implementation(const void *out_ptr, int flags, int have_flag,
+                          const char *fname, const char *deriv)
+{
+  if(out_ptr != NULL && !(flags & have_flag)){
+    fprintf(stderr,
+            "Functional '%s' does not provide an implementation of %s\n",
+            fname, deriv);
+    abort();
+  }
+}
+
 /* Copy n parameters, assumes that p->params is just a series of doubles
    so it can be accessed as a array, and and copies
    ext_params to this. */
@@ -124,6 +160,17 @@ set_ext_params_cpy(xc_func_type *p, const double *ext_params)
   copy_params(p, ext_params, nparams);
 }
 
+/* Each set_ext_params_cpy_<base> copies the leading parameters (all but
+   the NTRAILING consumed by the base setter) and then applies the base
+   setter; generate them from the base + NTRAILING instead of repeating the
+   boilerplate. */
+#define SET_EXT_PARAMS_CPY(base, ntrailing)                                  \
+  void set_ext_params_cpy_##base(xc_func_type *p, const double *ext_params) { \
+    assert(p != NULL);                                                       \
+    copy_params(p, ext_params, p->info->ext_params.n - (ntrailing));         \
+    set_ext_params_##base(p, ext_params);                                    \
+  }
+
 /*
    Copies parameters and sets the screening parameter, which should be
    the last parameter of the functional.
@@ -138,15 +185,7 @@ set_ext_params_omega(xc_func_type *p, const double *ext_params)
   p->cam_omega = get_ext_param(p, ext_params, nparams);
 }
 
-void
-set_ext_params_cpy_omega(xc_func_type *p, const double *ext_params)
-{
-  int nparams;
-  assert(p != NULL);
-  nparams = p->info->ext_params.n - 1;
-  copy_params(p, ext_params, nparams);
-  set_ext_params_omega(p, ext_params);
-}
+SET_EXT_PARAMS_CPY(omega, 1)
 
 /*
    Copies parameters and sets the exact exchange coefficient, which
@@ -162,15 +201,7 @@ set_ext_params_exx(xc_func_type *p, const double *ext_params)
   p->cam_alpha = get_ext_param(p, ext_params, nparams);
 }
 
-void
-set_ext_params_cpy_exx(xc_func_type *p, const double *ext_params)
-{
-  int nparams;
-  assert(p != NULL);
-  nparams = p->info->ext_params.n - 1;
-  copy_params(p, ext_params, nparams);
-  set_ext_params_exx(p, ext_params);
-}
+SET_EXT_PARAMS_CPY(exx, 1)
 
 /*
    Copies parameters and sets the HYB coefficients, which
@@ -188,15 +219,7 @@ set_ext_params_cam(xc_func_type *p, const double *ext_params)
   p->cam_omega = get_ext_param(p, ext_params, nparams + 2);
 }
 
-void
-set_ext_params_cpy_cam(xc_func_type *p, const double *ext_params)
-{
-  int nparams;
-  assert(p != NULL);
-  nparams = p->info->ext_params.n - 3;
-  copy_params(p, ext_params, nparams);
-  set_ext_params_cam(p, ext_params);
-}
+SET_EXT_PARAMS_CPY(cam, 3)
 
 void
 set_ext_params_camy(xc_func_type *p, const double *ext_params)
@@ -224,15 +247,7 @@ set_ext_params_cam_sr(xc_func_type *p, const double *ext_params)
   p->cam_omega = get_ext_param(p, ext_params, nparams + 1);
 }
 
-void
-set_ext_params_cpy_cam_sr(xc_func_type *p, const double *ext_params)
-{
-  int nparams;
-  assert(p != NULL);
-  nparams = p->info->ext_params.n - 2;
-  copy_params(p, ext_params, nparams);
-  set_ext_params_cam_sr(p, ext_params);
-}
+SET_EXT_PARAMS_CPY(cam_sr, 2)
 
 /* Long-range corrected functionals typically only have one parameter: the range separation parameter */
 void
@@ -247,15 +262,7 @@ set_ext_params_lc(xc_func_type *p, const double *ext_params)
   p->cam_omega = get_ext_param(p, ext_params, nparams);
 }
 
-void
-set_ext_params_cpy_lc(xc_func_type *p, const double *ext_params)
-{
-  int nparams;
-  assert(p != NULL);
-  nparams = p->info->ext_params.n - 1;
-  copy_params(p, ext_params, nparams);
-  set_ext_params_lc(p, ext_params);
-}
+SET_EXT_PARAMS_CPY(lc, 1)
 
 void
 set_ext_params_lcy(xc_func_type *p, const double *ext_params)
@@ -269,17 +276,152 @@ set_ext_params_cpy_lcy(xc_func_type *p, const double *ext_params)
   set_ext_params_cpy_lc(p, ext_params);
 }
 
-/* Free pointer */
-void
-libxc_free(void *ptr)
-{
+void (libxc_check_device_err)(const int err, const char *file, int line, const char *func) {
 #ifdef HAVE_CUDA
-  cudaFree(ptr);
-#else
-  free(ptr);
+  cudaError_t cuerr = (cudaError_t)err;
+  if (cuerr != cudaSuccess) {
+    fprintf(stderr, "%s\n", cudaGetErrorString(cuerr));
+    abort_with_backtrace();
+  }
 #endif
 }
 
+void (libxc_check_device_ptr)(const void *ptr, const char *file, int line, const char *func) {
+#ifdef HAVE_CUDA
+  struct cudaPointerAttributes attrs;
+  memset(&attrs, 0, sizeof(attrs));
+  libxc_check_device_err(cudaPointerGetAttributes(&attrs, ptr));
+  switch (attrs.type) {
+#ifndef HAVE_HIP
+  case cudaMemoryTypeUnregistered:
+    fprintf(stderr, "%s:%d: in %s: cannot use pointer %p of type cudaMemoryTypeUnregistered here\n", file, line, func, ptr);
+    abort_with_backtrace();
+#endif
+  case cudaMemoryTypeHost:
+    fprintf(stderr, "%s:%d: in %s: cannot use pointer %p of type cudaMemoryTypeHost here\n", file, line, func, ptr);
+    abort_with_backtrace();
+  case cudaMemoryTypeDevice:
+    break; // all good
+  case cudaMemoryTypeManaged:
+    break; // all good
+  default:
+    fprintf(stderr, "%s:%d: in %s: cannot use pointer %p of type unknown here\n", file, line, func, ptr);
+    abort_with_backtrace();
+  }
+#endif
+}
+
+/* choose memory managemend on gpu or cpu at runtime */
+void libxc_free_flags(void *ptr, int flags){
+  if ((flags & (XC_FLAGS_ON_DEVICE | XC_FLAGS_ON_HOST)) == XC_FLAGS_ON_DEVICE) {
+#ifdef HAVE_CUDA
+    libxc_check_device_ptr(ptr);
+    libxc_check_device_err(cudaFree(ptr));
+#else
+    fprintf(stderr, "%s:%d: in %s: libxc was compiled without GPU support\n", __FILE__, __LINE__, __func__);
+    abort_with_backtrace();
+#endif
+  } else if ((flags & (XC_FLAGS_ON_DEVICE | XC_FLAGS_ON_HOST)) == XC_FLAGS_ON_HOST) {
+    free(ptr);
+  } else {
+    fprintf(stderr, "%s:%d: in %s: neither XC_FLAGS_ON_DEVICE nor XC_FLAGS_ON_HOST is set\n", __FILE__, __LINE__, __func__);
+    abort_with_backtrace();
+  }
+}
+
+
+void* libxc_malloc_flags(size_t size, int flags){
+  void* mem = NULL;
+  if ((flags & (XC_FLAGS_ON_DEVICE | XC_FLAGS_ON_HOST)) == XC_FLAGS_ON_DEVICE) {
+#ifdef HAVE_CUDA
+    libxc_check_device_err(cudaMallocManaged(&mem, size));
+#else
+    fprintf(stderr, "%s:%d: in %s: libxc was compiled without GPU support\n", __FILE__, __LINE__, __func__);
+    abort_with_backtrace();
+#endif
+  } else if ((flags & (XC_FLAGS_ON_DEVICE | XC_FLAGS_ON_HOST)) == XC_FLAGS_ON_HOST) {
+    mem = malloc(size);
+  } else {
+    fprintf(stderr, "%s:%d: in %s: neither XC_FLAGS_ON_DEVICE nor XC_FLAGS_ON_HOST is set\n", __FILE__, __LINE__, __func__);
+    abort_with_backtrace();
+  }
+  return mem;
+}
+
+
+void* libxc_calloc_flags(size_t size1, size_t size2, int flags) {
+  void* mem = NULL;
+  if ((flags & (XC_FLAGS_ON_DEVICE | XC_FLAGS_ON_HOST)) == XC_FLAGS_ON_DEVICE) {
+#ifdef HAVE_CUDA
+    libxc_check_device_err(cudaMallocManaged(&mem, size1*size2));
+    libxc_check_device_err(cudaMemset(mem, 0, size1*size2));
+#else
+    fprintf(stderr, "%s:%d: in %s: libxc was compiled without GPU support\n", __FILE__, __LINE__, __func__);
+    abort_with_backtrace();
+#endif
+  } else if ((flags & (XC_FLAGS_ON_DEVICE | XC_FLAGS_ON_HOST)) == XC_FLAGS_ON_HOST) {
+    mem = calloc(size1, size2);
+  } else {
+    fprintf(stderr, "%s:%d: in %s: neither XC_FLAGS_ON_DEVICE nor XC_FLAGS_ON_HOST is set\n", __FILE__, __LINE__, __func__);
+    abort_with_backtrace();
+  }
+  return mem;
+}
+
+void libxc_memset_flags(void* mem, int value, size_t size, int flags){
+  if ((flags & (XC_FLAGS_ON_DEVICE | XC_FLAGS_ON_HOST)) == XC_FLAGS_ON_DEVICE) {
+#ifdef HAVE_CUDA
+    libxc_check_device_ptr(mem);
+    libxc_check_device_err(cudaMemset(mem, value, size));
+#else
+    fprintf(stderr, "%s:%d: in %s: libxc was compiled without GPU support\n", __FILE__, __LINE__, __func__);
+    abort_with_backtrace();
+#endif
+  } else if ((flags & (XC_FLAGS_ON_DEVICE | XC_FLAGS_ON_HOST)) == XC_FLAGS_ON_HOST) {
+    memset(mem, value, size);
+  } else {
+    fprintf(stderr, "%s:%d: in %s: neither XC_FLAGS_ON_DEVICE nor XC_FLAGS_ON_HOST is set\n", __FILE__, __LINE__, __func__);
+    abort_with_backtrace();
+  }
+}
+
+void libxc_memcpy_flags(void *__restrict dest, void const *__restrict src, const size_t size, int flags){
+  if ((flags & (XC_FLAGS_ON_DEVICE | XC_FLAGS_ON_HOST)) == XC_FLAGS_ON_DEVICE) {
+#ifdef HAVE_CUDA
+    libxc_check_device_err(cudaMemcpy(dest, src, size, cudaMemcpyDefault));
+#else
+    fprintf(stderr, "%s:%d: in %s: libxc was compiled without GPU support\n", __FILE__, __LINE__, __func__);
+    abort_with_backtrace();
+#endif
+  } else if ((flags & (XC_FLAGS_ON_DEVICE | XC_FLAGS_ON_HOST)) == XC_FLAGS_ON_HOST) {
+    memcpy(dest, src, size);
+  } else {
+    fprintf(stderr, "%s:%d: in %s: neither XC_FLAGS_ON_DEVICE nor XC_FLAGS_ON_HOST is set\n", __FILE__, __LINE__, __func__);
+    abort_with_backtrace();
+  }
+}
+
+void libxc_memcpy_2d_flags(void *__restrict dst, size_t dpitch, void const *__restrict src, size_t spitch, size_t width, size_t height, int flags) {
+  if ((flags & (XC_FLAGS_ON_DEVICE | XC_FLAGS_ON_HOST)) == XC_FLAGS_ON_DEVICE) {
+#ifdef HAVE_CUDA
+    libxc_check_device_err(cudaMemcpy2D(dst, dpitch, src, spitch, width, height, cudaMemcpyDefault));
+#else
+    fprintf(stderr, "%s:%d: in %s: libxc was compiled without GPU support\n", __FILE__, __LINE__, __func__);
+    abort_with_backtrace();
+#endif
+  } else if ((flags & (XC_FLAGS_ON_DEVICE | XC_FLAGS_ON_HOST)) == XC_FLAGS_ON_HOST) {
+    const char*__restrict src_row = (const char*)src;
+    char*__restrict dst_row = (char *)dst;
+    for (size_t row = 0; row < height; ++row) {
+      memcpy(dst_row, src_row, width);
+      src_row += spitch;
+      dst_row += dpitch;
+    }
+  } else {
+    fprintf(stderr, "%s:%d: in %s: neither XC_FLAGS_ON_DEVICE nor XC_FLAGS_ON_HOST is set\n", __FILE__, __LINE__, __func__);
+    abort_with_backtrace();
+  }
+}
 
 /* these functional handle the internal counters
    used to move along the input and output arrays.
@@ -418,491 +560,6 @@ internal_counters_set_mgga(int nspin, xc_dimensions *dim)
   }
 }
 
-GPU_FUNCTION void
-internal_counters_lda_random
-  (const xc_dimensions *dim, int pos, int offset, const double **rho,
-   double **zk LDA_OUT_PARAMS_NO_EXC(XC_COMMA double **, ))
-{
-  if(*rho != NULL)    *rho    += pos*dim->rho    + offset;
-  if(*zk != NULL)     *zk     += pos*dim->zk     + offset;
-#ifndef XC_DONT_COMPILE_VXC
-  if(*vrho != NULL)   *vrho   += pos*dim->vrho   + offset;
-#ifndef XC_DONT_COMPILE_FXC
-  if(*v2rho2 != NULL) *v2rho2 += pos*dim->v2rho2 + offset;
-#ifndef XC_DONT_COMPILE_KXC
-  if(*v3rho3 != NULL) *v3rho3 += pos*dim->v3rho3 + offset;
-#ifndef XC_DONT_COMPILE_LXC
-  if(*v4rho4 != NULL) *v4rho4 += pos*dim->v4rho4 + offset;
-#endif
-#endif
-#endif
-#endif
-}
-
-GPU_FUNCTION void
-internal_counters_lda_next
-  (const xc_dimensions *dim, int offset, const double **rho,
-   double **zk LDA_OUT_PARAMS_NO_EXC(XC_COMMA double **, ))
-{
-  if(*rho != NULL)    *rho    += dim->rho    + offset;
-  if(*zk != NULL)     *zk     += dim->zk     + offset;
-#ifndef XC_DONT_COMPILE_VXC
-  if(*vrho != NULL)   *vrho   += dim->vrho   + offset;
-#ifndef XC_DONT_COMPILE_FXC
-  if(*v2rho2 != NULL) *v2rho2 += dim->v2rho2 + offset;
-#ifndef XC_DONT_COMPILE_KXC
-  if(*v3rho3 != NULL) *v3rho3 += dim->v3rho3 + offset;
-#ifndef XC_DONT_COMPILE_LXC
-  if(*v4rho4 != NULL) *v4rho4 += dim->v4rho4 + offset;
-#endif
-#endif
-#endif
-#endif
-}
-
-GPU_FUNCTION void
-internal_counters_lda_prev
-  (const xc_dimensions *dim, int offset, const double **rho,
-   double **zk LDA_OUT_PARAMS_NO_EXC(XC_COMMA double **, ))
-{
-  if(*rho != NULL)    *rho    -= dim->rho    + offset;
-  if(*zk != NULL)     *zk     -= dim->zk     + offset;
-#ifndef XC_DONT_COMPILE_VXC
-  if(*vrho != NULL)   *vrho   -= dim->vrho   + offset;
-#ifndef XC_DONT_COMPILE_FXC
-  if(*v2rho2 != NULL) *v2rho2 -= dim->v2rho2 + offset;
-#ifndef XC_DONT_COMPILE_KXC
-  if(*v3rho3 != NULL) *v3rho3 -= dim->v3rho3 + offset;
-#ifndef XC_DONT_COMPILE_LXC
-  if(*v4rho4 != NULL) *v4rho4 -= dim->v4rho4 + offset;
-#endif
-#endif
-#endif
-#endif
-}
-
-GPU_FUNCTION void
-internal_counters_gga_random
-  (
-   const xc_dimensions *dim, int pos, int offset, const double **rho, const double **sigma,
-   double **zk GGA_OUT_PARAMS_NO_EXC(XC_COMMA double **, ))
-{
-  internal_counters_lda_random(dim, pos, offset, rho, zk LDA_OUT_PARAMS_NO_EXC(XC_COMMA, ));
-
-  if(*sigma != NULL) *sigma += pos*dim->sigma  + offset;
-#ifndef XC_DONT_COMPILE_VXC
-  if(*vrho != NULL) *vsigma += pos*dim->vsigma + offset;
-#ifndef XC_DONT_COMPILE_FXC
-  if(*v2rho2 != NULL) {
-    *v2rhosigma += pos*dim->v2rhosigma + offset;
-    *v2sigma2   += pos*dim->v2sigma2  + offset;
-  }
-#ifndef XC_DONT_COMPILE_KXC
-  if(*v3rho3 != NULL) {
-    *v3rho2sigma += pos*dim->v3rho2sigma + offset;
-    *v3rhosigma2 += pos*dim->v3rhosigma2 + offset;
-    *v3sigma3    += pos*dim->v3sigma3    + offset;
-  }
-#ifndef XC_DONT_COMPILE_LXC
-  if(*v4rho4 != NULL) {
-    *v4rho3sigma  += pos*dim->v4rho3sigma  + offset;
-    *v4rho2sigma2 += pos*dim->v4rho2sigma2 + offset;
-    *v4rhosigma3  += pos*dim->v4rhosigma3  + offset;
-    *v4sigma4     += pos*dim->v4sigma4     + offset;
-  }
-#endif
-#endif
-#endif
-#endif
-}
-
-GPU_FUNCTION void
-internal_counters_gga_next
-  (
-   const xc_dimensions *dim, int offset, const double **rho, const double **sigma,
-   double **zk GGA_OUT_PARAMS_NO_EXC(XC_COMMA double **, ))
-{
-  internal_counters_lda_next(dim, offset, rho, zk LDA_OUT_PARAMS_NO_EXC(XC_COMMA, ));
-
-  if(*sigma != NULL) *sigma += dim->sigma  + offset;
-#ifndef XC_DONT_COMPILE_VXC
-  if(*vrho != NULL) *vsigma += dim->vsigma + offset;
-#ifndef XC_DONT_COMPILE_FXC
-  if(*v2rho2 != NULL) {
-    *v2rhosigma += dim->v2rhosigma + offset;
-    *v2sigma2   += dim->v2sigma2  + offset;
-  }
-#ifndef XC_DONT_COMPILE_KXC
-  if(*v3rho3 != NULL) {
-    *v3rho2sigma += dim->v3rho2sigma + offset;
-    *v3rhosigma2 += dim->v3rhosigma2 + offset;
-    *v3sigma3    += dim->v3sigma3    + offset;
-  }
-#ifndef XC_DONT_COMPILE_LXC
-  if(*v4rho4 != NULL) {
-    *v4rho3sigma  += dim->v4rho3sigma  + offset;
-    *v4rho2sigma2 += dim->v4rho2sigma2 + offset;
-    *v4rhosigma3  += dim->v4rhosigma3  + offset;
-    *v4sigma4     += dim->v4sigma4     + offset;
-  }
-#endif
-#endif
-#endif
-#endif
-}
-
-GPU_FUNCTION void
-internal_counters_gga_prev
-(const xc_dimensions *dim, int offset, const double **rho, const double **sigma,
- double **zk GGA_OUT_PARAMS_NO_EXC(XC_COMMA double **, ))
-{
-  internal_counters_lda_prev(dim, offset, rho, zk LDA_OUT_PARAMS_NO_EXC(XC_COMMA, ));
-
-  if(*sigma != NULL) *sigma -= dim->sigma  + offset;
-#ifndef XC_DONT_COMPILE_VXC
-  if(*vrho != NULL) *vsigma -= dim->vsigma + offset;
-#ifndef XC_DONT_COMPILE_FXC
-  if(*v2rho2 != NULL) {
-    *v2rhosigma -= dim->v2rhosigma + offset;
-    *v2sigma2   -= dim->v2sigma2  + offset;
-  }
-#ifndef XC_DONT_COMPILE_KXC
-  if(*v3rho3 != NULL) {
-    *v3rho2sigma -= dim->v3rho2sigma + offset;
-    *v3rhosigma2 -= dim->v3rhosigma2 + offset;
-    *v3sigma3    -= dim->v3sigma3    + offset;
-  }
-#ifndef XC_DONT_COMPILE_LXC
-  if(*v4rho4 != NULL) {
-    *v4rho3sigma  -= dim->v4rho3sigma  + offset;
-    *v4rho2sigma2 -= dim->v4rho2sigma2 + offset;
-    *v4rhosigma3  -= dim->v4rhosigma3  + offset;
-    *v4sigma4     -= dim->v4sigma4     + offset;
-  }
-#endif
-#endif
-#endif
-#endif
-}
-
-GPU_FUNCTION void
-internal_counters_mgga_random
-  (const xc_dimensions *dim, int pos, int offset,
-   const double **rho, const double **sigma, const double **lapl, const double **tau,
-   double **zk MGGA_OUT_PARAMS_NO_EXC(XC_COMMA double **, ))
-{
-  internal_counters_gga_random(dim, pos, offset, rho, sigma, zk GGA_OUT_PARAMS_NO_EXC(XC_COMMA, ));
-
-  if(*lapl != NULL) *lapl += pos*dim->lapl + offset;
-  if(*tau != NULL)  *tau  += pos*dim->tau  + offset;
-
-#ifndef XC_DONT_COMPILE_VXC
-  if(*vrho != NULL) {
-    if (*vlapl != NULL)
-      *vlapl += pos*dim->vlapl + offset;
-    if (*vtau != NULL)
-      *vtau  += pos*dim->vtau  + offset;
-  }
-
-#ifndef XC_DONT_COMPILE_FXC
-  if(*v2rho2 != NULL) {
-    if (*v2lapl2 != NULL){
-      *v2rholapl   += pos*dim->v2rholapl   + offset;
-      *v2sigmalapl += pos*dim->v2sigmalapl + offset;
-      *v2lapl2     += pos*dim->v2lapl2     + offset;
-    }
-    if(*v2tau2 != NULL){
-      *v2rhotau    += pos*dim->v2rhotau    + offset;
-      *v2sigmatau  += pos*dim->v2sigmatau  + offset;
-      *v2tau2      += pos*dim->v2tau2      + offset;
-    }
-    if(*v2lapltau != NULL){
-      *v2lapltau   += pos*dim->v2lapltau   + offset;
-    }
-  }
-
-#ifndef XC_DONT_COMPILE_KXC
-  if(*v3rho3 != NULL) {
-    if (*v3lapl3 != NULL){
-      *v3rho2lapl     += pos*dim->v3rho2lapl     + offset;
-      *v3rhosigmalapl += pos*dim->v3rhosigmalapl + offset;
-      *v3rholapl2     += pos*dim->v3rholapl2     + offset;
-      *v3sigma2lapl   += pos*dim->v3sigma2lapl   + offset;
-      *v3sigmalapl2   += pos*dim->v3sigmalapl2   + offset;
-      *v3lapl3        += pos*dim->v3lapl3        + offset;
-    }
-    if(*v3tau3 != NULL){
-      *v3rho2tau      += pos*dim->v3rho2tau      + offset;
-      *v3rhosigmatau  += pos*dim->v3rhosigmatau  + offset;
-      *v3rhotau2      += pos*dim->v3rhotau2      + offset;
-      *v3sigma2tau    += pos*dim->v3sigma2tau    + offset;
-      *v3sigmatau2    += pos*dim->v3sigmatau2    + offset;
-      *v3tau3         += pos*dim->v3tau3         + offset;
-    }
-    if(*v3rholapltau != NULL){
-      *v3rholapltau   += pos*dim->v3rholapltau   + offset;
-      *v3sigmalapltau += pos*dim->v3sigmalapltau + offset;
-      *v3lapl2tau     += pos*dim->v3lapl2tau     + offset;
-      *v3lapltau2     += pos*dim->v3lapltau2     + offset;
-    }
-  }
-#ifndef XC_DONT_COMPILE_LXC
-  if(*v4rho4 != NULL) {
-    if (*v4lapl4 != NULL){
-      *v4rho3lapl        += pos*dim->v4rho3lapl        + offset;
-      *v4rho2sigmalapl   += pos*dim->v4rho2sigmalapl   + offset;
-      *v4rho2lapl2       += pos*dim->v4rho2lapl2       + offset;
-      *v4rhosigma2lapl   += pos*dim->v4rhosigma2lapl   + offset;
-      *v4rhosigmalapl2   += pos*dim->v4rhosigmalapl2   + offset;
-      *v4rholapl3        += pos*dim->v4rholapl3        + offset;
-      *v4sigma3lapl      += pos*dim->v4sigma3lapl      + offset;
-      *v4sigma2lapl2     += pos*dim->v4sigma2lapl2     + offset;
-      *v4sigmalapl3      += pos*dim->v4sigmalapl3      + offset;
-      *v4lapl4           += pos*dim->v4lapl4           + offset;
-    }
-    if(*v4tau4 != NULL){
-      *v4rho3tau         += pos*dim->v4rho3tau         + offset;
-      *v4rho2sigmatau    += pos*dim->v4rho2sigmatau    + offset;
-      *v4rho2tau2        += pos*dim->v4rho2tau2        + offset;
-      *v4rhosigma2tau    += pos*dim->v4rhosigma2tau    + offset;
-      *v4rhosigmatau2    += pos*dim->v4rhosigmatau2    + offset;
-      *v4rhotau3         += pos*dim->v4rhotau3         + offset;
-      *v4sigma3tau       += pos*dim->v4sigma3tau       + offset;
-      *v4sigma2tau2      += pos*dim->v4sigma2tau2      + offset;
-      *v4sigmatau3       += pos*dim->v4sigmatau3       + offset;
-      *v4tau4            += pos*dim->v4tau4            + offset;
-    }
-    if(*v4rho2lapltau != NULL){
-      *v4rho2lapltau     += pos*dim->v4rho2lapltau     + offset;
-      *v4rhosigmalapltau += pos*dim->v4rhosigmalapltau + offset;
-      *v4rholapl2tau     += pos*dim->v4rholapl2tau     + offset;
-      *v4rholapltau2     += pos*dim->v4rholapltau2     + offset;
-      *v4sigma2lapltau   += pos*dim->v4sigma2lapltau   + offset;
-      *v4sigmalapl2tau   += pos*dim->v4sigmalapl2tau   + offset;
-      *v4sigmalapltau2   += pos*dim->v4sigmalapltau2   + offset;
-      *v4lapl3tau        += pos*dim->v4lapl3tau        + offset;
-      *v4lapl2tau2       += pos*dim->v4lapl2tau2       + offset;
-      *v4lapltau3        += pos*dim->v4lapltau3        + offset;
-    }
-  }
-#endif
-#endif
-#endif
-#endif
-}
-
-GPU_FUNCTION void
-internal_counters_mgga_next
-  (const xc_dimensions *dim, int offset,
-   const double **rho, const double **sigma, const double **lapl, const double **tau,
-   double **zk MGGA_OUT_PARAMS_NO_EXC(XC_COMMA double **, ))
-{
-  internal_counters_gga_next(dim, offset, rho, sigma, zk GGA_OUT_PARAMS_NO_EXC(XC_COMMA, ));
-
-  if(*lapl != NULL) *lapl += dim->lapl + offset;
-  if(*tau != NULL)  *tau  += dim->tau  + offset;
-
-#ifndef XC_DONT_COMPILE_VXC
-  if(*vrho != NULL) {
-    if (*vlapl != NULL)
-      *vlapl += dim->vlapl + offset;
-    if (*vtau != NULL)
-      *vtau  += dim->vtau  + offset;
-  }
-
-#ifndef XC_DONT_COMPILE_FXC
-  if(*v2rho2 != NULL) {
-    if (*v2lapl2 != NULL){
-      *v2rholapl   += dim->v2rholapl   + offset;
-      *v2sigmalapl += dim->v2sigmalapl + offset;
-      *v2lapl2     += dim->v2lapl2     + offset;
-    }
-    if (*v2tau2 != NULL){
-      *v2rhotau    += dim->v2rhotau    + offset;
-      *v2sigmatau  += dim->v2sigmatau  + offset;
-      *v2tau2      += dim->v2tau2      + offset;
-    }
-    if (*v2lapltau != NULL){
-      *v2lapltau   += dim->v2lapltau   + offset;
-    }
-  }
-
-#ifndef XC_DONT_COMPILE_KXC
-  if(*v3rho3 != NULL) {
-    if (*v3lapl3 != NULL){
-      *v3rho2lapl     += dim->v3rho2lapl     + offset;
-      *v3rhosigmalapl += dim->v3rhosigmalapl + offset;
-      *v3rholapl2     += dim->v3rholapl2     + offset;
-      *v3sigma2lapl   += dim->v3sigma2lapl   + offset;
-      *v3sigmalapl2   += dim->v3sigmalapl2   + offset;
-      *v3lapl3        += dim->v3lapl3        + offset;
-    }
-    if (*v3tau3 != NULL){
-      *v3rho2tau      += dim->v3rho2tau      + offset;
-      *v3rhosigmatau  += dim->v3rhosigmatau  + offset;
-      *v3rhotau2      += dim->v3rhotau2      + offset;
-      *v3sigma2tau    += dim->v3sigma2tau    + offset;
-      *v3sigmatau2    += dim->v3sigmatau2    + offset;
-      *v3tau3         += dim->v3tau3         + offset;
-    }
-    if(*v3rholapltau != NULL){
-      *v3rholapltau   += dim->v3rholapltau   + offset;
-      *v3sigmalapltau += dim->v3sigmalapltau + offset;
-      *v3lapl2tau     += dim->v3lapl2tau     + offset;
-      *v3lapltau2     += dim->v3lapltau2     + offset;
-    }
-  }
-#ifndef XC_DONT_COMPILE_LXC
-  if(*v4rho4 != NULL) {
-    if (*v4lapl4 != NULL){
-      *v4rho3lapl        += dim->v4rho3lapl        + offset;
-      *v4rho2sigmalapl   += dim->v4rho2sigmalapl   + offset;
-      *v4rho2lapl2       += dim->v4rho2lapl2       + offset;
-      *v4rhosigma2lapl   += dim->v4rhosigma2lapl   + offset;
-      *v4rhosigmalapl2   += dim->v4rhosigmalapl2   + offset;
-      *v4rholapl3        += dim->v4rholapl3        + offset;
-      *v4sigma3lapl      += dim->v4sigma3lapl      + offset;
-      *v4sigma2lapl2     += dim->v4sigma2lapl2     + offset;
-      *v4sigmalapl3      += dim->v4sigmalapl3      + offset;
-      *v4lapl4           += dim->v4lapl4           + offset;
-    }
-    if (*v4tau4 != NULL){
-      *v4rho3tau         += dim->v4rho3tau         + offset;
-      *v4rho2sigmatau    += dim->v4rho2sigmatau    + offset;
-      *v4rho2tau2        += dim->v4rho2tau2        + offset;
-      *v4rhosigma2tau    += dim->v4rhosigma2tau    + offset;
-      *v4rhosigmatau2    += dim->v4rhosigmatau2    + offset;
-      *v4rhotau3         += dim->v4rhotau3         + offset;
-      *v4sigma3tau       += dim->v4sigma3tau       + offset;
-      *v4sigma2tau2      += dim->v4sigma2tau2      + offset;
-      *v4sigmatau3       += dim->v4sigmatau3       + offset;
-      *v4tau4            += dim->v4tau4            + offset;
-    }
-    if(*v4rho2lapltau != NULL){
-      *v4rho2lapltau     += dim->v4rho2lapltau     + offset;
-      *v4rhosigmalapltau += dim->v4rhosigmalapltau + offset;
-      *v4rholapl2tau     += dim->v4rholapl2tau     + offset;
-      *v4rholapltau2     += dim->v4rholapltau2     + offset;
-      *v4sigma2lapltau   += dim->v4sigma2lapltau   + offset;
-      *v4sigmalapl2tau   += dim->v4sigmalapl2tau   + offset;
-      *v4sigmalapltau2   += dim->v4sigmalapltau2   + offset;
-      *v4lapl3tau        += dim->v4lapl3tau        + offset;
-      *v4lapl2tau2       += dim->v4lapl2tau2       + offset;
-      *v4lapltau3        += dim->v4lapltau3        + offset;
-    }
-  }
-#endif
-#endif
-#endif
-#endif
-}
-
-GPU_FUNCTION void
-internal_counters_mgga_prev
-  (const xc_dimensions *dim, int offset,
-   const double **rho, const double **sigma, const double **lapl, const double **tau,
-   double **zk MGGA_OUT_PARAMS_NO_EXC(XC_COMMA double **, ))
-{
-  internal_counters_gga_prev(dim, offset, rho, sigma, zk GGA_OUT_PARAMS_NO_EXC(XC_COMMA, ));
-
-  if(*lapl != NULL) *lapl -= dim->lapl + offset;
-  if(*tau != NULL)  *tau  -= dim->tau  + offset;
-
-#ifndef XC_DONT_COMPILE_VXC
-  if(*vrho != NULL) {
-    if(*vlapl != NULL)
-      *vlapl -= dim->vlapl + offset;
-    if(*vtau != NULL)
-      *vtau  -= dim->vtau  + offset;
-  }
-
-#ifndef XC_DONT_COMPILE_FXC
-  if(*v2rho2 != NULL) {
-    if(*v2lapl2 != NULL){
-      *v2rholapl   -= dim->v2rholapl   + offset;
-      *v2sigmalapl -= dim->v2sigmalapl + offset;
-      *v2lapl2     -= dim->v2lapl2     + offset;
-    }
-    if(*v2tau2 != NULL){
-      *v2rhotau    -= dim->v2rhotau    + offset;
-      *v2sigmatau  -= dim->v2sigmatau  + offset;
-      *v2tau2      -= dim->v2tau2      + offset;
-    }
-    if(*v2lapltau){
-      *v2lapltau   -= dim->v2lapltau   + offset;
-    }
-  }
-
-#ifndef XC_DONT_COMPILE_KXC
-  if(*v3rho3 != NULL) {
-    if(*v3lapl3 != NULL){
-      *v3rho2lapl     -= dim->v3rho2lapl     + offset;
-      *v3rhosigmalapl -= dim->v3rhosigmalapl + offset;
-      *v3rholapl2     -= dim->v3rholapl2     + offset;
-      *v3sigma2lapl   -= dim->v3sigma2lapl   + offset;
-      *v3sigmalapl2   -= dim->v3sigmalapl2   + offset;
-      *v3lapl3        -= dim->v3lapl3        + offset;
-    }
-    if(*v3tau3 != NULL){
-      *v3rho2tau      -= dim->v3rho2tau      + offset;
-      *v3rhosigmatau  -= dim->v3rhosigmatau  + offset;
-      *v3rhotau2      -= dim->v3rhotau2      + offset;
-      *v3sigma2tau    -= dim->v3sigma2tau    + offset;
-      *v3sigmatau2    -= dim->v3sigmatau2    + offset;
-      *v3tau3         -= dim->v3tau3         + offset;
-    }
-    if(*v3rholapltau){
-      *v3rholapltau   -= dim->v3rholapltau   + offset;
-      *v3sigmalapltau -= dim->v3sigmalapltau + offset;
-      *v3lapl2tau     -= dim->v3lapl2tau     + offset;
-      *v3lapltau2     -= dim->v3lapltau2     + offset;
-    }
-  }
-#ifndef XC_DONT_COMPILE_LXC
-  if(*v4rho4 != NULL) {
-    if (*v4lapl4 != NULL){
-      *v4rho3lapl        -= dim->v4rho3lapl        + offset;
-      *v4rho2sigmalapl   -= dim->v4rho2sigmalapl   + offset;
-      *v4rho2lapl2       -= dim->v4rho2lapl2       + offset;
-      *v4rhosigma2lapl   -= dim->v4rhosigma2lapl   + offset;
-      *v4rhosigmalapl2   -= dim->v4rhosigmalapl2   + offset;
-      *v4rholapl3        -= dim->v4rholapl3        + offset;
-      *v4sigma3lapl      -= dim->v4sigma3lapl      + offset;
-      *v4sigma2lapl2     -= dim->v4sigma2lapl2     + offset;
-      *v4sigmalapl3      -= dim->v4sigmalapl3      + offset;
-      *v4lapl4           -= dim->v4lapl4           + offset;
-    }
-    if(*v4tau4 != NULL){
-      *v4rho3tau         -= dim->v4rho3tau         + offset;
-      *v4rho2sigmatau    -= dim->v4rho2sigmatau    + offset;
-      *v4rho2tau2        -= dim->v4rho2tau2        + offset;
-      *v4rhosigma2tau    -= dim->v4rhosigma2tau    + offset;
-      *v4rhosigmatau2    -= dim->v4rhosigmatau2    + offset;
-      *v4rhotau3         -= dim->v4rhotau3         + offset;
-      *v4sigma3tau       -= dim->v4sigma3tau       + offset;
-      *v4sigma2tau2      -= dim->v4sigma2tau2      + offset;
-      *v4sigmatau3       -= dim->v4sigmatau3       + offset;
-      *v4tau4            -= dim->v4tau4            + offset;
-    }
-    if(*v4rho2lapltau != NULL){
-      *v4rho2lapltau     -= dim->v4rho2lapltau     + offset;
-      *v4rhosigmalapltau -= dim->v4rhosigmalapltau + offset;
-      *v4rholapl2tau     -= dim->v4rholapl2tau     + offset;
-      *v4rholapltau2     -= dim->v4rholapltau2     + offset;
-      *v4sigma2lapltau   -= dim->v4sigma2lapltau   + offset;
-      *v4sigmalapl2tau   -= dim->v4sigmalapl2tau   + offset;
-      *v4sigmalapltau2   -= dim->v4sigmalapltau2   + offset;
-      *v4lapl3tau        -= dim->v4lapl3tau        + offset;
-      *v4lapl2tau2       -= dim->v4lapl2tau2       + offset;
-      *v4lapltau3        -= dim->v4lapltau3        + offset;
-    }
-  }
-#endif
-#endif
-#endif
-#endif
-}
-
 /** Computes nderiv derivatives of B-spline Nip(u)
 
     The algorithm follows the textbook presentation in the NURBS
@@ -921,7 +578,7 @@ GPU_FUNCTION void
 xc_bspline(int i, int p, double u, int nderiv, const double *U, double *ders) {
 
   /* Initialize output array */
-  libxc_memset(ders, 0, (nderiv+1)*sizeof(double));
+  memset(ders, 0, (nderiv+1)*sizeof(double));
 
   /* Check locality of support */
   if(u < U[i] || u >= U[i+p+1]) {
@@ -934,7 +591,7 @@ xc_bspline(int i, int p, double u, int nderiv, const double *U, double *ders) {
 
   /* Array of normalized B splines, use dense storage for simpler code */
   double N[PMAX][PMAX];
-  libxc_memset(N, 0, PMAX*PMAX*sizeof(double));
+  memset(N, 0, PMAX*PMAX*sizeof(double));
 
   /* Initialize zeroth-degree functions: piecewise constants */
   for(int j=0; j<=p; j++) {
@@ -972,7 +629,7 @@ xc_bspline(int i, int p, double u, int nderiv, const double *U, double *ders) {
   /* Compute derivatives */
   for(int k=1; k<=maxk; k++) {
     /* Load appropriate column */
-    libxc_memset(ND, 0, (nderiv+1)*sizeof(double));
+    memset(ND, 0, (nderiv+1)*sizeof(double));
     for(int j=0; j<=k; j++)
       ND[j] = N[p-k][j];
 

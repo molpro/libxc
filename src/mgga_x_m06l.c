@@ -143,7 +143,7 @@ static void
 mgga_x_m06l_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(mgga_x_m06l_params));
+  p->params = libxc_malloc_flags(sizeof(mgga_x_m06l_params), p->info->flags);
 
   switch(p->info->number) {
   case(XC_HYB_MGGA_X_M06):

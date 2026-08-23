@@ -34,7 +34,7 @@ gga_x_ityh_pbe_init(xc_func_type *p)
   gga_x_ityh_pbe_params *params;
 
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(gga_x_ityh_pbe_params));
+  p->params = libxc_malloc_flags(sizeof(gga_x_ityh_pbe_params), p->info->flags);
   params = (gga_x_ityh_pbe_params *) (p->params);
 
   /* This has to be explicitly initialized here */

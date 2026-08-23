@@ -1,3 +1,142 @@
+## [7.1.2] - 2026-07-20
+
+Performance and accuracy release: the generated code no longer evaluates integer and simple rational powers through `pow()`, which is both several times slower and, for a few exponents, less accurate than the arithmetic it replaces.
+
+### Fixed
+- Integer and rational powers in the generated sources went through `pow()` — 11881 calls, for exponents as ordinary as `rs**5` and `x*sqrt(x)`, with integer exponents reaching |n| = 57. No compiler will clean this up: at `-O3` gcc expands `pow(x, 2.0)` and nothing else, and only `-ffast-math`, which libxc cannot use, removes the rest. Measured per evaluation, `pow()` costs ~37 ns against ~2 ns for the equivalent arithmetic, and `pow(x, -1/2)` 36.7 ns against 11.9 ns for `1/sqrt(x)` (!818).
+- Accuracy of several rational powers. A root is now applied once, with the integer part taken separately, rather than raising the root to a power — which multiplies its half-ulp error by the exponent. `x**(5/3)`, the Thomas–Fermi exponent and one of the most common in the library, halves its error from 9.5 to 4.6 ulp; `x**(2/3)` from 9.1 to 4.9. Swept over every rational exponent with denominator 2, 3, 4 or 6 and |numerator| ≤ 13, all forms now land between 0.9 and 5.9 ulp (!818).
+
+### Changed
+- Two helpers in `util.h`, `xc_powi(x, n)` and `xc_powr(x, p, q)`, now carry the power evaluation for the generated code; both fold to optimal inline code for constant exponents on gcc and clang. The Maple pipeline's fixed-exponent macros — `POW_2`, `POW_3`, `POW_1_2`, `POW_1_3`, `POW_1_4`, `POW_3_2`, `POW_2_3`, `POW_4_3`, `POW_5_3`, `POW_7_3` — had no users left and are gone; use `CBRT` for the cube root. These are internal (`util.h` is not installed), so nothing in the public API changes (!818).
+
+- The pytest suite was registered with ctest as a single test, so a run reported one pass/fail line after a couple of minutes and could not use `ctest -j` at all. It is now one test per regression family, plus the API/util tests and the code-generation invariants: 21 tests in place of 1, the same 10541 tests, and 16 s of wall clock instead of 148 s. `xc-run_pytest` takes paths and defaults to `-q`, so a passing run shows what ran; with no arguments it behaves as before. The atomic tier stays opt-in — run it with `pytest -m atomic testsuite/atomic` (!817).
+
+### Removed
+- `src/maple2c/mgga_exc/mgga_x_mvsb.c`, generated code for a functional removed earlier, along with two `.maple_backup` files committed by accident. None were built, but they were shipping in `make dist` (!818).
+
+## [7.1.1] - 2026-07-19
+
+Bugfix release: a large performance regression in the range-separated functionals, floating-point exceptions in debug builds, a regression in the deprecated derivative-order switches, an incorrect functional, and a Fortran example fix.
+
+### Changed
+- Internally, the derivative order is now carried as a single number, `XC_MAXORDER`, instead of the four `XC_DONT_COMPILE_VXC`/`FXC`/`KXC`/`LXC` booleans the configuration expanded it into — one of which, `XC_DONT_COMPILE_EXC`, was never defined by anything. The `--enable-maxorder` / `-DMAXORDER` options and the deprecated `--disable-*xc` / `-DDISABLE_*XC` switches are unaffected. A build hand-passing `-DXC_DONT_COMPILE_FXC` in its own flags still lowers the compiled order, though that spelling is deprecated (!818).
+- The test suite checks two code-generation invariants directly, without a build: that regenerating a functional is reproducible, and that each helper's result array matches the slots the helper writes (!818).
+
+### Fixed
+- Performance regression in HSE06 and WPBEH, reported at roughly 10-43x by CP2K. A helper written as the usual two-regime piecewise — each branch's argument clamped into its own valid domain — was emitted as *two unconditional calls* plus a select that discarded one result, so every grid point paid for both regimes. `GGA_X_WPBEH` was the worst case, evaluating a ~2400-line series expansion alongside the closed form it was not using. The code generator now determines which branch a call's results are read under and emits the call behind a real branch when the helper is expensive; the same pass also skips helper evaluation at density-screened points. Measured 2.4-4.9x on WPBEH and HSE06 against 7.1.0, together with the change below (#630, !815).
+- Every derivative order now evaluates only the helper slots it needs. The kernels were already compiled once per order and dispatched on the call, but all orders shared a single copy of each helper, which computed and reserved space for every slot the build compiled: an energy-only call ran a five-argument helper to all 21 slots of a `MAXORDER=2` build to read one of them. Helpers are now order-graded the same way the kernels are, so the cost of a call scales with the derivative order requested instead of being flat (!818).
+- The code generator produced different output on every run. Two passes iterated an unordered set, so helpers with no dependencies between them — any topological order is valid — came out shuffled, and regenerating a functional on the same machine gave a different file each time. Generation is now reproducible; this normalizes the affected helpers to definition order once (!818).
+- Spurious `sqrt(sigma_ss)` in the spin-scaled exchange channel: helpers depending on the reduced gradient only through its square are now automatically emitted in "p form" by the code generator, so the chain rule no longer routes through `d(sqrt(sigma))`. This removes the resulting `1/sigma^(k/2)` terms — which cancel only in exact arithmetic — from the higher derivatives of the affected meta-GGA exchange functionals, fixing a SIGFPE in debug builds (notably `HYB_MGGA_XC_WB97M_V`) and improving accuracy in the low-density tail (#629, !812).
+- SIGFPE in `xc_E1_scaled_jet` for large arguments: the asymptotic series evaluated `pow(z, m+1+k)`, which overflows before the series is truncated. The terms are now generated by a ratio recurrence with optimal truncation (#629, !811).
+- LDA_C_RPAF: corrected the `cL` log coefficient (a transcription typo confirmed by the author), which made the correlation energy per particle positive at spin-polarized points. The functional additionally has genuine poles at zeta ~ 0.510 and ~ 0.999 that stem from the published parametrization itself; these are now documented in the source (!810).
+- The deprecated `DISABLE_VXC`/`DISABLE_FXC`/`DISABLE_KXC`/`DISABLE_LXC` CMake options and `--disable-{vxc,fxc,kxc,lxc}` configure switches acted only as caps on the new `MAXORDER` (default 2), so e.g. `--disable-lxc` silently built order 2 instead of the documented order 3. They again set the derivative order from the highest order not disabled (!809).
+- Fortran basic example: use the `c_size_t` kind for `np` (!808).
+- 32-bit x86 builds used the 387 unit, which keeps intermediates in 80-bit registers and rounds them on spill, so results depended on register allocation rather than on the arithmetic: on i686 the regression suite missed `GGA_X_HJS_PBE`'s `v2sigma2` by twice its tolerance and `MGGA_X_2D_PRHG07_PRP10`'s `v2rho2` by a factor of 2000. Both build systems now probe for `-msse2 -mfpmath=sse` and use it, which is the arithmetic every 64-bit target already gets. This makes SSE2 (Pentium 4 / Athlon 64 and later) the effective baseline for 32-bit x86; a compiler without it warns rather than failing (!818).
+
+## [7.1.0] - 2026-07-17
+
+This release introduces significant improvements to GPU support (which previously didn't work at all), build systems, and the Python interface, alongside new functionals, several functional bug fixes and renames, and an overhaul of the test suite and bibliography. Under the hood, the code-generation pipeline gained a SymPy-based backend with arbitrary-precision reference oracles, together with an extensive floating-point-stability sweep of the functional sources.
+
+> **Looking ahead to 8.0.0.** The next major release will feature a complete redesign of the API around a C++ core, together with support for new classes of functionals such as local hybrids and double hybrids. As part of that transition the Autotools build system will be removed; new and existing projects are encouraged to migrate to the CMake build now.
+
+### Added
+- Runtime switching mechanism between CPU and GPU implementations via a new API with a single function accepting a flags parameter, while maintaining full API (and ABI!) compatibility with the previous version. Resolves the CUDA build always running on the GPU (#135, !711, !718, !722, !726).
+- Support for HIP (ROCm) as an alternative to CUDA for GPU acceleration (!725).
+- Backend-agnostic array interface to pylibxc, supporting NumPy, CuPy, JAX, and possibly other array backends; brings GPU support to pylibxc (#598, !743).
+- DLPack support in the pylibxc array backend (!745).
+- CUDA and HIP examples demonstrating device-side functional evaluation; examples are now compiled as part of the build.
+- AddressSanitizer support in CI for the gcc_cmake_python job and a new CI job for Intel oneAPI.
+- Optional profiling ranges (NVTX for CUDA and ROCTX for HIP) for expensive evaluation paths (CMake only; profiling support is disabled by default) (!759).
+- Getter/setter API for default functional flags with matching Fortran bindings.
+- Build-information variables exported to downstream CMake consumers.
+- Test suite rewritten using pytest, with documentation of test thresholds and skipped test cases (!680).
+- XC_CHECK_NUMERICS option and re-enabled floating-point-exception trapping in the work harnesses (CMake) (!771).
+- CMake FORTRAN_MODULE_INSTALL_DIR option to control where the Fortran module is installed (!772).
+- New functionals:
+  - LDA_C: BJ89 (Barbiellini & Jarlborg 1989) (#613, !762); LP96_B (Liu-Parr 4-parameter correlation) (#615, !765); RPAF (Random-Phase-Approximation-based functional) (!792).
+  - LDA_K: LP96_B (Liu-Parr 4-parameter kinetic) (#615, !765).
+  - LDA_X: t-SLOC (SLOC reparametrization for band gaps) (#609, !757).
+  - GGA_C: BKL1, BKL2 (and corresponding new external parameter in GGA_C_PBE) (!692).
+  - GGA_X: t-PBE1, t-PBE2 (PBE reparametrizations for band gaps) (#606, !754); LLP (Lee-Lee-Parr reparametrization of B88) (#614, !764).
+  - GGA_XC: DLB97 (dispersionless-optimized B97) (#569, !689).
+  - MGGA_C: LAK (Lebeda-Aschebrock-Kümmel) (#524, !709); MSCAN (#572, !712).
+  - MGGA_X: MSCAN (modified/magnetic SCAN) (#572, !705); SREGTM_V1/V2/V3 (simplified regularized Tao-Mo exchange) (#492, !783).
+  - MGGA_XC: t-HLE17 (HLE17 reparametrization for band gaps) (#610, !758).
+  - HYB_GGA_XC: cQTP25 (core-electron ionization energies) (#588, !720).
+  - HYB_LDA_XC: B93 (Becke's original half-and-half functional) (#547, !674).
+  - HYB_MGGA_X: WR2SCAN (range-separated r2SCAN exchange) (#552, !678).
+  - HYB_MGGA_XC: COACH (Head-Gordon's range-separated hybrid meta-GGA) (#605, !780).
+  - DF3 family of functionals for vdW-DF (GGA_X_DF3_OPT1, GGA_X_DF3_OPT2) (#211, !755).
+  - pi-M06-2X functional family (!681).
+- External parameters for MGGA_XC_LP90 (!687).
+- BHLYP alias for HYB_GGA_XC_BHANDHLYP (!675).
+
+### Changed
+- Bump minimum CMake version to 3.21.
+- Refactored implementation of functional evaluation to reduce code duplication using DRY principles, including a common shorthand for the xt → s conversion and removal of variable-length array declarations (!704, !706, !707).
+- Replaced duplicated source lists in CMake and Autotools by a common file.
+- Simplified CMake configuration by removing ENABLE_GENERIC and ENABLE_XHOST options.
+- Enhanced DISABLE_*XC options to accept lists of specific source files instead of all functionals. Allows disabling expensive derivatives selectively (e.g., DISABLE_LXC for specific files). Intended for experts and packagers.
+- Updated CI pipeline configuration to improve testing coverage; merge-request pipelines now use workflow:rules (!685, !744).
+- In CMake dynamic linking is now the default and CUDA static-linking handling was corrected.
+- Dropped the deprecated `xc-consistency` tool.
+- GPU support (CUDA and HIP) is no longer marked experimental.
+- Overhauled the internal code-generation pipeline: the functional math is now generated through a SymPy-based backend backed by arbitrary-precision reference oracles, the whole functional library and its regression references were regenerated, and the Maple/SymPy sources went through an extensive floating-point-stability sweep (cancellation-free reduced-gradient forms, stable special-function evaluation) so that functionals are accurate to the working precision independent of the compiler; a few functionals whose highest derivatives are non-differentiable, disproportionately large, or prohibitively expensive to generate are capped below the 4th derivative. Adds a CI job that verifies the committed generated files match their sources, plus physical vxc/fxc and Fock/kernel consistency tests (#262, #564; !766, !777, !779, !795, !803, !806).
+- Modernised the C math utilities: tanh-sinh quadrature and a dilogarithm fix (!775).
+- Functional renames (old names retained as aliases where applicable):
+  - GGA_XC_TH_FL → LDA_XC_TH_FL (it is an LDA functional) (#596, !733).
+  - MGGA_X_MK00 → MGGA_X_GP86 (use the original authors' names) (#595, !732).
+  - LDA_C_1D_CSC → LDA_C_1D_CSS (#576, !728).
+- HYB_LDA_X_ERF correctly flagged as a hybrid functional (#544, !673).
+- Updated value of β in MGGA_C_MSCAN per request of the authors (!742).
+- d0 parameter of MGGA_XC_LP90 corrected per Zhao et al. (1993) (!687).
+- µ^MGE2 in GGA_C_SG4 changed to 0.26 (#584, !753).
+- Both `zk` and `exc` are now printed in test output.
+- Maple version is still dumped to source when the Maple license is approaching expiry (!710).
+- Bibliography overhaul: uniform two-dash page-range style, fixed non-ASCII character, removed tddft.org links from source, consistent acronym usage, and corrected author names (Thakkar, Brémond, Brual Jr, Gunnarsson, Della Sala, Jemmer, Vilhena). Added P86 erratum, r2SCAN01 reference, GGA_X_BKL final reference (#541, !676), and a page number for the Libxc entry; VSXC reference corrected to point at the erratum.
+
+### Deprecated
+- The Autotools build system is deprecated and will be removed in 8.0.0; use the CMake build system instead.
+
+- The pytest suite was registered with ctest as a single test, so a run reported one pass/fail line after a couple of minutes and could not use `ctest -j` at all. It is now one test per regression family, plus the API/util tests and the code-generation invariants: 21 tests in place of 1, the same 10541 tests, and 16 s of wall clock instead of 148 s. `xc-run_pytest` takes paths and defaults to `-q`, so a passing run shows what ran; with no arguments it behaves as before. The atomic tier stays opt-in — run it with `pytest -m atomic testsuite/atomic` (!817).
+
+### Removed
+- Legacy memory management functions that are now unused. (ABI breaking) (!749).
+- MGGA_X_MS2BS, MGGA_X_MVSB and MGGA_X_MVSBS: removed, as they appear only in a preprint (not the final article) and involved an unclear/incorrect substitution; the duplicate entries in `xc_funcs_removed.h` were also cleaned up (#594, #617; !730, !778).
+
+### Fixed
+- Deorbitalize function now works correctly on GPU (!747, !748).
+- Use correct malloc/memset/free functions for host and device variables throughout the entire code; do not call `libxc_memset` on local host variables (!697, !702, !726, !774).
+- Replace `libxc_free` with `free` in Fortran bindings, making the Fortran library independent of internal functions.
+- Fortran interface bug (#575, !701).
+- Renamed/removed functionals are still recognized by the build scripts, `funcs_key`, and the Fortran headers, preserving backwards compatibility (#599, !739).
+- GGA_X_BPCCAC: bug fix (#540, !693).
+- GGA_K_OL1, GGA_K_OL2, GGA_X_OL2: corrected to match the original paper (#593, !727).
+- GGA_C_ZVPBELOC: corrected the nu function (#573, !708).
+- LDA_C_1D_LOOS: corrected coefficients (#577, !751).
+- GGA_X_ERF_GWS: rewritten to be numerically stable, eliminating floating-point errors and NaNs (#560, !683).
+- GGA_X_WPBEH: the low-gradient interpolation switch now uses exact Ernzerhof-Gustavsson constants, fixing inconsistent HSE06 molecular gradients (#627, !806).
+- GGA_C_WI: typos in parameter values fixed (#549, !677).
+- MGGA_XC_OTPSS_D: correlation parameters corrected to match the erratum (#587, !721).
+- XB1K and X1B95: corrected the a1 coefficient and the DFT exchange prefactor (#618, !785).
+- MGGA_X_2D_PRP10: added the missing XC_NEEDS_TAU flag (#620, !791).
+- HYB_MGGA_XC_B0KCIS: no longer double-counts correlation (the mix functional was also invoking the meta-GGA kernel) (#622, !796).
+- LDA_C_PW_ERF: available derivative orders are no longer hardcoded (#623, !796).
+- LDA_XC_KSDT / corrKSDT: restored the missing 2^(1/3) factor in the b5 coefficient of the zeta=1 branch (!802).
+- LDA_C_PK09: fixed NaNs; added an lda_exchange() helper for consistency (!784).
+- Deorbitalized SCAN-L functionals: higher derivatives corrected via symbolic deorbitalization (!805).
+- Available-derivative and NEEDS_* flags for mixed/hybrid functionals are now derived from their components (!797).
+- LambertW: return the best iterate instead of 0.0 on non-convergence (!782).
+- BHLYP: identified as BHandHLYP rather than BHandH; alias added (!675).
+- MGGA_XC_LP90: comment fix (#567, !686).
+- `genwiki.c` updated to match the new family API (!673).
+- `xc-reset-regression` script fixed after a prior refactor broke it (!731).
+- Success checks added for two `malloc` calls.
+- Missing Python files added to install paths.
+- Removed use of a deprecated Autoconf macro.
+- Enable new pytest tests for CMake build system (!741).
+- Replaced several fatal `exit(EXIT_FAILURE)` paths with `abort()` to improve debugging diagnostics (!752, !760).
+
 ## [7.0.0] - 2024-10-09
 
 This release introduces 23 new functionals, and fixes correctness issues in 5 functionals included in earlier releases.
@@ -70,6 +209,8 @@ This is a bugfix release, which also adds some functionals.
 ### Added
 - HYB_GGA functionals: XC_RELPBE0
 - HYB_MGGA functionals: XC_GAS22, XC_R2SCANH, XC_R2SCAN0, XC_R2SCAN50
+
+- The pytest suite was registered with ctest as a single test, so a run reported one pass/fail line after a couple of minutes and could not use `ctest -j` at all. It is now one test per regression family, plus the API/util tests and the code-generation invariants: 21 tests in place of 1, the same 10541 tests, and 16 s of wall clock instead of 148 s. `xc-run_pytest` takes paths and defaults to `-q`, so a passing run shows what ran; with no arguments it behaves as before. The atomic tier stays opt-in — run it with `pytest -m atomic testsuite/atomic` (!817).
 
 ### Removed
 - GGA_X_HERMAN was incorrect: the functional is really a meta-GGA but its form was unclear and it seems numerically unstable (#399)
@@ -243,6 +384,8 @@ access has been improved, resulting in significant speedups on GPUs.
 - The threshold for the reduced gradient is now initialized based on the density threshold, instead of a hard-coded definition
 - The CMake build system now generates pkgconfig files for the Fortran libraries
 
+- The pytest suite was registered with ctest as a single test, so a run reported one pass/fail line after a couple of minutes and could not use `ctest -j` at all. It is now one test per regression family, plus the API/util tests and the code-generation invariants: 21 tests in place of 1, the same 10541 tests, and 16 s of wall clock instead of 148 s. `xc-run_pytest` takes paths and defaults to `-q`, so a passing run shows what ran; with no arguments it behaves as before. The atomic tier stays opt-in — run it with `pytest -m atomic testsuite/atomic` (!817).
+
 ### Removed
 - The GGA functionals LCGAU, LCGAU_CORE, and LC2GAU, since the implementation was not complete; the functionals have range-separation terms that cannot be described by the infrastructure in the version 5 series. The correct implementations are included in the version 6 branch
 
@@ -280,6 +423,8 @@ access has been improved, resulting in significant speedups on GPUs.
 - Incorrect parameter of GGA_C_GAPC.
 - Incorrect definition of MGGA_C_KCIS.
 - Incorrect definition of GGA_C_OPTC.
+
+- The pytest suite was registered with ctest as a single test, so a run reported one pass/fail line after a couple of minutes and could not use `ctest -j` at all. It is now one test per regression family, plus the API/util tests and the code-generation invariants: 21 tests in place of 1, the same 10541 tests, and 16 s of wall clock instead of 148 s. `xc-run_pytest` takes paths and defaults to `-q`, so a passing run shows what ran; with no arguments it behaves as before. The atomic tier stays opt-in — run it with `pytest -m atomic testsuite/atomic` (!817).
 
 ### Removed
 - xc_mix_func function from public API.
@@ -439,6 +584,8 @@ access has been improved, resulting in significant speedups on GPUs.
 ### Added
 - XC_FLAGS_DEVELOPMENT flag to XC_MGGA_C_KCIS, XC_HYB_MGGA_XC_B0KCIS, XC_HYB_MGGA_XC_MPW1KCIS, XC_HYB_MGGA_XC_MPWKCIS1K, XC_HYB_MGGA_XC_PBE1KCIS, and XC_HYB_MGGA_XC_TPSS1KCIS.
 
+- The pytest suite was registered with ctest as a single test, so a run reported one pass/fail line after a couple of minutes and could not use `ctest -j` at all. It is now one test per regression family, plus the API/util tests and the code-generation invariants: 21 tests in place of 1, the same 10541 tests, and 16 s of wall clock instead of 148 s. `xc-run_pytest` takes paths and defaults to `-q`, so a passing run shows what ran; with no arguments it behaves as before. The atomic tier stays opt-in — run it with `pytest -m atomic testsuite/atomic` (!817).
+
 ### Removed
 - XC_FLAGS_DEVELOPMENT flag from MGGA_C_SCAN.
 
@@ -473,6 +620,8 @@ access has been improved, resulting in significant speedups on GPUs.
 - GGA_X_BGCP and GGA_C_BGCP to GGA_X_BCGP and GGA_C_BCGP, respectively, keeping the old constants for backward compatibility.
 - MGGA_C_CC06 to MGGA_XC_CC06, as the functional includes an exchange part, keeping the old constant for backward compatibility.
 
+- The pytest suite was registered with ctest as a single test, so a run reported one pass/fail line after a couple of minutes and could not use `ctest -j` at all. It is now one test per regression family, plus the API/util tests and the code-generation invariants: 21 tests in place of 1, the same 10541 tests, and 16 s of wall clock instead of 148 s. `xc-run_pytest` takes paths and defaults to `-q`, so a passing run shows what ran; with no arguments it behaves as before. The atomic tier stays opt-in — run it with `pytest -m atomic testsuite/atomic` (!817).
+
 ### Removed
 - Helper functionals that could be used in error instead of the true hybrid functional: MGGA_X_M05, MGGA_X_M05_2X, MGGA_X_M06_2X, MGGA_X_M06_HF, MGGA_X_M06, MGGA_X_M08_SO, MGGA_X_M08_HF, MGGA_X_M11.
 - Exchange-correlation functional wrappers: HYB_MGGA_XC_M05, HYB_MGGA_XC_M05_2X, HYB_MGGA_XC_M06_2X, HYB_MGGA_XC_M06_HF, HYB_MGGA_XC_M06, HYB_MGGA_XC_M08_SO, HYB_MGGA_XC_M08_HF, HYB_MGGA_XC_M11. Replaced by e.g. the combination HYB_MGGA_X_M11+MGGA_C_M11.
@@ -498,6 +647,8 @@ access has been improved, resulting in significant speedups on GPUs.
 ### Changed
 - GGA_XC_HCTH_A to GGA_C_HCTH_A, as it does not include exchange (it uses a different form for exchange than the other functionals from the HCTH family), keeping the old constant for backward compatibility.
 - GGA_C_VPBE to GGA_C_regTPSS, as that is the name used in the paper, keeping the old constant for backward compatibility.
+
+- The pytest suite was registered with ctest as a single test, so a run reported one pass/fail line after a couple of minutes and could not use `ctest -j` at all. It is now one test per regression family, plus the API/util tests and the code-generation invariants: 21 tests in place of 1, the same 10541 tests, and 16 s of wall clock instead of 148 s. `xc-run_pytest` takes paths and defaults to `-q`, so a passing run shows what ran; with no arguments it behaves as before. The atomic tier stays opt-in — run it with `pytest -m atomic testsuite/atomic` (!817).
 
 ### Removed
 * Helper functionals that can be used in error instead of the true hybrid functional: GGA_XC_B97, GGA_XC_B97_1, GGA_XC_B97_2, GGA_XC_B97_K, GGA_XC_B97_3, GGA_XC_SB98_1a, GGA_XC_SB98_1b, GGA_XC_SB98_1c, GGA_XC_SB98_2a, GGA_XC_SB98_2b, GGA_XC_SB98_2c, GGA_XC_WB97, GGA_XC_WB97X, GGA_XC_WB97X_V, GGA_C_WB97X_D, MGGA_X_MN12_SX.
@@ -593,6 +744,8 @@ access has been improved, resulting in significant speedups on GPUs.
 
 ### Changed
 - xc_gga_exx_coef function to xc_hyb_gga_exx_coef.
+
+- The pytest suite was registered with ctest as a single test, so a run reported one pass/fail line after a couple of minutes and could not use `ctest -j` at all. It is now one test per regression family, plus the API/util tests and the code-generation invariants: 21 tests in place of 1, the same 10541 tests, and 16 s of wall clock instead of 148 s. `xc-run_pytest` takes paths and defaults to `-q`, so a passing run shows what ran; with no arguments it behaves as before. The atomic tier stays opt-in — run it with `pytest -m atomic testsuite/atomic` (!817).
 
 ### Removed
 - LCA functionals.

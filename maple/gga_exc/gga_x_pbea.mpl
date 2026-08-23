@@ -11,7 +11,9 @@
 pbea_mu    := 0.00361218645365094697:
 pbea_alpha := 0.52:
 
-pbea_f  := x -> 1 + KAPPA_PBE*(1 - (1 + pbea_mu*x^2/(pbea_alpha*KAPPA_PBE))^(-pbea_alpha)):
+(* 1 - (1+X)^(-alpha) = -expm1(-alpha*log1p(X)); preserves precision
+   at small X where the direct form would cancel down to alpha*X. *)
+pbea_f  := x -> 1 + KAPPA_PBE*(-xc_expm1(-pbea_alpha*xc_log1p(pbea_mu*x^2/(pbea_alpha*KAPPA_PBE)))):
 
 
 f := (rs, z, xt, xs0, xs1) -> gga_exchange(pbea_f, rs, z, xs0, xs1):

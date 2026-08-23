@@ -64,7 +64,11 @@ char *xc_functional_get_name(int number)
     if(xc_functional_keys[ii].number == number) {
       /* return duplicated: caller has the responsibility to dealloc string.
          Do this the old way since strdup and strndup aren't C standard. */
-      p = (char *) libxc_malloc(strlen(xc_functional_keys[ii].name) + 1);
+      p = (char *) malloc(strlen(xc_functional_keys[ii].name) + 1);
+      if(p == NULL){
+        fprintf(stderr, "malloc failed in xc_functional_get_name\n");
+        abort();
+      }
       strcpy(p,xc_functional_keys[ii].name);
       return p;
     }
@@ -140,7 +144,7 @@ int xc_number_of_functionals(void)
   }
 
   fprintf(stderr, "Internal error in functionals.c\n");
-  exit(1);
+  abort();
 }
 
 int xc_maximum_name_length(void)
@@ -224,7 +228,11 @@ void xc_available_functional_names(char **list)
 
   /* Arrange list of functional IDs by name */
   N=xc_number_of_functionals();
-  idlist=(int *) libxc_malloc(N*sizeof(int));
+  idlist=(int *) malloc(N*sizeof(int));
+  if(idlist == NULL){
+    fprintf(stderr, "malloc failed in xc_available_functional_names\n");
+    abort();
+  }
   for(ii=0;ii<N;ii++) {
     idlist[ii]=ii;
   }
@@ -236,14 +244,14 @@ void xc_available_functional_names(char **list)
   }
 
   /* Deallocate work array */
-  libxc_free(idlist);
+  free(idlist);
 }
 
 xc_func_type *xc_func_alloc(void)
 {
   xc_func_type *func;
 
-  func = (xc_func_type *) libxc_malloc (sizeof (xc_func_type));
+  func = (xc_func_type *) malloc(sizeof (xc_func_type));
   return func;
 }
 
@@ -275,6 +283,12 @@ void xc_func_nullify(xc_func_type *func)
 
 int xc_func_init(xc_func_type *func, int functional, int nspin)
 {
+  int flags = xc_func_info_get_default_flags();
+  return xc_func_init_flags(func, functional, nspin, flags);
+}
+
+int xc_func_init_flags(xc_func_type *func, int functional, int nspin, int flags)
+{
   int number;
 
   assert(func != NULL);
@@ -286,12 +300,12 @@ int xc_func_init(xc_func_type *func, int functional, int nspin)
   func->nspin       = nspin;
 
   // we have to make a copy because the *_known_funct arrays live in
-  // host memory (libxc_malloc instead returns memory than can be read
+  // host memory (libxc_malloc_flags instead returns memory than can be read
   // from GPU and CPU).
-  xc_func_info_type * finfo = (xc_func_info_type *) libxc_malloc(sizeof(xc_func_info_type));
+  xc_func_info_type * finfo = (xc_func_info_type *) libxc_malloc_flags(sizeof(xc_func_info_type), flags);
 
   // initialize the dimension structure
-  libxc_memset(&(func->dim), 0, sizeof(xc_dimensions));
+  memset(&(func->dim), 0, sizeof(xc_dimensions));
   switch(xc_family_from_id(functional, NULL, &number)){
   case(XC_FAMILY_LDA):
     *finfo = *xc_lda_known_funct[number];
@@ -327,7 +341,9 @@ int xc_func_init(xc_func_type *func, int functional, int nspin)
     return -2; /* family not found */
   }
   func->info = finfo;
-
+  /* Only certain flags are currently transmitted to auxilliary functionals for
+   * hybrid functionals (new flags have to be included in mix_func.c) */
+  func->info->flags = func->info->flags | (flags & (XC_FLAGS_ON_DEVICE | XC_FLAGS_ON_HOST));
 #ifdef XC_ENFORCE_FERMI_HOLE_CURVATURE
   /* Set the flag to enforce Fermi curvature by default */
   func->info->flags = func->info->flags | XC_FLAGS_ENFORCE_FHC;
@@ -350,7 +366,7 @@ int xc_func_init(xc_func_type *func, int functional, int nspin)
 
   /* see if we need to initialize the external parameters */
   if(func->info->ext_params.n > 0) {
-    func->ext_params = (double *) libxc_malloc(func->info->ext_params.n * sizeof(double));
+    func->ext_params = (double *) libxc_malloc_flags(func->info->ext_params.n * sizeof(double), func->info->flags);
     xc_func_set_ext_params(func, func->info->ext_params.values);
 
     /* sanity check external parameter names and descriptions */
@@ -390,29 +406,29 @@ void xc_func_end(xc_func_type *func)
 
     for(ii=0; ii<func->n_func_aux; ii++){
       xc_func_end(func->func_aux[ii]);
-      libxc_free(func->func_aux[ii]);
+      libxc_free_flags(func->func_aux[ii], func->info->flags);
     }
-    libxc_free(func->func_aux);
+    libxc_free_flags(func->func_aux, func->info->flags);
   }
 
   /* deallocate coefficients for mixed functionals */
   if(func->mix_coef != NULL)
-    libxc_free(func->mix_coef);
+    libxc_free_flags(func->mix_coef, func->info->flags);
 
   /* deallocate any used parameter */
   if(func->ext_params != NULL)
-    libxc_free(func->ext_params);
+    libxc_free_flags(func->ext_params, func->info->flags);
   if(func->params != NULL)
-    libxc_free(func->params);
+    libxc_free_flags(func->params, func->info->flags);
 
-  libxc_free((void *) func->info);
+  libxc_free_flags((void *) func->info, func->info->flags);
 
   xc_func_nullify(func);
 }
 
 void  xc_func_free(xc_func_type *p)
 {
-  libxc_free(p);
+  free(p);
 }
 
 const xc_func_info_type *xc_func_get_info(const xc_func_type *p)

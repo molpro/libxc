@@ -21,7 +21,7 @@ const xc_func_info_type xc_func_info_gga_x_2d_pbe = {
   XC_EXCHANGE,
   "Perdew, Burke & Ernzerhof in 2D",
   XC_FAMILY_GGA,
-  {&xc_ref_Vilhena2014, NULL, NULL, NULL, NULL},
+  {&xc_ref_Vilhena2014_1837, NULL, NULL, NULL, NULL},
   XC_FLAGS_2D | MAPLE2C_FLAGS,
   1e-15,
   {0, NULL, NULL, NULL, NULL},

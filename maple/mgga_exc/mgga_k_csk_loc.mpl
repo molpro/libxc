@@ -16,5 +16,9 @@
 
 $include "mgga_k_csk.mpl"
 
-(* Equation (21) *)
-csk_z  := (p, q) -> 1 + params_a_csk_cp*p + params_a_csk_cq*q - (1 + 5*p/3):
+(* Equation (21).  The literal 1's cancel exactly, but as written the
+   codegen would form (1 + cp*p + cq*q) - 1 - 5p/3, adding the small
+   cp*p + cq*q to 1 (losing its low bits) before subtracting 1 back.
+   Cancel the constants by hand so the small quantity is never added
+   to 1: 1 + cp*p + cq*q - (1 + 5p/3) = (cp - 5/3)*p + cq*q. *)
+csk_z  := (p, q) -> (params_a_csk_cp - 5/3)*p + params_a_csk_cq*q:

@@ -1,0 +1,4916 @@
+{
+ "gga_c_acgga": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_acggap": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_am05": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_apbe": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_bkl1": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_c_bkl2": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_bmk": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "gga_c_ccdf": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 400
+ },
+ "gga_c_chachiyo": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_cs1": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_ft97": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 800,
+  "n0": 400
+ },
+ "gga_c_gam": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "gga_c_gapc": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_gaploc": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 400
+ },
+ "gga_c_hcth_a": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_c_hyb_tau_hcth": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_c_lm": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_lyp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_lypr": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_mggac": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_n12": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "gga_c_n12_sx": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "gga_c_op_b88": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_op_g96": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_op_pbe": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_op_pw91": {
+  "band": "pathological",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": null
+ },
+ "gga_c_op_xalpha": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "gga_c_optc": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_p86": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 400
+ },
+ "gga_c_p86_ft": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 400
+ },
+ "gga_c_p86vwn": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_p86vwn_ft": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_pbe": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_pbe_erf_gws": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_pbe_gaussian": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_pbe_jrgx": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_pbe_mol": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_pbe_sol": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_pbe_vwn": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_pbefe": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_pbeint": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_pbeloc": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_c_pw91": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_q2d": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_regtpss": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_revtca": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "gga_c_rge2": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_scan_e0": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_sg4": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_sogga11": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "gga_c_sogga11_x": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "gga_c_spbe": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_tau_hcth": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_c_tca": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_tm_lyp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_tm_pbe": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "gga_c_w94": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_c_wi": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_wi0": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_wl": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_xpbe": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_zpbeint": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_zpbesol": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_zvpbeint": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_c_zvpbeloc": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_c_zvpbesol": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_absp1": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_absp2": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_absp3": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_absp4": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_apbe": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_apbeint": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_baltin": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_dk": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "gga_k_ernzerhof": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_exp4": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "gga_k_fr_b88": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_fr_pw86": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_k_gds08": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_ge2": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_ghds10": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_ghds10r": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_golden": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_gp85": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_gr": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_lc94": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_k_lgap": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_lgap_ge": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_lieb": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_lkt": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_k_llp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_ludena": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_meyer": {
+  "band": "pathological",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": 1600
+ },
+ "gga_k_ol1": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_ol2": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_pbe2": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_pbe3": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "gga_k_pbe4": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "gga_k_pearson": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "gga_k_perdew": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_pg1": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_k_rational_p": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_k_revapbe": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_revapbeint": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_tfvw": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_tfvw_opt": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_thakkar": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_tkvln": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_tw1": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_tw2": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_tw3": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_tw4": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_vjks": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_vsk": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_k_vt84f": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "gga_k_vw": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_k_yt65": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_2d_b86": {
+  "band": "normal",
+  "dim": 2,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_2d_b86_mgc": {
+  "band": "normal",
+  "dim": 2,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "gga_x_2d_b88": {
+  "band": "normal",
+  "dim": 2,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "gga_x_2d_pbe": {
+  "band": "normal",
+  "dim": 2,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 50
+ },
+ "gga_x_airy": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_x_ak13": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_am05": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_apbe": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_b86": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_b86_mgc": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_b86_r": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_b88": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_b88_6311g": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_b88m": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_bayesian": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_bcgp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_beefvdw": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "gga_x_bkl1": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_bkl2": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_bpccac": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "gga_x_c09x": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_cap": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_chachiyo": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_df3_opt1": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_df3_opt2": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_dk87_r1": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_dk87_r2": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_eb88": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_ecmv92": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_ev93": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_fd_lb94": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_fd_revlb94": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_ft97_a": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_ft97_b": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_g96": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 50
+ },
+ "gga_x_gam": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_gg99": {
+  "band": "pathological",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": null
+ },
+ "gga_x_hcth_a": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_hjs_b88": {
+  "band": "pathological",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": null
+ },
+ "gga_x_hjs_b88_v2": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 800,
+  "n0": 400
+ },
+ "gga_x_hjs_b97x": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_x_hjs_pbe": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_x_hjs_pbe_sol": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_x_htbs": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 100
+ },
+ "gga_x_ityh": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_ityh_optx": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_x_ityh_pbe": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_kgg99": {
+  "band": "pathological",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": null
+ },
+ "gga_x_kt1": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_lag": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_lambda_ch_n": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_lambda_lo_n": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_lambda_oc2_n": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_lb": {
+  "band": null,
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": null
+ },
+ "gga_x_lbm": {
+  "band": null,
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": null
+ },
+ "gga_x_lg93": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "gga_x_llp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_lspbe": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_lsrpbe": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_lv_rpw86": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_x_mb88": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_mpbe": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_mpw91": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_n12": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_x_ncap": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_ncapr": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_ol2": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_optb86b_vdw": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_optb88_vdw": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_optpbe_vdw": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_optx": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_pbe": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_pbe_erf_gws": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_pbe_gaussian": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_pbe_jsjr": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_pbe_mod": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_pbe_mol": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_pbe_r": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_pbe_sol": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_pbe_tca": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_pbea": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_pbefe": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_pbeint": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_pbek1_vdw": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_pbepow": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_x_pbetrans": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "gga_x_pw86": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_x_pw91": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_pw91_mod": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_q1d": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "gga_x_q2d": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_x_revssb_d": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "gga_x_rge2": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_rpbe": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_rpw86": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_x_s12g": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "gga_x_sfat": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_sfat_pbe": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_sg4": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_sogga": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_sogga11": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_x_ssb": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "gga_x_ssb_d": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "gga_x_ssb_sw": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "gga_x_t_pbe1": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_t_pbe2": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_vmt84_ge": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_vmt84_pbe": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_vmt_ge": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_vmt_pbe": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_wc": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_x_wpbeh": {
+  "band": "pathological",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": null
+ },
+ "gga_x_xpbe": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_xc_b97_3c": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_xc_b97_d": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_xc_b97_gga1": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_xc_beefvdw": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "gga_xc_dlb97": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "gga_xc_edf1": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_xc_hcth_120": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_xc_hcth_147": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_xc_hcth_407": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "gga_xc_hcth_407p": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "gga_xc_hcth_93": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_xc_hcth_p14": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_xc_hcth_p76": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_xc_hle16": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_xc_kt1": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_xc_kt2": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_xc_kt3": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_xc_mohlyp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_xc_mohlyp2": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_xc_mpwlyp1w": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_xc_ncap": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 400
+ },
+ "gga_xc_oblyp_d": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_xc_opbe_d": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_xc_opwlyp_d": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_xc_pbe1w": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_xc_pbelyp1w": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_xc_th1": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_xc_th2": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_xc_th3": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_xc_th4": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_xc_th_fc": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_xc_th_fcfo": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_xc_th_fco": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "gga_xc_vv10": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "gga_xc_xlyp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_x_cam_s12g": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_gga_x_cam_s12h": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "hyb_gga_x_n12_sx": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_x_pbe_erf_gws": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_x_s12h": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "hyb_gga_x_sogga11_x": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_gga_xc_apbe0": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_apf": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_b1lyp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_b1pw91": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_b1wc": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_b3lyp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_b3lyp3": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_b3lyp5": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_b3lyp_mcm1": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_b3lyp_mcm2": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_b3lyps": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_b3p86": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 400
+ },
+ "hyb_gga_xc_b3p86_nwchem": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_b3pw91": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_b5050lyp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_b97": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_gga_xc_b97_1": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_gga_xc_b97_1p": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_b97_2": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_b97_3": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_gga_xc_b97_k": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_gga_xc_bhandh": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_bhandhlyp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_blyp35": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_cam_b3lyp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_cam_o3lyp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_gga_xc_cam_pbeh": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_gga_xc_cam_qtp_00": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_cam_qtp_01": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_cam_qtp_02": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_camh_b3lyp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_camy_b3lyp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_camy_blyp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_camy_pbeh": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_cap0": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_case21": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 100
+ },
+ "hyb_gga_xc_cqtp25": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_edf2": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_hapbe": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_hflyp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_hjs_b88": {
+  "band": "pathological",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": null
+ },
+ "hyb_gga_xc_hjs_b97x": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_gga_xc_hjs_pbe": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_gga_xc_hjs_pbe_sol": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_gga_xc_hpbeint": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_hse03": {
+  "band": "pathological",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": null
+ },
+ "hyb_gga_xc_hse06": {
+  "band": "pathological",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": null
+ },
+ "hyb_gga_xc_hse12": {
+  "band": "pathological",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": null
+ },
+ "hyb_gga_xc_hse12s": {
+  "band": "pathological",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": null
+ },
+ "hyb_gga_xc_hse_sol": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_gga_xc_kmlyp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 50
+ },
+ "hyb_gga_xc_lb07": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_lc_blyp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_lc_blyp_ea": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_lc_blypr": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_lc_bop": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_lc_pbeop": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_lc_qtp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_lc_vv10": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_gga_xc_lc_wpbe": {
+  "band": "pathological",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": null
+ },
+ "hyb_gga_xc_lc_wpbe08_whs": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_gga_xc_lc_wpbe_whs": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_gga_xc_lc_wpbeh_whs": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_gga_xc_lc_wpbesol_whs": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_lcy_blyp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_lcy_pbe": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_lrc_wpbe": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_gga_xc_lrc_wpbeh": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_gga_xc_mb3lyp_rc04": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_mcam_b3lyp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_mpw1k": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_mpw1lyp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_mpw1pbe": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_mpw1pw": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_mpw3lyp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_mpw3pw": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_mpwlyp1m": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_o3lyp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_pbe0_13": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_pbe38": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_pbe50": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_pbe_2x": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_pbe_mol0": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_pbe_molb0": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_pbe_sol0": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_pbeb0": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_pbeh": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_qtp17": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_rcam_b3lyp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_relpbe0": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_revb3lyp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_sb98_1a": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_sb98_1b": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_gga_xc_sb98_1c": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_sb98_2a": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_sb98_2b": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_sb98_2c": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_gga_xc_tuned_cam_b3lyp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_wb97": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "hyb_gga_xc_wb97x": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "hyb_gga_xc_wb97x_d": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "hyb_gga_xc_wb97x_d3": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "hyb_gga_xc_wb97x_v": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_wc04": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_whpbe0": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_wp04": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_gga_xc_x3lyp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_lda_x_erf": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "hyb_lda_xc_b93": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "hyb_lda_xc_bn05": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "hyb_lda_xc_cam_lda0": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "hyb_lda_xc_lda0": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "hyb_mgga_x_bmk": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_mgga_x_cf22d": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_mgga_x_dldf": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_mgga_x_js18": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_mgga_x_m05": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_mgga_x_m05_2x": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "hyb_mgga_x_m06": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "hyb_mgga_x_m06_2x": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "hyb_mgga_x_m06_hf": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "hyb_mgga_x_m06_sx": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_mgga_x_m08_hx": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "hyb_mgga_x_m08_so": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "hyb_mgga_x_m11": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "hyb_mgga_x_mn12_sx": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_mgga_x_mn15": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_mgga_x_ms2h": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "hyb_mgga_x_mvsh": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 800,
+  "n0": 400
+ },
+ "hyb_mgga_x_pi_m06_2x": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "hyb_mgga_x_pi_m06_2x_dl": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_mgga_x_pjs18": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_mgga_x_revm06": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_mgga_x_revm11": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_mgga_x_revscan0": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": 1600,
+  "n0": 800
+ },
+ "hyb_mgga_x_scan0": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": 1600,
+  "n0": 800
+ },
+ "hyb_mgga_x_tau_hcth": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_mgga_x_wr2scan": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 800,
+  "n0": 400
+ },
+ "hyb_mgga_xc_b0kcis": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_mgga_xc_b86b95": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_mgga_xc_b88b95": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_mgga_xc_b94_hyb": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "hyb_mgga_xc_b98": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 400
+ },
+ "hyb_mgga_xc_bb1k": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_mgga_xc_br3p86": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "hyb_mgga_xc_coach": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "hyb_mgga_xc_edmggah": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "hyb_mgga_xc_gas22": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "hyb_mgga_xc_lc_tmlyp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_mgga_xc_mpw1b95": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_mgga_xc_mpw1kcis": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_mgga_xc_mpwb1k": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_mgga_xc_mpwkcis1k": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_mgga_xc_pbe1kcis": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_mgga_xc_pw6b95": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_mgga_xc_pw86b95": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_mgga_xc_pwb6k": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_mgga_xc_r2scan0": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 800,
+  "n0": 200
+ },
+ "hyb_mgga_xc_r2scan50": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "hyb_mgga_xc_r2scanh": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 800,
+  "n0": 200
+ },
+ "hyb_mgga_xc_revtpssh": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 800,
+  "n0": 100
+ },
+ "hyb_mgga_xc_tpss0": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 100
+ },
+ "hyb_mgga_xc_tpss1kcis": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "hyb_mgga_xc_tpssh": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 100
+ },
+ "hyb_mgga_xc_wb97m_v": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_mgga_xc_x1b95": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "hyb_mgga_xc_xb1k": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "lda_c_1d_css": {
+  "band": "normal",
+  "dim": 1,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "lda_c_1d_loos": {
+  "band": "normal",
+  "dim": 1,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_2d_amgb": {
+  "band": "normal",
+  "dim": 2,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_2d_prm": {
+  "band": "normal",
+  "dim": 2,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_bj89": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_br78": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_chachiyo": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_chachiyo_mod": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_epc17": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "lda_c_epc17_2": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "lda_c_epc18_1": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "lda_c_epc18_2": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "lda_c_gk72": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": 800
+ },
+ "lda_c_gl": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_gombas": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_hl": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_karasiev": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_karasiev_mod": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_lp96": {
+  "band": "pathological",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": null
+ },
+ "lda_c_lp96_b": {
+  "band": "pathological",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": null
+ },
+ "lda_c_mcweeny": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_ml1": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_ml2": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_ob_pw": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_ob_pz": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": 400
+ },
+ "lda_c_ow": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_ow_lyp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_pk09": {
+  "band": "pathological",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": 1600
+ },
+ "lda_c_pmgb06": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_pw": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_pw_erf": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_pw_mod": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_pw_rpa": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_pz": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 400
+ },
+ "lda_c_pz_mod": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "lda_c_rc04": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_rpa": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_rpaf": {
+  "band": "pathological",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": null
+ },
+ "lda_c_rpw92": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_upw92": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_vbh": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_vwn": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_vwn_1": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_vwn_2": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_vwn_3": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_vwn_4": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_vwn_rpa": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_w20": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_wigner": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_c_xalpha": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_k_lp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "lda_k_lp96": {
+  "band": "pathological",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": null
+ },
+ "lda_k_lp96_b": {
+  "band": "pathological",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": null
+ },
+ "lda_k_tf": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "lda_k_zlp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "lda_x": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_x_1d_exponential": {
+  "band": "normal",
+  "dim": 1,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_x_1d_soft": {
+  "band": "normal",
+  "dim": 1,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_x_2d": {
+  "band": "normal",
+  "dim": 2,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_x_erf": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_x_rae": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_x_rel": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_x_sloc": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_x_t_sloc": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_x_yukawa": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_xc_1d_ehwlrg_1": {
+  "band": "normal",
+  "dim": 1,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_xc_1d_ehwlrg_2": {
+  "band": "normal",
+  "dim": 1,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_xc_1d_ehwlrg_3": {
+  "band": "normal",
+  "dim": 1,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_xc_corrksdt": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_xc_gdsmfb": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_xc_ksdt": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_xc_lp_a": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_xc_lp_b": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_xc_teter93": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_xc_th_fl": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "lda_xc_tih": {
+  "band": null,
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": null
+ },
+ "lda_xc_zlp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "mgga_c_b88": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_c_b94": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "mgga_c_bc95": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "mgga_c_cc": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "mgga_c_ccalda": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "mgga_c_cf22d": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_c_cs": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_c_dldf": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "mgga_c_hltapw": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "mgga_c_kcis": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_c_kcisk": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": 400
+ },
+ "mgga_c_lak": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 800,
+  "n0": 800
+ },
+ "mgga_c_m05": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "mgga_c_m05_2x": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "mgga_c_m06": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "mgga_c_m06_2x": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "mgga_c_m06_hf": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "mgga_c_m06_l": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "mgga_c_m06_sx": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "mgga_c_m08_hx": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "mgga_c_m08_so": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "mgga_c_m11": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_c_m11_l": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_c_mn12_l": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_c_mn12_sx": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "mgga_c_mn15": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_c_mn15_l": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_c_mscan": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": 1600,
+  "n0": 400
+ },
+ "mgga_c_pi_m06_2x": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "mgga_c_pi_m06_2x_dl": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "mgga_c_pkzb": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_c_r2scan": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "mgga_c_r2scan01": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "mgga_c_r2scanl": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 800,
+  "n0": 200
+ },
+ "mgga_c_revm06": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "mgga_c_revm06_l": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "mgga_c_revm11": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_c_revscan": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 800,
+  "n0": 400
+ },
+ "mgga_c_revscan_vv10": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 800,
+  "n0": 400
+ },
+ "mgga_c_revtm": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 100
+ },
+ "mgga_c_revtpss": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 800,
+  "n0": 100
+ },
+ "mgga_c_rmggac": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_c_rppscan": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "mgga_c_rregtm": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_c_rscan": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "mgga_c_scan": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": 1600,
+  "n0": 800
+ },
+ "mgga_c_scan_rvv10": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": 1600,
+  "n0": 800
+ },
+ "mgga_c_scan_vv10": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": 1600,
+  "n0": 800
+ },
+ "mgga_c_scanl": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": 800
+ },
+ "mgga_c_scanl_rvv10": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": 800
+ },
+ "mgga_c_scanl_vv10": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": 800
+ },
+ "mgga_c_tm": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 100
+ },
+ "mgga_c_tpss": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 100
+ },
+ "mgga_c_tpss_gaussian": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 100
+ },
+ "mgga_c_tpssloc": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "mgga_c_vsxc": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "mgga_k_csk1": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": 1600,
+  "n0": 800
+ },
+ "mgga_k_csk4": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 800,
+  "n0": 400
+ },
+ "mgga_k_csk_loc1": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": 1600,
+  "n0": 800
+ },
+ "mgga_k_csk_loc4": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 800,
+  "n0": 400
+ },
+ "mgga_k_gea2": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_k_gea4": {
+  "band": "pathological",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 800,
+  "n0": null
+ },
+ "mgga_k_l04": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "mgga_k_l06": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "mgga_k_pc07": {
+  "band": "pathological",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": 1600
+ },
+ "mgga_k_pc07_opt": {
+  "band": "pathological",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": 1600
+ },
+ "mgga_k_pgsl025": {
+  "band": "pathological",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": null
+ },
+ "mgga_k_rda": {
+  "band": "pathological",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": 1600
+ },
+ "mgga_x_2d_js17": {
+  "band": "normal",
+  "dim": 2,
+  "fock_band": "normal",
+  "fock_n0": 50,
+  "n0": 50
+ },
+ "mgga_x_2d_prhg07": {
+  "band": "normal",
+  "dim": 2,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": 50
+ },
+ "mgga_x_2d_prhg07_prp10": {
+  "band": null,
+  "dim": 2,
+  "fock_band": "pathological",
+  "fock_n0": 1600,
+  "n0": null
+ },
+ "mgga_x_b00": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "mgga_x_bj06": {
+  "band": null,
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": null
+ },
+ "mgga_x_bloc": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "mgga_x_br89": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "mgga_x_br89_1": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "mgga_x_br89_explicit": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "mgga_x_br89_explicit_1": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "mgga_x_edmgga": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "mgga_x_eel": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": 1600,
+  "n0": 400
+ },
+ "mgga_x_ft98": {
+  "band": "pathological",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": null
+ },
+ "mgga_x_gdme_0": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_gdme_kos": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_gdme_nv": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 50
+ },
+ "mgga_x_gdme_vt": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_gp86": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 50
+ },
+ "mgga_x_gvt4": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_gx": {
+  "band": "pathological",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": null
+ },
+ "mgga_x_hlta": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_jk": {
+  "band": "pathological",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": null
+ },
+ "mgga_x_ktbm_0": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_ktbm_1": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_ktbm_10": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_ktbm_11": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_ktbm_12": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_ktbm_13": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_ktbm_14": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_ktbm_15": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_ktbm_16": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_ktbm_17": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_ktbm_18": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_ktbm_19": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_ktbm_2": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_ktbm_20": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_ktbm_21": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_ktbm_22": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_ktbm_23": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_ktbm_24": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_ktbm_3": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_ktbm_4": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_ktbm_5": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_ktbm_6": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_ktbm_7": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_ktbm_8": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_ktbm_9": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_ktbm_gap": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_lak": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "mgga_x_lta": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 50
+ },
+ "mgga_x_m06_l": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "mgga_x_m11_l": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "mgga_x_mbeef": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "mgga_x_mbeefvdw": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "mgga_x_mbr": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "mgga_x_mbrxc_bg": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "mgga_x_mbrxh_bg": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "mgga_x_mcml": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "mgga_x_mggac": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "mgga_x_mk00b": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_mn12_l": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "mgga_x_mn15_l": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_modtpss": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "mgga_x_ms0": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "mgga_x_ms1": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "mgga_x_ms2": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "mgga_x_ms2_rev": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "mgga_x_ms2b": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "mgga_x_msb86bl": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "mgga_x_mscan": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": 1600,
+  "n0": 800
+ },
+ "mgga_x_mspbel": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "mgga_x_msrpbel": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "mgga_x_mtask": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "mgga_x_mvs": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 800,
+  "n0": 400
+ },
+ "mgga_x_pbe_gx": {
+  "band": "pathological",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": null
+ },
+ "mgga_x_pkzb": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "mgga_x_r2scan": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 800,
+  "n0": 400
+ },
+ "mgga_x_r2scan01": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 800,
+  "n0": 400
+ },
+ "mgga_x_r2scanl": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 800,
+  "n0": 400
+ },
+ "mgga_x_r4scan": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 800,
+  "n0": 400
+ },
+ "mgga_x_regtm": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 200
+ },
+ "mgga_x_regtpss": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_revm06_l": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_revscan": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": 1600,
+  "n0": 800
+ },
+ "mgga_x_revscanl": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": 800
+ },
+ "mgga_x_revtm": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "mgga_x_revtpss": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_rlda": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 50
+ },
+ "mgga_x_rmsb86bl": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "mgga_x_rmspbel": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "mgga_x_rmsrpbel": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "mgga_x_rpp09": {
+  "band": null,
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": null
+ },
+ "mgga_x_rppscan": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 800,
+  "n0": 400
+ },
+ "mgga_x_rscan": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 800,
+  "n0": 400
+ },
+ "mgga_x_rtpss": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_sa_tpss": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_scan": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": 1600,
+  "n0": 800
+ },
+ "mgga_x_scanl": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": 800
+ },
+ "mgga_x_sregtm_v1": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_sregtm_v2": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_sregtm_v3": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_task": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_tau_hcth": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_tb09": {
+  "band": null,
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": null
+ },
+ "mgga_x_th": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_tlda": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_x_tm": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "mgga_x_tpss": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "mgga_x_vcml": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "mgga_x_vt84": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_xc_b97m_v": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "mgga_xc_cc06": {
+  "band": "pathological",
+  "dim": 3,
+  "fock_band": "pathological",
+  "fock_n0": null,
+  "n0": null
+ },
+ "mgga_xc_hle17": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 100
+ },
+ "mgga_xc_lp90": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ },
+ "mgga_xc_otpss_d": {
+  "band": "hard",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 400
+ },
+ "mgga_xc_t_hle17": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 100
+ },
+ "mgga_xc_tpsslyp1w": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "medium",
+  "fock_n0": 200,
+  "n0": 100
+ },
+ "mgga_xc_vcml_rvv10": {
+  "band": "medium",
+  "dim": 3,
+  "fock_band": "hard",
+  "fock_n0": 400,
+  "n0": 200
+ },
+ "mgga_xc_zlp": {
+  "band": "normal",
+  "dim": 3,
+  "fock_band": "normal",
+  "fock_n0": 100,
+  "n0": 100
+ }
+}

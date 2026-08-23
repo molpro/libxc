@@ -21,7 +21,7 @@ mn12_omega_x := 2.5:
 mn12_gamma_x := 0.004:
 
 mn12_vx := (rs, z) -> 1/(1 + rs/(mn12_omega_x*RS_FACTOR)*(2/(1 + z))^(1/3)):
-mn12_ux := x -> mn12_gamma_x*x^2/(1 + mn12_gamma_x*x^2):
+mn12_ux := x -> b97_u(mn12_gamma_x, x^2):
 mn12_wx := t -> (K_FACTOR_C - t)/(K_FACTOR_C + t):
 
 mn12_pol1  := t-> params_a_c[ 1] + params_a_c[ 2]*mn12_wx(t) + params_a_c[ 3]*mn12_wx(t)^2 + params_a_c[ 4]*mn12_wx(t)^3

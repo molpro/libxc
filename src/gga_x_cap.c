@@ -20,7 +20,7 @@ static void
 gga_x_cap_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(gga_x_cap_params));
+  p->params = libxc_malloc_flags(sizeof(gga_x_cap_params), p->info->flags);
 }
 
 #include "maple2c/gga_exc/gga_x_cap.c"
@@ -57,7 +57,8 @@ xc_hyb_gga_xc_cap0_init(xc_func_type *p)
   static double funcs_coef[2] = {0.75, 1.0};
   /* C functional is PBE C with β = (3/4)β PBE */
   static double par_c_pbe[] = {0.75*0.06672455060314922,
-                               XC_EXT_PARAMS_DEFAULT, XC_EXT_PARAMS_DEFAULT};
+                               XC_EXT_PARAMS_DEFAULT, XC_EXT_PARAMS_DEFAULT,
+                               XC_EXT_PARAMS_DEFAULT};
 
   xc_mix_init(p, 2, funcs_id, funcs_coef);
   xc_func_set_ext_params(p->func_aux[1], par_c_pbe);
@@ -73,7 +74,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_cap0 = {
   "Correct Asymptotic Potential hybrid",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Carmona2016_120, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_gga_xc_cap0_init, NULL,

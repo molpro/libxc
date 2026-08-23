@@ -19,7 +19,7 @@ static void
 hyb_gga_x_cam_s12_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(hyb_gga_x_cam_s12_params));
+  p->params = libxc_malloc_flags(sizeof(hyb_gga_x_cam_s12_params), p->info->flags);
   xc_hyb_init_cam(p, 0.0, 0.0, 0.0);
 }
 
@@ -46,11 +46,7 @@ static const double par_cam_s12h[N_PAR] = {
 static void
 s12h_set_ext_params(xc_func_type *p, const double *ext_params)
 {
-  double sr_exx;
-
-  hyb_gga_x_cam_s12_params *params;
   set_ext_params_cpy_cam(p, ext_params);
-  params = (hyb_gga_x_cam_s12_params *) (p->params);
 }
 
 #include "maple2c/gga_exc/hyb_gga_x_cam_s12.c"

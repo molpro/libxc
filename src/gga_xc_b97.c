@@ -32,6 +32,7 @@
 #define XC_GGA_XC_HCTH_407P    93 /* HCTH/407+                                */
 #define XC_HYB_GGA_XC_B97_1P  266 /* version of B97 by Cohen and Handy        */
 #define XC_GGA_XC_HLE16       545 /* high local exchange 2016                 */
+#define XC_GGA_XC_DLB97       332 /* dispersionless-optimized B97             */
 
 typedef struct {
   double c_x[5], c_ss[5], c_ab[5];
@@ -188,13 +189,18 @@ static const double b97_hle16_values[B97_N_PAR] =
    0.593885, -1.20146, 2.808705, -4.589615, 3.12399,
    0.294538, 2.21187, -9.6109, 21.28605, -21.0026,
    0.0};
+static const double b97_dl_values[B97_N_PAR] =
+  {1.0, 2.53490826, -1.10285303, 0.72671204, 0.0,
+   1.0, -12.30309938, 18.77585453, -8.69005644, 0.0,
+   1.0, -9.08688969, -1.23683738, 3.27806838, 0.0,
+   0.0};
 
 
 static void
 gga_xc_b97_init(xc_func_type *p)
 {
   assert(p->params == NULL);
-  p->params = libxc_malloc(sizeof(gga_xc_b97_params));
+  p->params = libxc_malloc_flags(sizeof(gga_xc_b97_params), p->info->flags);
 
   if(p->info->number == XC_HYB_GGA_XC_B97   ||
      p->info->number == XC_HYB_GGA_XC_B97_1 ||
@@ -580,6 +586,22 @@ const xc_func_info_type xc_func_info_gga_xc_hle16 = {
   XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-14,
   {B97_N_PAR_NONHYB, b97_names, b97_desc, b97_hle16_values, set_ext_params_cpy},
+  gga_xc_b97_init, NULL,
+  NULL, &work_gga, NULL
+};
+
+#ifdef __cplusplus
+extern "C"
+#endif
+const xc_func_info_type xc_func_info_gga_xc_dlb97 = {
+  XC_GGA_XC_DLB97,
+  XC_EXCHANGE_CORRELATION,
+  "dispersionless-optimized B97",
+  XC_FAMILY_GGA,
+  {&xc_ref_Rehman2025_1098, NULL, NULL, NULL, NULL},
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  1e-14,
+  {B97_N_PAR_NONHYB, b97_names, b97_desc, b97_dl_values, set_ext_params_cpy},
   gga_xc_b97_init, NULL,
   NULL, &work_gga, NULL
 };

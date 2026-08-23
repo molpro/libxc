@@ -20,7 +20,7 @@ static void
 gga_c_am05_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(gga_c_am05_params));
+  p->params = libxc_malloc_flags(sizeof(gga_c_am05_params), p->info->flags);
 }
 
 #include "maple2c/gga_exc/gga_c_am05.c"

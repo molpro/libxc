@@ -26,8 +26,18 @@ $endif
 
 pw91_num := s -> (params_a_c + params_a_d*exp(-params_a_alpha*s^2))*s^2
          - params_a_f*s^params_a_expo:
-pw91_den := s -> 1 + s*params_a_a*arcsinh(params_a_b*s) + params_a_f*s^params_a_expo:
+pw91_den := s -> 1 + s*params_a_a*xc_asinh(params_a_b*s) + params_a_f*s^params_a_expo:
 
-pw91_f  := x -> 1 + pw91_num(X2S*x)/pw91_den(X2S*x):
+# pw91_f = 1 + pw91_num/pw91_den = (pw91_den + pw91_num)/pw91_den. The
+# +params_a_f*s^expo in the denominator and -params_a_f*s^expo in the numerator
+# cancel analytically, so forming the combined numerator directly is a
+# mathematically identical but cancellation-free arrangement. The 1 + num/den
+# form loses all precision at large s, where num/den -> -1 and the true
+# enhancement is a tiny positive number (e.g. the gga_c_op_pw91 N-atom tail,
+# where the huge 1/pw91_f amplifies the lost digits into a ~2500x error).
+pw91_fnum := s -> 1 + s*params_a_a*xc_asinh(params_a_b*s)
+          + (params_a_c + params_a_d*exp(-params_a_alpha*s^2))*s^2:
+
+pw91_f  := x -> pw91_fnum(gga_s(x))/pw91_den(gga_s(x)):
 
 f := (rs, z, xt, xs0, xs1) -> gga_exchange(pw91_f, rs, z, xs0, xs1):

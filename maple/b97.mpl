@@ -6,8 +6,8 @@
  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 *)
 
-(* The B97 function g *)
-b97_g := (gamma, cc, x) -> add(cc[i]*(gamma*x^2/(1 + gamma*x^2))^(i-1), i=1..5):
+(* The B97 function g (b97_u is the shared bounded gradient variable) *)
+b97_g := (gamma, cc, x) -> add(cc[i]*b97_u(gamma, x^2)^(i-1), i=1..5):
 
 (* The parallel and perpendicular components of the energy *)
 b97_fpar  := (lda_func, mgamma, cc, rs, z, xs0, xs1) ->

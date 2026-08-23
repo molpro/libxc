@@ -24,7 +24,7 @@ pbetrans_kappa := s -> (1-pbetrans_fermi(s))*pbetrans_kappa_revpbe + pbetrans_fe
 (* eq 4 *)
 pbetrans_f0 := s -> 1 + pbetrans_kappa(s)*(1 - pbetrans_kappa(s)/(pbetrans_kappa(s) + pbetrans_mu*s^2)):
 
-pbetrans_f  := x -> pbetrans_f0(X2S*x):
+pbetrans_f  := x -> pbetrans_f0(gga_s(x)):
 
 f := (rs, z, xt, xs0, xs1) -> gga_exchange(pbetrans_f, rs, z, xs0, xs1):
 

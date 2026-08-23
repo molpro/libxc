@@ -14,7 +14,7 @@ exp4_c1 := 0.8524:
 exp4_c2 := 1.2264:
 
 # This is Eq. (40) of the paper.
-exp4_f0 := s -> exp4_c1*(1 - exp(-exp4_a1*s^2)) + exp4_c2*(1 - exp(-exp4_a2*s^4)):
-exp4_f  := x -> exp4_f0(X2S*x):
+exp4_f0 := s -> exp4_c1*(-xc_expm1(-exp4_a1*s^2)) + exp4_c2*(-xc_expm1(-exp4_a2*s^4)):
+exp4_f  := x -> exp4_f0(gga_s(x)):
 
 f := (rs, zeta, xt, xs0, xs1) -> gga_kinetic(exp4_f, rs, zeta, xs0, xs1):

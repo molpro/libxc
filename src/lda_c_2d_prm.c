@@ -28,7 +28,7 @@ lda_c_2d_prm_init(xc_func_type *p)
 {
   assert(p != NULL && p->params == NULL);
 
-  p->params = libxc_malloc(sizeof(lda_c_2d_prm_params));
+  p->params = libxc_malloc_flags(sizeof(lda_c_2d_prm_params), p->info->flags);
 }
 
 #include "maple2c/lda_exc/lda_c_2d_prm.c"
@@ -51,7 +51,7 @@ N_set_ext_params(xc_func_type *p, const double *ext_params)
 
   if(params->N <= 1.0){
     fprintf(stderr, "PRM functional cannot be used for N_electrons <= 1\n");
-    exit(1);
+    abort();
   }
 
   params->c = M_PI/(2.0*(params->N - 1.0)*prm_q*prm_q); /* Eq. (13) */

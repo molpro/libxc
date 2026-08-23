@@ -7,22 +7,41 @@
 */
 
 #include "util.h"
-#include "xc_funcs.h"
 
 #define XC_GGA_K_GDS08     591 /* Combined analytical theory with Monte Carlo sampling */
 #define XC_GGA_K_GHDS10    592 /* As GDS08 but for an electron gas with spin */
 #define XC_GGA_K_GHDS10R   593 /* Reparametrized GHDS10 */
 #define XC_GGA_K_TKVLN     594 /* Trickey, Karasiev, and Vela */
 
+typedef struct {
+  double lambda, gamma;         /* TF-lambda-vW base */
+  double A, B, C;               /* Ghiringhelli-Delle Site LDA correction */
+} gga_k_gds08_params;
+
+#define N_PAR 5
+static const char *names[N_PAR] = {"_lambda", "_gamma", "_A", "_B", "_C"};
+static const char *desc[N_PAR]  = {
+  "TF-lambda-vW lambda coefficient",
+  "TF-lambda-vW gamma coefficient",
+  "linear term",
+  "term proportional to the logarithm of the density",
+  "term proportional to the square of the logarithm of the density"
+};
+
+static const double par_gds08[N_PAR]   = {1.0, 0.0, 0.860,      0.224,      0.0};
+static const double par_ghds10[N_PAR]  = {1.0, 1.0, 1.02,       0.163,      0.0};
+static const double par_ghds10r[N_PAR] = {1.0, 1.0, 0.61434e-1, 0.61317e-2, 0.0};
+static const double par_tkvln[N_PAR]   = {1.0, 1.0, 0.45960e-1, 0.65545e-2, 0.23131e-3};
 
 static void
 gga_k_gds08_init(xc_func_type *p)
 {
-  static int    funcs_id  [2] = {XC_GGA_K_VW, XC_LDA_K_GDS08_WORKER};
-  static double funcs_coef[2] = {1.0, 1.0};
-
-  xc_mix_init(p, 2, funcs_id, funcs_coef);
+  assert(p!=NULL && p->params == NULL);
+  p->params = libxc_malloc_flags(sizeof(gga_k_gds08_params), p->info->flags);
 }
+
+#include "maple2c/gga_exc/gga_k_gds08.c"
+#include "work_gga.c"
 
 #ifdef __cplusplus
 extern "C"
@@ -33,25 +52,12 @@ const xc_func_info_type xc_func_info_gga_k_gds08 = {
   "Combined analytical theory with Monte Carlo sampling",
   XC_FAMILY_GGA,
   {&xc_ref_Ghiringhelli2008_073104, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-15,
-  {0, NULL, NULL, NULL, NULL},
+  {N_PAR, names, desc, par_gds08, set_ext_params_cpy},
   gga_k_gds08_init, NULL,
-  NULL, NULL, NULL
+  NULL, &work_gga, NULL
 };
-
-static void
-gga_k_ghds10_init(xc_func_type *p)
-{
-  static int    funcs_id  [2] = {XC_GGA_K_TFVW, XC_LDA_K_GDS08_WORKER};
-  static double funcs_coef[2] = {1.0, 1.0};
-
-  static double par_k_gds08[] = {1.02, 0.163, 0.0};
-
-  xc_mix_init(p, 2, funcs_id, funcs_coef);
-
-  xc_func_set_ext_params(p->func_aux[1], par_k_gds08);
-}
 
 #ifdef __cplusplus
 extern "C"
@@ -62,25 +68,12 @@ const xc_func_info_type xc_func_info_gga_k_ghds10 = {
   "As GDS08 but for an electron gas with spin",
   XC_FAMILY_GGA,
   {&xc_ref_Ghiringhelli2010_014106, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-15,
-  {0, NULL, NULL, NULL, NULL},
-  gga_k_ghds10_init, NULL,
-  NULL, NULL, NULL
+  {N_PAR, names, desc, par_ghds10, set_ext_params_cpy},
+  gga_k_gds08_init, NULL,
+  NULL, &work_gga, NULL
 };
-
-static void
-gga_k_ghds10r_init(xc_func_type *p)
-{
-  static int    funcs_id  [2] = {XC_GGA_K_TFVW, XC_LDA_K_GDS08_WORKER};
-  static double funcs_coef[2] = {1.0, 1.0};
-
-  static double par_k_gds08[] = {0.61434e-1, 0.61317e-2, 0.0};
-
-  xc_mix_init(p, 2, funcs_id, funcs_coef);
-
-  xc_func_set_ext_params(p->func_aux[1], par_k_gds08);
-}
 
 #ifdef __cplusplus
 extern "C"
@@ -91,25 +84,12 @@ const xc_func_info_type xc_func_info_gga_k_ghds10r = {
   "Reparametrized GHDS10",
   XC_FAMILY_GGA,
   {&xc_ref_Trickey2011_075146, &xc_ref_Ghiringhelli2010_014106, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-15,
-  {0, NULL, NULL, NULL, NULL},
-  gga_k_ghds10r_init, NULL,
-  NULL, NULL, NULL
+  {N_PAR, names, desc, par_ghds10r, set_ext_params_cpy},
+  gga_k_gds08_init, NULL,
+  NULL, &work_gga, NULL
 };
-
-static void
-gga_k_tkvln_init(xc_func_type *p)
-{
-  static int    funcs_id  [2] = {XC_GGA_K_TFVW, XC_LDA_K_GDS08_WORKER};
-  static double funcs_coef[2] = {1.0, 1.0};
-
-  static double par_k_gds08[] = {0.45960e-1, 0.65545e-2, 0.23131e-3};
-
-  xc_mix_init(p, 2, funcs_id, funcs_coef);
-
-  xc_func_set_ext_params(p->func_aux[1], par_k_gds08);
-}
 
 #ifdef __cplusplus
 extern "C"
@@ -120,9 +100,9 @@ const xc_func_info_type xc_func_info_gga_k_tkvln = {
   "Trickey, Karasiev, and Vela",
   XC_FAMILY_GGA,
   {&xc_ref_Trickey2011_075146, &xc_ref_Ghiringhelli2010_014106, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-15,
-  {0, NULL, NULL, NULL, NULL},
-  gga_k_tkvln_init, NULL,
-  NULL, NULL, NULL
+  {N_PAR, names, desc, par_tkvln, set_ext_params_cpy},
+  gga_k_gds08_init, NULL,
+  NULL, &work_gga, NULL
 };

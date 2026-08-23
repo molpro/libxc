@@ -22,7 +22,7 @@ static void
 xc_gga_x_ityh_optx_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(gga_x_ityh_optx_params));
+  p->params = libxc_malloc_flags(sizeof(gga_x_ityh_optx_params), p->info->flags);
 
   xc_hyb_init_hybrid(p, 0.0);
 }

@@ -1,3 +1,18 @@
 [build-system]
 requires = ["setuptools>=64", "cmake>=3.1"]
 build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+# Pin collection explicitly. xc-run_pytest chdirs to the repository root and
+# calls a bare pytest.main(), so without testpaths the suite that `make check`
+# runs is whatever happens to be lying around named test_*.py.
+testpaths = ["testsuite"]
+
+markers = [
+    "atomic: physical checks on real atomic densities (slow: ~20 min). Deselected by default; run with `pytest -m atomic`.",
+]
+
+# The atomic tier evaluates every functional on Hartree-Fock atomic densities
+# over a radial grid, which costs ~20 minutes -- too slow to gate every push.
+# It is opt-in; a -m on the command line overrides this.
+addopts = "-m 'not atomic'"

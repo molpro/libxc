@@ -19,10 +19,9 @@ $include "gga_x_b88.mpl"
 
 (* equation 11 *)
 y := (x,u) -> x^2 - u:
-(* equation 5 *)
-gBecke := x -> b88_f(x)-1:
-(* equation 24 *)
-jk_f := (x,u,t) -> 1 + gBecke(x)/(1 + 2*y(x,u)/x^2):
+(* equation 24. The paper's "gBecke(x) = b88_f(x) - 1" is just
+   b88_f_m1(x); use it directly without the (1 + tiny) - 1 cancellation. *)
+jk_f := (x,u,t) -> 1 + b88_f_m1(x)/(1 + 2*y(x,u)/x^2):
 
 f := (rs, z, xt, xs0, xs1, u0, u1, t0, t1) ->
   mgga_exchange(jk_f, rs, z, xs0, xs1, u0, u1, t0, t1):

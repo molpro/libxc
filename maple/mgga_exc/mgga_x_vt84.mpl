@@ -24,6 +24,6 @@ $include "tpss_x.mpl"
 
 vt84_f   := (x, u, t) -> 1
     + tpss_fx(x, t)*exp(-vt84_gamma*tpss_fx(x, t)/params_a_mu)/(1 + tpss_fx(x, t))
-    + (1 - exp(-vt84_gamma*tpss_fx(x, t)^2/params_a_mu^2))*(params_a_mu/tpss_fx(x, t) - 1):
+    + (-xc_expm1(-vt84_gamma*tpss_fx(x, t)^2/params_a_mu^2))*(params_a_mu/tpss_fx(x, t) - 1):
 
 f := (rs, z, xt, xs0, xs1, u0, u1, t0, t1) -> mgga_exchange(vt84_f, rs, z, xs0, xs1, u0, u1, t0, t1):

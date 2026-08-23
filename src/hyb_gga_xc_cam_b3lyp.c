@@ -19,6 +19,7 @@
 #define XC_HYB_GGA_XC_CAM_QTP_02       491 /* CAM-QTP-02 */
 #define XC_HYB_GGA_XC_LC_QTP           492 /* LC-QTP     */
 #define XC_HYB_GGA_XC_MCAM_B3LYP       640 /* Modified CAM-B3LYP */
+#define XC_HYB_GGA_XC_CQTP25           385 /* cQTP: a functional for core-electron ionization energy */
 
 #define CAMB3_N_PAR 4
 static const char  *camb3_names[CAMB3_N_PAR]  = {"_ac", "_alpha", "_beta", "_omega"};
@@ -29,14 +30,15 @@ static const char  *camb3_desc[CAMB3_N_PAR]   = {
   "Range separation parameter"
 };
 
-static const double par_cam_b3lyp[CAMB3_N_PAR]       = {0.81, 0.65, -0.46,   0.33};
-static const double par_camh_b3lyp[CAMB3_N_PAR]      = {0.81, 0.50, -0.31,   0.33};
-static const double par_tuned_cam_b3lyp[CAMB3_N_PAR] = {0.81, 1.00, -0.9201, 0.15};
-static const double par_cam_qtp_00[CAMB3_N_PAR]      = {0.8,  0.91, -0.37,   0.29};
-static const double par_cam_qtp_01[CAMB3_N_PAR]      = {0.8,  1.00, -0.77,   0.31};
-static const double par_cam_qtp_02[CAMB3_N_PAR]      = {1.0,  1.00, -0.72,   0.335};
-static const double par_lc_qtp[CAMB3_N_PAR]          = {1.0,  1.00, -1.00,   0.475};
-static const double par_mcam_b3lyp[CAMB3_N_PAR]      = {0.81, 0.38, -0.19,   0.33};
+static const double par_cam_b3lyp[CAMB3_N_PAR]       = {0.81,   0.65, -0.46,   0.33};
+static const double par_camh_b3lyp[CAMB3_N_PAR]      = {0.81,   0.50, -0.31,   0.33};
+static const double par_tuned_cam_b3lyp[CAMB3_N_PAR] = {0.81,   1.00, -0.9201, 0.15};
+static const double par_cam_qtp_00[CAMB3_N_PAR]      = {0.8,    0.91, -0.37,   0.29};
+static const double par_cam_qtp_01[CAMB3_N_PAR]      = {0.8,    1.00, -0.77,   0.31};
+static const double par_cam_qtp_02[CAMB3_N_PAR]      = {1.0,    1.00, -0.72,   0.335};
+static const double par_lc_qtp[CAMB3_N_PAR]          = {1.0,    1.00, -1.00,   0.475};
+static const double par_mcam_b3lyp[CAMB3_N_PAR]      = {0.81,   0.38, -0.19,   0.33};
+static const double par_cqtp25[CAMB3_N_PAR]          = {0.5898, 1.00, -0.4948, 0.4153};
 
 static void
 camb3_set_ext_params(xc_func_type *p, const double *ext_params)
@@ -76,7 +78,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_cam_b3lyp = {
   "CAM version of B3LYP",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Yanai2004_51, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HYB_CAM | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D | XC_FLAGS_HYB_CAM,
   1e-14,
   {CAMB3_N_PAR, camb3_names, camb3_desc, par_cam_b3lyp, camb3_set_ext_params},
   xc_hyb_gga_xc_cam_b3lyp_init, NULL,
@@ -92,7 +94,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_camh_b3lyp = {
   "CAM version of B3LYP, tuned for TDDFT",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Shao2020_587, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HYB_CAM | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D | XC_FLAGS_HYB_CAM,
   1e-14,
   {CAMB3_N_PAR, camb3_names, camb3_desc, par_camh_b3lyp, camb3_set_ext_params},
   xc_hyb_gga_xc_cam_b3lyp_init, NULL,
@@ -108,7 +110,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_tuned_cam_b3lyp = {
   "CAM version of B3LYP, tuned for excitations and properties",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Okuno2012_29, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HYB_CAM | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D | XC_FLAGS_HYB_CAM,
   1e-14,
   {CAMB3_N_PAR, camb3_names, camb3_desc, par_tuned_cam_b3lyp, camb3_set_ext_params},
   xc_hyb_gga_xc_cam_b3lyp_init, NULL,
@@ -124,7 +126,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_cam_qtp_00 = {
   "CAM-B3LYP retuned using ionization potentials of water",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Verma2014_18A534, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HYB_CAM | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D | XC_FLAGS_HYB_CAM,
   1e-14,
   {CAMB3_N_PAR, camb3_names, camb3_desc, par_cam_qtp_00, camb3_set_ext_params},
   xc_hyb_gga_xc_cam_b3lyp_init, NULL,
@@ -140,7 +142,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_cam_qtp_01 = {
   "CAM-B3LYP retuned using ionization potentials of water",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Jin2016_034107, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HYB_CAM | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D | XC_FLAGS_HYB_CAM,
   1e-14,
   {CAMB3_N_PAR, camb3_names, camb3_desc, par_cam_qtp_01, camb3_set_ext_params},
   xc_hyb_gga_xc_cam_b3lyp_init, NULL,
@@ -156,7 +158,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_cam_qtp_02 = {
   "CAM-B3LYP retuned using ionization potentials of water",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Haiduke2018_184106, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HYB_CAM | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D | XC_FLAGS_HYB_CAM,
   1e-14,
   {CAMB3_N_PAR, camb3_names, camb3_desc, par_cam_qtp_02, camb3_set_ext_params},
   xc_hyb_gga_xc_cam_b3lyp_init, NULL,
@@ -172,7 +174,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_lc_qtp = {
   "CAM-B3LYP retuned using ionization potentials of water",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Haiduke2018_184106, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HYB_CAM | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D | XC_FLAGS_HYB_CAM,
   1e-14,
   {CAMB3_N_PAR, camb3_names, camb3_desc, par_lc_qtp, camb3_set_ext_params},
   xc_hyb_gga_xc_cam_b3lyp_init, NULL,
@@ -188,9 +190,25 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_mcam_b3lyp = {
   "Modified CAM-B3LYP by Day, Nguyen and Pachter",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Day2006_094103, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HYB_CAM | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D | XC_FLAGS_HYB_CAM,
   1e-14,
   {CAMB3_N_PAR, camb3_names, camb3_desc, par_mcam_b3lyp, camb3_set_ext_params},
+  xc_hyb_gga_xc_cam_b3lyp_init, NULL,
+  NULL, NULL, NULL
+};
+
+#ifdef __cplusplus
+extern "C"
+#endif
+const xc_func_info_type xc_func_info_hyb_gga_xc_cqtp25 = {
+  XC_HYB_GGA_XC_CQTP25,
+  XC_EXCHANGE_CORRELATION,
+  "CAM-B3LYP retuned for core electron ionization energies",
+  XC_FAMILY_HYB_GGA,
+  {&xc_ref_Mendes2025_184107, NULL, NULL, NULL, NULL},
+  XC_FLAGS_3D | XC_FLAGS_HYB_CAM,
+  1e-14,
+  {CAMB3_N_PAR, camb3_names, camb3_desc, par_cqtp25, camb3_set_ext_params},
   xc_hyb_gga_xc_cam_b3lyp_init, NULL,
   NULL, NULL, NULL
 };
@@ -254,7 +272,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_rcam_b3lyp = {
   "Similar to CAM-B3LYP, but trying to reduce the many-electron self-interaction",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Cohen2007_191109, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HYB_CAM | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D | XC_FLAGS_HYB_CAM,
   1e-14,
   {RCAM_N_PAR, rcam_names, rcam_desc, par_rcam_b3lyp, rcam_set_ext_params},
   xc_hyb_gga_xc_rcam_b3lyp_init, NULL,
@@ -307,7 +325,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_cam_pbeh = {
   "CAM hybrid screened exchange PBE version",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Chen2018_073803, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HYB_CAM | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D | XC_FLAGS_HYB_CAM,
   1e-15,
   {CAM_N_PAR, cam_names, cam_desc, par_cam_pbeh, cam_set_ext_params},
   hyb_gga_xc_cam_pbeh_init,

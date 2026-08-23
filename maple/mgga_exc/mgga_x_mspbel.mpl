@@ -16,14 +16,16 @@
   params = (mgga_x_mspbel_params * ) (p->params);
 *)
 
-(* Equation (3) in the 2019 paper by Smeets et al. is missing the third power in the numerator *)
-mspbel_fa := a -> (1 - a^2)^3 / (1 + a^3 + params_a_b*a^6):
-mspbel_f0 := (p, c) -> 1 + (MU_GE*p + c)/(1 + (MU_GE*p + c)/params_a_kappa):
+(* MS-PBE-l is plain MS with the regularized iso-orbital indicator
+   mgga_alpha_reg.  Its f0 = 1 + A/(1 + A/kappa) = 1 + kappa A/(kappa + A)
+   (A = MU_GE*p) is algebraically identical to ms_f0, and its f0-delta to
+   ms_f0_delta, and its fa to ms_fa -- so reuse all of them via the
+   include (which also brings the ms_fa magnitude clamp) rather than
+   duplicating.  (The 2019 Smeets et al. paper drops the cube in eq (3).) *)
+$include "mgga_x_ms.mpl"
 
-mspbel_alpha := (t,x) -> (t - x^2/8)/(K_FACTOR_C + params_a_eta*x^2/8):
-
-mspbel_f := (x, u, t) -> mspbel_f0(X2S^2*x^2, 0) + \
-  mspbel_fa(mspbel_alpha(t,x))*(mspbel_f0(X2S^2*x^2, params_a_c) - mspbel_f0(X2S^2*x^2, 0)):
+mspbel_f := (x, u, t) -> ms_f0(X2S^2*x^2, 0) + \
+  ms_fa(mgga_alpha_reg(x, t, params_a_eta))*ms_f0_delta(X2S^2*x^2, params_a_c):
 
 f := (rs, z, xt, xs0, xs1, u0, u1, t0, t1) ->
   mgga_exchange(mspbel_f, rs, z, xs0, xs1, u0, u1, t0, t1):

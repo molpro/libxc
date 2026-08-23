@@ -27,7 +27,7 @@ static void
 gga_x_fd_lb94_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(gga_x_fd_lb94_params));
+  p->params = libxc_malloc_flags(sizeof(gga_x_fd_lb94_params), p->info->flags);
 }
 
 GPU_FUNCTION
@@ -42,22 +42,22 @@ static inline double FT_inter(int n, double x, double fd_beta)
 }
 
 GPU_FUNCTION
-static void func0(double *x, int n, void *beta)
+static void func0(double *x, int n, const void *beta)
 {
   int ii;
   double b;
-  b = *((double *)beta);
+  b = *((const double *)beta);
 
   for(ii=0; ii<n; ii++)
     x[ii] = FT_inter(0, x[ii], b);
 }
 
 GPU_FUNCTION
-static void func1(double *x, int n, void *beta)
+static void func1(double *x, int n, const void *beta)
 {
   int ii;
   double b;
-  b = *((double *)beta);
+  b = *((const double *)beta);
 
   for(ii=0; ii<n; ii++)
     x[ii] = FT_inter(1, x[ii], b);

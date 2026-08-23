@@ -6,7 +6,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import sys, os, re, subprocess
+import sys, os, re, io, subprocess
 
 # we need this in a couple of places
 der_name = ("EXC", "VXC", "FXC", "KXC", "LXC", "MXC")
@@ -249,7 +249,13 @@ dmfd01 := (v0, v1) ->  eval(diff(mf(v0, v1), v1)):
 
 
 def print_c_header(params, out):
-  cmd = "echo -e 'quit;' | maple 2>&1 | head -n 1 | sed 's/^.*Maple/Maple/'"
+  # Check for license expiry
+  cmd = "echo -e 'quit;' | maple 2>&1 | grep License | head -n 1"
+  license_expires = subprocess.check_output(cmd, shell=True).strip()
+  if len(license_expires):
+    print(f'Warning: {license_expires.decode("UTF-8")}')
+
+  cmd = "echo -e 'quit;' | maple 2>&1 | grep Maple | head -n 1 | sed 's/^.*Maple/Maple/'"
   maple_version = subprocess.check_output(cmd, shell=True).strip()
 
   out.write('''/*
@@ -374,6 +380,19 @@ $include <{}.mpl>
   os.remove(mfilename)
   c_code = run.stdout
 
+  # Maple reports a numeric exception, an undefined name, etc. as an
+  # "Error, ..." line. Left unchecked it is written verbatim into the
+  # generated .c, which then silently fails to compile. Abort loudly.
+  maple_errors = [ln.strip()
+                  for ln in (run.stdout + "\n" + run.stderr).splitlines()
+                  if ln.lstrip().startswith("Error,")]
+  if maple_errors:
+    sys.stderr.write("maple2c: Maple failed for functional '"
+                     + params["functional"] + "':\n")
+    for ln in maple_errors[:6]:
+      sys.stderr.write("  " + ln + "\n")
+    sys.exit(1)
+
   test_1 = ("zk", "vrho", "v2rho2", "v3rho3", "v4rho4", "v5rho5")
   total_order = start_order
 
@@ -478,11 +497,12 @@ def maple2c_run(params, variables, derivatives, variants, start_order, input_arg
   fname = params['srcdir'] + "/src/maple2c/" + \
     params['functype']  + "/" + params['functional'] + ".c"
 
-  out = open(fname, "w")
-  if out is None:
-    print("Could not open file '" + fname + "' for writing")
-    sys.exit(1)
-    
+  # Accumulate the whole file in memory and commit it only once every
+  # maple_run has succeeded, so a Maple failure leaves the previously
+  # generated .c untouched instead of clobbering it with a partial or
+  # error-laden file.
+  out = io.StringIO()
+
   print_c_header(params, out)
 
   test_2 = ("EXC", "VXC", "FXC", "KXC", "LXC", "MXC")
@@ -499,11 +519,11 @@ def maple2c_run(params, variables, derivatives, variants, start_order, input_arg
 
     for order in range(start_order, params['maxorder'] + 1):
       out.write('''
-#ifndef XC_DONT_COMPILE_{}
+#if XC_MAXORDER >= {}
 GPU_DEVICE_FUNCTION static inline void
 func_{}_{}(const xc_func_type *p, size_t ip, {}, {})
 {{
-'''.format(der_name[order].upper(),
+'''.format(order,
            der_name[order].lower(), mtype,
            input_args, output_args))
 
@@ -522,4 +542,6 @@ func_{}_{}(const xc_func_type *p, size_t ip, {}, {})
       out.write("#endif\n\n")
       
 
+  with open(fname, "w") as fh_out:
+    fh_out.write(out.getvalue())
   out.close()

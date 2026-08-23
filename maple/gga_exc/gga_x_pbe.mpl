@@ -31,8 +31,11 @@ params_a_kappa := 1.227:
 params_a_mu    := 0.2195149727645171:
 $endif
 
-pbe_f0 := s -> 1 + params_a_kappa*(1 - params_a_kappa/(params_a_kappa + params_a_mu*s^2)):
-pbe_f  := x -> pbe_f0(X2S*x):
+(* 1 - kappa/(kappa + mu*s^2) = mu*s^2/(kappa + mu*s^2); algebraic
+   identity, cancellation-free at small s where the direct form
+   computes 1 - close-to-1. *)
+pbe_f0 := s -> 1 + params_a_kappa*params_a_mu*s^2/(params_a_kappa + params_a_mu*s^2):
+pbe_f  := x -> pbe_f0(gga_s(x)):
 
 f := (rs, z, xt, xs0, xs1) -> gga_exchange(pbe_f, rs, z, xs0, xs1):
 

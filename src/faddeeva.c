@@ -497,3 +497,38 @@ double xc_erfcx(double x)
     return x < -26.7 ? HUGE_VAL : (x < -6.1 ? 2*exp(x*x)
                                    : 2*exp(x*x) - erfcx_y100(400/(4-x)));
 }
+
+/* erfcx(z) and its derivatives out[0..n], numerically stable. The recurrence
+   erfcx^(k+1) = 2 z erfcx^(k) + 2 k erfcx^(k-1) catastrophically cancels for
+   large z (where erfcx ~ 1/(z sqrt(pi))), so there we use the asymptotic
+   series; below z = 8 the recurrence from an accurate erfcx(z) is stable. Used
+   by the AD codegen (jet_compose) so special-function derivatives are emitted
+   cancellation-free instead of inlining the cancelling recurrence. */
+GPU_FUNCTION
+void xc_erfcx_jet(double z, int n, double *out)
+{
+  const double ispi = 0.56418958354775628694807945156; /* 1/sqrt(pi) */
+  int k, m, j;
+  if (z > 8.0) {
+    for (k = 0; k <= n; k++) {
+      double ssum = 0.0, am = 1.0;
+      for (m = 0; m < 12; m++) {
+        double coef = am;
+        for (j = 1; j <= k; j++) coef *= (double)(2*m + j);
+        if (k & 1) coef = -coef;
+        ssum += coef / pow(z, 2*m + 1 + k);
+        am *= -(2*m + 1) / 2.0;
+      }
+      out[k] = ssum * ispi;
+    }
+  } else {
+    out[0] = xc_erfcx(z);
+    if (n >= 1) out[1] = 2.0*z*out[0] - 2.0*ispi;
+    for (k = 1; k < n; k++) out[k+1] = 2.0*z*out[k] + 2.0*k*out[k-1];
+  }
+}
+
+GPU_FUNCTION double xc_erfcx_d1(double z){double o[2]; xc_erfcx_jet(z,1,o); return o[1];}
+GPU_FUNCTION double xc_erfcx_d2(double z){double o[3]; xc_erfcx_jet(z,2,o); return o[2];}
+GPU_FUNCTION double xc_erfcx_d3(double z){double o[4]; xc_erfcx_jet(z,3,o); return o[3];}
+GPU_FUNCTION double xc_erfcx_d4(double z){double o[5]; xc_erfcx_jet(z,4,o); return o[4];}

@@ -14,7 +14,11 @@
   params = (gga_x_s12_params * )(p->params);
 *)
 
-s12g_f := x -> params_a_bx*(params_a_A + params_a_B*(1 - 1/(1 + params_a_C*x^2 + params_a_D*x^4))*(1 - 1/(1 + params_a_E*x^2))):
+(* the bx-free body, factored out so cam_s12 can use it directly
+   (where the bx would otherwise cancel symbolically -- SymPy does
+   not see through the opaque helper application). *)
+s12g_f_inner := x -> params_a_A + params_a_B*((params_a_C*x^2 + params_a_D*x^4)/(1 + params_a_C*x^2 + params_a_D*x^4))*(params_a_E*x^2/(1 + params_a_E*x^2)):
+s12g_f := x -> params_a_bx*s12g_f_inner(x):
 
 f := (rs, z, xt, xs0, xs1) -> gga_exchange(s12g_f, rs, z, xs0, xs1):
 

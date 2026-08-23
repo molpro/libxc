@@ -24,9 +24,7 @@
    Based on the SLATEC routine by W. Fullerton and on the GSL.
 */
 
-#ifdef HAVE_CUDA
-__device__
-#endif
+GPU_DATA
 static double AE11_data[39] = {
    0.121503239716065790, -0.065088778513550150,  0.004897651357459670, -0.000649237843027216,  0.000093840434587471,
    0.000000420236380882, -0.000008113374735904,  0.000002804247688663,  0.000000056487164441, -0.000000344809174450,
@@ -38,9 +36,7 @@ static double AE11_data[39] = {
   -0.000000000000000024, -0.000000000000000201, -0.000000000000000082,  0.000000000000000017
 };
 
-#ifdef HAVE_CUDA
-__device__
-#endif
+GPU_DATA
 static double AE12_data[25] = {
    0.582417495134726740, -0.158348850905782750, -0.006764275590323141,  0.005125843950185725,  0.000435232492169391,
   -0.000143613366305483, -0.000041801320556301, -0.000002713395758640,  0.000001151381913647,  0.000000420650022012,
@@ -49,9 +45,7 @@ static double AE12_data[25] = {
    0.000000000000010707, -0.000000000000000537, -0.000000000000000716, -0.000000000000000244, -0.000000000000000058
 };
 
-#ifdef HAVE_CUDA
-__device__
-#endif
+GPU_DATA
 static double E11_data[19] = {
   -16.11346165557149402600,   7.79407277874268027690,  -1.95540581886314195070,   0.37337293866277945612,  -0.05692503191092901938,
     0.00721107776966009185,  -0.00078104901449841593,   0.00007388093356262168,  -0.00000620286187580820,   0.00000046816002303176,
@@ -59,9 +53,7 @@ static double E11_data[19] = {
     0.00000000000001479904,  -0.00000000000000065457,   0.00000000000000002733,  -0.00000000000000000108
 };
 
-#ifdef HAVE_CUDA
-__device__
-#endif
+GPU_DATA
 static double E12_data[16] = {
   -0.03739021479220279500,  0.04272398606220957700, -0.13031820798497005440,  0.01441912402469889073, -0.00134617078051068022,
    0.00010731029253063780, -0.00000742999951611943,  0.00000045377325690753, -0.00000002476417211390,  0.00000000122076581374,
@@ -69,9 +61,7 @@ static double E12_data[16] = {
    0.00000000000000000315
 };
 
-#ifdef HAVE_CUDA
-__device__
-#endif
+GPU_DATA
 static double AE13_data[25] = {
   -0.605773246640603460, -0.112535243483660900,  0.013432266247902779, -0.001926845187381145,  0.000309118337720603,
   -0.000053564132129618,  0.000009827812880247, -0.000001885368984916,  0.000000374943193568, -0.000000076823455870,
@@ -80,9 +70,7 @@ static double AE13_data[25] = {
    0.000000000000006457, -0.000000000000001568,  0.000000000000000383, -0.000000000000000094,  0.000000000000000023
 };
 
-#ifdef HAVE_CUDA
-__device__
-#endif
+GPU_DATA
 static double AE14_data[26] = {
   -0.18929180007530170, -0.08648117855259871,  0.00722410154374659, -0.00080975594575573,  0.00010999134432661,
   -0.00001717332998937,  0.00000298562751447, -0.00000056596491457,  0.00000011526808397, -0.00000002495030440,
@@ -133,4 +121,46 @@ GPU_FUNCTION double xc_expint_e1_impl(double x, const int scale){
 
   return e1;
 }
+
+/* e^z E_1(z) and its derivatives out[0..n], numerically stable. The recurrence
+   E1s^(k) = E1s^(k-1) + (-1)^k (k-1)!/z^k catastrophically cancels for large z
+   (where E1s ~ 1/z), so there we use the optimal-truncation asymptotic series;
+   below z = 18 the recurrence from an accurate E1s(z) is stable. Emitted by the
+   AD codegen (jet_compose) so special-function derivatives are cancellation-free. */
+GPU_FUNCTION
+void xc_E1_scaled_jet(double z, int n, double *out)
+{
+  int k, m;
+  if (z > 18.0) {
+    for (k = 0; k <= n; k++) {
+      /* Sum the asymptotic series by advancing each term from the previous one
+         (ratio (m+k+1)/z), never forming pow(z, m+1+k) or the growing factorial
+         explicitly: for large z both overflow to +/-inf (raising FE_OVERFLOW,
+         which debug builds trap as SIGFPE) even though the term itself underflows
+         harmlessly to zero. term stays a small positive magnitude throughout. */
+      double ssum = 0.0, prev = HUGE_VAL, term = 1.0;
+      for (m = 1; m <= k; m++) term *= (double)m;         /* term = k! */
+      for (m = 0; m <= k; m++) term /= z;                 /* term = k!/z^(k+1) (the m=0 term) */
+      for (m = 0; m < 60; m++) {
+        if (term > prev) break;                           /* optimal truncation */
+        ssum += (m & 1) ? -term : term;
+        prev = term;
+        term *= (double)(m + k + 1) / z;                  /* magnitude of the next term */
+      }
+      out[k] = (k & 1) ? -ssum : ssum;
+    }
+  } else {
+    double fk = 1.0;
+    out[0] = xc_expint_e1_impl(z, 1);
+    for (k = 1; k <= n; k++) {
+      out[k] = out[k-1] + ((k & 1) ? -1.0 : 1.0) * fk / pow(z, k);
+      fk *= (double)k;
+    }
+  }
+}
+
+GPU_FUNCTION double xc_E1_scaled_d1(double z){double o[2]; xc_E1_scaled_jet(z,1,o); return o[1];}
+GPU_FUNCTION double xc_E1_scaled_d2(double z){double o[3]; xc_E1_scaled_jet(z,2,o); return o[2];}
+GPU_FUNCTION double xc_E1_scaled_d3(double z){double o[4]; xc_E1_scaled_jet(z,3,o); return o[3];}
+GPU_FUNCTION double xc_E1_scaled_d4(double z){double o[5]; xc_E1_scaled_jet(z,4,o); return o[4];}
 

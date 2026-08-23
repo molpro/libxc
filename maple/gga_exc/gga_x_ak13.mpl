@@ -14,7 +14,7 @@
   params = (gga_x_ak13_params * )(p->params);
 *)
 
-ak13_f0 := s -> 1 + params_a_B1*s*log(1 + s) + params_a_B2*s*log(1 + log(1 + s)):
-ak13_f  := x -> ak13_f0(X2S*x):
+ak13_f0 := s -> 1 + params_a_B1*s*xc_log1p(s) + params_a_B2*s*xc_log1p(xc_log1p(s)):
+ak13_f  := x -> ak13_f0(gga_s(x)):
 
 f := (rs, zeta, xt, xs0, xs1) -> gga_exchange(ak13_f, rs, zeta, xs0, xs1):

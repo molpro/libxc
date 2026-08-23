@@ -37,6 +37,6 @@ htbs_f0 := s -> my_piecewise5(
    s <= htbs_s1, wc_f0(s), s >= htbs_s2, rpbe_f0(s), htbs_g(s)*rpbe_f0(s) + (1 - htbs_g(s))*wc_f0(s)
 ):
 
-htbs_f  := x -> htbs_f0(X2S*x):
+htbs_f  := x -> htbs_f0(gga_s(x)):
 
 f := (rs, z, xt, xs0, xs1) -> gga_exchange(htbs_f, rs, z, xs0, xs1):

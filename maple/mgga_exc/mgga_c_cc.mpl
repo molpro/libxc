@@ -12,11 +12,25 @@ $define lda_c_pw_params
 $define lda_c_pw_modified_params
 $include "lda_c_pw.mpl"
 
-(* equation 2 in Lebeda 2022, tau_W / tau *)
-cc_z := (z, xt, ts0, ts1) -> xt^2 / (8*t_total(z, ts0, ts1)):
+(* equation 2 in Lebeda 2022, tau_W / tau.  cc_z and cc_one_minus_z are
+   opaque helpers taking the SQUARED reduced gradient xt2 = xt^2 (rational
+   in sigma), so the sigma-derivatives never chain through sqrt(sigma).
+   f_cc is affine in xt2 (t_total is tau-based), hence v2sigma2 is exactly
+   zero -- the same class as lyp/zlp/cs (see maple/util.mpl t_vw). *)
+cc_z           := (z, xt2, ts0, ts1) -> xt2 / (8*t_total(z, ts0, ts1)):
+(* The Pauli kinetic deficit 1 - tw/t; KEEP IN SYNC with cc_z.
+   Computing 1 - cc_z directly cancels at the iso-orbital limit, so
+   this form (a single fraction) is the cancellation-free primitive. *)
+cc_one_minus_z := (z, xt2, ts0, ts1) -> (8*t_total(z, ts0, ts1) - xt2)/(8*t_total(z, ts0, ts1)):
 
-(* equation 9 in Schmidt 2014, equation 6 in Lebeda 2022 *)
-f_cc := (rs, z, xt, ts0, ts1) -> (1 - cc_z(z,xt,ts0,ts1)*z^2)*f_pw(rs, z):
+(* equation 9 in Schmidt 2014, equation 6 in Lebeda 2022.
+   Algebraic identity:
+     1 - cc_z*z^2 = (1 - z^2) + z^2*(1 - cc_z),
+   so the fully-polarized iso-orbital corner -- where cc_z -> 1 and
+   z^2 -> 1 and the direct form computes 1 - close-to-1 -- splits into
+   two cancellation-free pieces. *)
+f_cc := (rs, z, xt, ts0, ts1) ->
+  (one_minus_z_pow_n(z, 2) + z^2*cc_one_minus_z(z, xt^2, ts0, ts1))*f_pw(rs, z):
 
 f := (rs, z, xt, xs0, xs1, us0, us1, ts0, ts1) ->
   f_cc(rs, z, xt, ts0, ts1):

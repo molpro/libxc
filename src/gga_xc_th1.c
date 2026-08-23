@@ -9,7 +9,6 @@
 
 #include "util.h"
 
-#define XC_GGA_XC_TH_FL        196 /* Tozer and Handy v. FL  */
 #define XC_GGA_XC_TH_FC        197 /* Tozer and Handy v. FC  */
 #define XC_GGA_XC_TH_FCFO      198 /* Tozer and Handy v. FCFO */
 #define XC_GGA_XC_TH_FCO       199 /* Tozer and Handy v. FCO */
@@ -30,12 +29,6 @@ static const char  *desc[N_PAR]   =
    "w[6]",  "w[7]",  "w[8]",  "w[9]",  "w[10]", "w[11]",
    "w[12]", "w[13]", "w[14]", "w[15]", "w[16]", "w[17]",
    "w[18]", "w[19]", "w[20]"};
-
-static const double omega_TH_FL[21] =
-  {-0.106141e01, +0.898203e00, -0.134439e01, +0.302369e00, 0.0, 0.0,
-    0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0};
 
 static const double omega_TH_FC[21] =
   {-0.864448e+00, +0.565130e+00, -0.127306e+01, +0.309681e+00, -0.287658e+00, +0.588767e+00,
@@ -66,27 +59,11 @@ static void
 gga_xc_th1_init(xc_func_type *p)
 {
   assert(p->params == NULL);
-  p->params = libxc_malloc(sizeof(gga_xc_th1_params));
+  p->params = libxc_malloc_flags(sizeof(gga_xc_th1_params), p->info->flags);
 }
 
 #include "maple2c/gga_exc/gga_xc_th1.c"
 #include "work_gga.c"
-
-#ifdef __cplusplus
-extern "C"
-#endif
-const xc_func_info_type xc_func_info_gga_xc_th_fl = {
-  XC_GGA_XC_TH_FL,
-  XC_EXCHANGE_CORRELATION,
-  "Tozer and Handy v. FL",
-  XC_FAMILY_GGA,
-  {&xc_ref_Tozer1997_183, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | MAPLE2C_FLAGS,
-  1e-15,
-  {N_PAR, names, desc, omega_TH_FL, set_ext_params_cpy},
-  gga_xc_th1_init, NULL,
-  NULL, &work_gga, NULL
-};
 
 #ifdef __cplusplus
 extern "C"

@@ -1,0 +1,11 @@
+# 2D exchange-correlation energies (Hartree) at the radial-quadrature convergence limit
+# functional: lda_c_2d_amgb
+# probe systems (2D): harmonic-oscillator quantum dots
+# convergence: normal (N0 = 50 radial points)
+# system  spin         npts  converged  E_xc
+w0.5   unpolarized     25         1 -1.8280259968e-01
+w0.5   polarized       25         1 -1.9267312921e-02
+w2     unpolarized     25         1 -2.3412150255e-01
+w2     polarized       25         1 -2.4309651417e-02
+w8     unpolarized     50         1 -2.7833525625e-01
+w8     polarized       25         1 -2.9270374304e-02

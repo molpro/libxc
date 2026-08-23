@@ -21,6 +21,6 @@ params_a_cc := 0.163:
 $endif
 
 pw86_f0 := s -> (1 + params_a_aa*s^2 + params_a_bb*s^4 + params_a_cc*s^6)^(1/15):
-pw86_f  := x -> pw86_f0(X2S*x):
+pw86_f  := x -> pw86_f0(gga_s(x)):
 
 f := (rs, z, xt, xs0, xs1) -> gga_exchange(pw86_f, rs, z, xs0, xs1):

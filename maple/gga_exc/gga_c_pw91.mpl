@@ -20,11 +20,11 @@ pw91_c1 := pw91_beta^2/(2*pw91_alpha):
 pw91_c2 := 2*pw91_alpha/pw91_beta:
 
 (* Equation (14) *)
-A := (rs, z) -> pw91_c2/(exp(-2*pw91_alpha*f_pw(rs, z)/(mphi(z)^3*pw91_beta^2)) - 1):
+A := (rs, z) -> pw91_c2/xc_expm1(-2*pw91_alpha*f_pw(rs, z)/(mphi(z)^3*pw91_beta^2)):
 
 (* Equation (13) *)
-H0 := (rs, z, t) -> pw91_c1*mphi(z)^3*log(1
-  + pw91_c2*(t^2 + A(rs, z)*t^4) / (1 + A(rs, z)*t^2 + A(rs, z)^2*t^4)
+H0 := (rs, z, t) -> pw91_c1*mphi(z)^3*xc_log1p(
+    pw91_c2*(t^2 + A(rs, z)*t^4) / (1 + A(rs, z)*t^2 + A(rs, z)^2*t^4)
 ):
 
 (* Pade parametrized form of C-xc found in

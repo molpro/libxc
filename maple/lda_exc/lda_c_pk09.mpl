@@ -16,14 +16,25 @@ a_24_i := [-113.693369789727190, 24.00502151278711440, 49.34131295839670750,
 b_24_i := [-109.74263493216910, 16.2663129444242415, 54.4034331373908366,
             -25.154009904187990, 1.0]:
 
-f_r := rs -> add(a_24_i[i]*rs^(i-1), i=1..6)/add(b_24_i[i]*rs^(i-1), i=1..5):
+(* den_b vanishes at rs ~ 22.74 (the dilute tail), giving f_r a pole there;
+   screen the rational at that point. f_r is otherwise FP-stable across its whole
+   domain -- no cancellation, smooth at rs=0 -- so no Taylor branch is needed. *)
+DETOL := 0.1e-11:
+f_r_num := rs -> add(a_24_i[i]*rs^(i-1), i=1..6):
+f_r_den := rs -> add(b_24_i[i]*rs^(i-1), i=1..5):
+f_r := rs -> my_piecewise3(m_abs(f_r_den(rs)) <= DETOL, 0, f_r_num(rs)/f_r_den(rs)):
 
 (* Equations (25) *)
 c_25_i := [-0.32481568604919886, 1.180131465463191050, -1.42693041498421640,
             0.580344063812247980, -0.01099122367291440]:
 d_25_i := [-0.57786103193239430, 2.09708505883490736, -2.52188183586948180, 1.0]:
 
-f_s := z -> add(c_25_i[i]*z^(i-1), i=1..5)/add(d_25_i[i]*z^(i-1), i=1..4):
+(* den_d has no root in z in [-1,1] (nearest at z=1.037), so f_s has no pole and
+   needs no screen; the mild ~3-digit cancellation as z->1 leaves value and
+   derivatives accurate, so no Taylor branch either. *)
+f_s_num := z -> add(c_25_i[i]*z^(i-1), i=1..5):
+f_s_den := z -> add(d_25_i[i]*z^(i-1), i=1..4):
+f_s := z -> f_s_num(z)/f_s_den(z):
 
 (* Equation (23) *)
 (* The factor 1.28 is absent from the paper, but it is in the original code. See erratum *)
@@ -63,13 +74,18 @@ beta_eff := rs ->
 ax   := (3*Pi^2)^(1/3):
 k_fs := (rs, z) -> ax*RS_FACTOR/rs * opz_pow_n(z,1/3):
 
+(* Floor the screening wave vectors at K_TOL (the Q functions have 1/k, 1/k^2
+   poles that blow up as k->0 in the dilute / strongly-polarized limit), as in
+   Proynov's reference code. *)
+K_TOL := 0.1e-10:
+
 (* Equation (17) *)
-k_uu := (rs, z) -> alpha_eff(rs,  z)*k_fs(rs,  z):
-k_dd := (rs, z) -> alpha_eff(rs, -z)*k_fs(rs, -z):
+k_uu := (rs, z) -> m_max(alpha_eff(rs,  z)*k_fs(rs,  z), K_TOL):
+k_dd := (rs, z) -> m_max(alpha_eff(rs, -z)*k_fs(rs, -z), K_TOL):
 
 (* Equation (18) *)
-k_ud := (rs, z) -> beta_eff(rs)
-  * 2*k_fs(rs, z)*k_fs(rs, -z)/(k_fs(rs, z) + k_fs(rs, -z)):
+k_ud := (rs, z) -> m_max(beta_eff(rs)
+  * 2*k_fs(rs, z)*k_fs(rs, -z)/(k_fs(rs, z) + k_fs(rs, -z)), K_TOL):
 
 (* Table III *)
 a1  := 0.1846304394851914:
@@ -144,12 +160,12 @@ Q_2ud := k ->
 
 (* Equation (12) *)
 Q_3ud := k ->
-  + c19*arctan(c20/(c21*k + c22))/k - c23*arctanh((c24 + c25*k)/D_8(k))/k
+  + c19*arctan(c20/(c21*k + c22))/k - c23*xc_atanh((c24 + c25*k)/D_8(k))/k
   - c15*log(D_7(k))/k - c29*D_8(k)/k^2:
 
 (* Equation (9) *)
 ec_opp := (rs, z) ->
-  (1 - z^2)/4*(Q_1ud(k_ud(rs, z)) + Q_2ud(k_ud(rs, z)) + Q_3ud(k_ud(rs, z))):
+  one_minus_z_pow_n(z, 2)/4*(Q_1ud(k_ud(rs, z)) + Q_2ud(k_ud(rs, z)) + Q_3ud(k_ud(rs, z))):
 
 (* Equation (13) *)
 ec_par := (rs, z) ->

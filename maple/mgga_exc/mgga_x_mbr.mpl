@@ -25,9 +25,16 @@ params_a_at := 0:
 (*Equation 15. The three equations below are from mgga_x_tm.mpl; note
 that the numerical factors in the denominator in eqn 15 just
 correspond to going from 'x' to 's'.*)
-tm_p  := x -> (X2S*x)^2:
+tm_p  := x -> (gga_s(x))^2:
 tm_y  := x -> (2*params_a_lambda - 1)^2 * tm_p(x):
-tm_f0 := x -> (1 + 10*(70/27)*tm_y(x) + params_a_beta*tm_y(x)^2)^(1/10):
+(* This is tm_f0(x)^2 - 1 from eq. 15 in the paper, with
+   tm_f0 = (1 + (700/27)*y + beta*y^2)^(1/10) so that
+     tm_f0^2 - 1 = (1 + (700/27)*y + beta*y^2)^(1/5) - 1.
+   Routed through expm1(log1p(.)/5) so the (1+epsilon)^(1/5) - 1
+   cancellation at small x is exact -- the direct form computes
+   1 - close-to-1.  tm_f0 itself isn't used in mbr (only mbr_Q
+   needs the squared-m1 quantity), so we keep just the helper. *)
+tm_f0_squared_m1 := x -> xc_expm1(xc_log1p((700/27)*tm_y(x) + params_a_beta*tm_y(x)^2)/5):
 
 (* definition below equation 16 *)
 mbr_D := (ts, xs) -> 2*ts - 1/4 * (2*params_a_lambda - 1)^2 * xs^2:
@@ -42,6 +49,6 @@ of two in front of tau uniform as well. *)
 br89_Q := (x, u, t) ->
   1/6*(
   + 6*(params_a_lambda^2 - params_a_lambda + 1/2)*(2*t - 2*K_FACTOR_C - 1/36*x^2)
-  + 6/5*k_sigma^2*(tm_f0(x)^2 - 1)
+  + 6/5*k_sigma^2*tm_f0_squared_m1(x)
   - 2*params_a_gamma*mbr_D(t, x)
   ):

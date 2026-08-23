@@ -78,7 +78,7 @@ if __name__ == "__main__":
         url="https://gitlab.com/libxc/libxc",
         license='MPL',
         install_requires=[
-            'numpy>=1.7',
+            'numpy>=1.22.0',
         ],
         extras_require={
             'docs': [

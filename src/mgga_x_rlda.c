@@ -12,7 +12,7 @@
 /* Local tau approximation */
 
 #define XC_MGGA_X_RLDA          688 /* Reparametrized local-density approximation */
-#define XC_MGGA_X_MK00          230 /* Exchange for accurate virtual orbital energies */
+#define XC_MGGA_X_GP86          230 /* Ghosh-Parr 1986 meta-GGA exchange, later reinvestigated by Manby and Knowles */
 #define XC_MGGA_X_MK00B         243 /* Exchange for accurate virtual orbital energies (v. B) */
 
 typedef struct{
@@ -23,7 +23,7 @@ static void
 mgga_x_rlda_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(mgga_x_rlda_params));
+  p->params = libxc_malloc_flags(sizeof(mgga_x_rlda_params), p->info->flags);
 }
 
 #define RLDA_N_PAR 1
@@ -32,7 +32,7 @@ static const char  *rlda_desc[RLDA_N_PAR]   = {
   "Prefactor that multiplies functional"
 };
 static const double rlda_values[RLDA_N_PAR]  = {1.0};
-static const double mk00_values[RLDA_N_PAR]  = {4.0/5.0};
+static const double gp86_values[RLDA_N_PAR]  = {4.0/5.0};
 
 #include "maple2c/mgga_exc/mgga_x_rlda.c"
 #include "work_mgga.c"
@@ -56,15 +56,15 @@ const xc_func_info_type xc_func_info_mgga_x_rlda = {
 #ifdef __cplusplus
 extern "C"
 #endif
-const xc_func_info_type xc_func_info_mgga_x_mk00 = {
-  XC_MGGA_X_MK00,
+const xc_func_info_type xc_func_info_mgga_x_gp86 = {
+  XC_MGGA_X_GP86,
   XC_EXCHANGE,
-  "Exchange for accurate virtual orbital energies",
+  "Ghosh-Parr 1986 meta-GGA exchange, later reinvestigated by Manby and Knowles",
   XC_FAMILY_MGGA,
-  {&xc_ref_Manby2000_7002, NULL, NULL, NULL, NULL},
+  {&xc_ref_Ghosh1986_785, &xc_ref_Manby2000_7002, NULL, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | XC_FLAGS_NEEDS_LAPLACIAN | MAPLE2C_FLAGS | XC_FLAGS_DEVELOPMENT,
   1e-15,
-  {RLDA_N_PAR, rlda_names, rlda_desc, mk00_values, set_ext_params_cpy},
+  {RLDA_N_PAR, rlda_names, rlda_desc, gp86_values, set_ext_params_cpy},
   mgga_x_rlda_init, NULL,
   NULL, NULL, &work_mgga,
 };
@@ -73,7 +73,7 @@ const xc_func_info_type xc_func_info_mgga_x_mk00 = {
 static void
 mgga_x_mk00b_init(xc_func_type *p)
 {
-  static int    funcs_id  [3] = {XC_LDA_X, XC_GGA_X_B88, XC_MGGA_X_MK00};
+  static int    funcs_id  [3] = {XC_LDA_X, XC_GGA_X_B88, XC_MGGA_X_GP86};
   static double funcs_coef[3] = {-1.0, 1.0, 1.0};
 
   static double par_x_b88[] = {0.0016, 6.0};

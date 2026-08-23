@@ -41,7 +41,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_b88b95 = {
   "Mixture of B88 with BC95 (B1B95)",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Becke1996_1040, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_mgga_xc_b88b95_init,
@@ -69,7 +69,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_b86b95 = {
   "Mixture of B86 with BC95",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Becke1996_1040, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-14,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_mgga_xc_b86b95_init,
@@ -97,7 +97,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_pw86b95 = {
   "Mixture of PW86 with BC95",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Becke1996_1040, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-14,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_mgga_xc_pw86b95_init,
@@ -125,7 +125,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_bb1k = {
   "Mixture of B88 with BC95 from Zhao and Truhlar",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Zhao2004_2715, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-14,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_mgga_xc_bb1k_init,
@@ -153,7 +153,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_mpw1b95 = {
   "Mixture of mPW91 with BC95 from Zhao and Truhlar",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Zhao2004_6908, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-14,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_mgga_xc_mpw1b95_init,
@@ -181,7 +181,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_mpwb1k = {
   "Mixture of mPW91 with BC95 for kinetics",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Zhao2004_6908, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-14,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_mgga_xc_mpwb1k_init,
@@ -193,13 +193,13 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_mpwb1k = {
 void
 xc_hyb_mgga_xc_x1b95_init(xc_func_type *p)
 {
-  const double a1=0.675, a2=0.235, a0=0.30;
+  const double a1=0.765, a2=0.235, a0=0.30;
 
   static int   funcs_id  [3] = {XC_GGA_X_B88, XC_GGA_X_PW91, XC_MGGA_C_BC95};
   double funcs_coef[3];
 
-  funcs_coef[0] = a0*a1;
-  funcs_coef[1] = a0*a2;
+  funcs_coef[0] = (1.0 - a0)*a1;
+  funcs_coef[1] = (1.0 - a0)*a2;
   funcs_coef[2] = 1.0;
 
   xc_mix_init(p, 3, funcs_id, funcs_coef);
@@ -215,7 +215,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_x1b95 = {
   "Mixture of X with BC95",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Zhao2004_6908, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-14,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_mgga_xc_x1b95_init,
@@ -227,13 +227,13 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_x1b95 = {
 void
 xc_hyb_mgga_xc_xb1k_init(xc_func_type *p)
 {
-  const double a1=0.675, a2=0.235, a0=0.43;
+  const double a1=0.765, a2=0.235, a0=0.43;
 
   static int   funcs_id  [3] = {XC_GGA_X_B88, XC_GGA_X_PW91, XC_MGGA_C_BC95};
   double funcs_coef[3];
 
-  funcs_coef[0] = a0*a1;
-  funcs_coef[1] = a0*a2;
+  funcs_coef[0] = (1.0 - a0)*a1;
+  funcs_coef[1] = (1.0 - a0)*a2;
   funcs_coef[2] = 1.0;
 
   xc_mix_init(p, 3, funcs_id, funcs_coef);
@@ -249,7 +249,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_xb1k = {
   "Mixture of X with BC95 for kinetics",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Zhao2004_6908, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-14,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_mgga_xc_xb1k_init,
@@ -283,7 +283,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_pw6b95 = {
   "Mixture of PW91 with BC95 from Zhao and Truhlar",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Zhao2005_5656, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-14,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_mgga_xc_pw6b95_init,
@@ -317,7 +317,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_pwb6k = {
   "Mixture of PW91 with BC95 from Zhao and Truhlar for kinetics",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Zhao2005_5656, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-14,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_mgga_xc_pwb6k_init,
@@ -344,7 +344,7 @@ const xc_func_info_type xc_func_info_mgga_xc_tpsslyp1w = {
   "TPSSLYP1W",
   XC_FAMILY_MGGA,
   {&xc_ref_Dahlke2005_15677, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-14,
   {0, NULL, NULL, NULL, NULL},
   mgga_xc_tpsslyp1w_init,

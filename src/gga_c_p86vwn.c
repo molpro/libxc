@@ -33,7 +33,7 @@ static const double p86vwnft_val[N_PAR] = {0.023266, 7.389e-6, 8.723, 0.472, 0.0
 static void gga_c_p86vwn_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(gga_c_p86vwn_params));
+  p->params = libxc_malloc_flags(sizeof(gga_c_p86vwn_params), p->info->flags);
 }
 
 #include "maple2c/gga_exc/gga_c_p86vwn.c"

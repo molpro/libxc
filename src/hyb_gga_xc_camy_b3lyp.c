@@ -29,7 +29,6 @@ static const char  *camb3_desc[CAMYB3_N_PAR]   = {
   "Range separation parameter"
 };
 
-static const double cam_values_PBEH[CAM_N_PAR] = {0.2, 0.8, 0.7};
 static const double cam_values_pbeh[CAM_N_PAR] = {0.2, 0.8, 0.7};
 static const double cam_values_b3lyp[CAMYB3_N_PAR] = {0.81, 0.65, -0.46, 0.34};
 
@@ -74,7 +73,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_camy_b3lyp = {
   "CAMY version of B3LYP",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Seth2012_901, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HYB_CAMY | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D | XC_FLAGS_HYB_CAMY,
   1e-15,
   {CAMYB3_N_PAR, camb3_names, camb3_desc, cam_values_b3lyp, camyb3_set_ext_params},
   xc_hyb_gga_xc_camy_b3lyp_init,
@@ -121,7 +120,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_camy_pbeh = {
   "CAMY hybrid screened exchange PBE version",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Chen2018_073803, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_HYB_CAMY | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D | XC_FLAGS_HYB_CAMY,
   1e-15,
   {CAM_N_PAR, cam_names, cam_desc, cam_values_pbeh, cam_set_ext_params},
   hyb_gga_xc_camy_pbeh_init,

@@ -17,11 +17,13 @@ cs_thf := (z, u, t) ->
   opz_pow_n(z,8/3)*2^(-8/3)*(t - u/8):
 
 (* This is Equation (15) of Lee1988_785 *)
-(* Note that gamma = (1 - z^2) *)
-f_cs := (rs, z, xt, xs0, xs1, u0, u1, t0, t1) ->
-  cs_a*(1 - z^2)/(1 + cs_d*rs) * (1 + 2*cs_b*exp(-cs_c*rs)*(
-    cs_thf(z, u0, t0) + cs_thf(-z, u1, t1) - t_vw(z, xt, u0, u1)
+(* Note that gamma = 1 - z^2 *)
+(* f_cs is an opaque helper taking the squared reduced gradient xt2 = xt^2 (t_vw
+   takes the square; see maple/util.mpl) so its vW term stays cancellation-free. *)
+f_cs := (rs, z, xt2, xs0, xs1, u0, u1, t0, t1) ->
+  cs_a*one_minus_z_pow_n(z, 2)/(1 + cs_d*rs) * (1 + 2*cs_b*exp(-cs_c*rs)*(
+    cs_thf(z, u0, t0) + cs_thf(-z, u1, t1) - t_vw(z, xt2, u0, u1)
   )):
 
 f := (rs, z, xt, xs0, xs1, u0, u1, t0, t1) ->
-  f_cs(rs, z, xt, xs0, xs1, u0, u1, t0, t1):
+  f_cs(rs, z, xt^2, xs0, xs1, u0, u1, t0, t1):

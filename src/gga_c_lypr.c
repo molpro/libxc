@@ -41,7 +41,7 @@ static const double lypr_values[LYPR_N_PAR] =
 void xc_gga_c_lypr_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(gga_c_lypr_params));
+  p->params = libxc_malloc_flags(sizeof(gga_c_lypr_params), p->info->flags);
 }
 
 #include "maple2c/gga_exc/gga_c_lypr.c"

@@ -9,7 +9,7 @@
 #include "util.h"
 
 #define XC_LDA_C_HL  4  /* Hedin & Lundqvist            */
-#define XC_LDA_C_GL  5  /* Gunnarson & Lundqvist        */
+#define XC_LDA_C_GL  5  /* Gunnarsson & Lundqvist        */
 #define XC_LDA_C_VBH 17 /* von Barth & Hedin            */
 
 typedef struct {
@@ -30,7 +30,7 @@ static const double par_vbh[N_PAR] = {30.0, 75.0, 0.0252, 0.0127};
 
 static void lda_c_hl_init(xc_func_type *p) {
   assert(p != NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(lda_c_hl_params));
+  p->params = libxc_malloc_flags(sizeof(lda_c_hl_params), p->info->flags);
 }
 
 #include "maple2c/lda_exc/lda_c_hl.c"
@@ -58,7 +58,7 @@ extern "C"
 const xc_func_info_type xc_func_info_lda_c_gl = {
   XC_LDA_C_GL,
   XC_CORRELATION,
-  "Gunnarson & Lundqvist",
+  "Gunnarsson & Lundqvist",
   XC_FAMILY_LDA,
   {&xc_ref_Gunnarsson1976_4274, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | MAPLE2C_FLAGS,

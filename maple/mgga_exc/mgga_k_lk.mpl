@@ -14,21 +14,25 @@
   params = (mgga_k_lk_params * ) (p->params);
 *)
 
-lk_p := x -> X2S^2*x^2:
-lk_q := u -> X2S^2*u:
 
 (* Equation (10) *)
 lk_delta := (p, q) -> 8/81*q^2 - 1/9*p*q + 8/243*p^2:
-(* Equation (15) *)
-lk_f0 := (x1, x2) -> 1 + params_a_kappa*(2 - 1/(1+x1/params_a_kappa) - 1/(1+x2/params_a_kappa)):
+(* Equation (15). Algebraic identity:
+     1 - 1/(1 + a) = a/(1 + a)
+   so 2 - 1/(1+a) - 1/(1+b) = a/(1+a) + b/(1+b), which is
+   cancellation-free at small x1, x2 (where the original form
+   subtracts two close-to-1 quantities from 2). *)
+lk_f0 := (x1, x2) -> 1 + params_a_kappa*(
+     x1/(params_a_kappa + x1) + x2/(params_a_kappa + x2)):
 (* Equation (16) *)
 lk_x1 := (p, q) -> 5/27*p + lk_delta(p,q) + (5/27*p)^2/params_a_kappa:
 (* Equation (17) *)
 lk_x2 := (p, q) -> 2*(5/27*p)*lk_delta(p,q)/params_a_kappa + (5/27*p)^3/params_a_kappa^2:
 
-(* Full functional *)
-lk_f := (x, u) ->
-  lk_f0(lk_x1(lk_p(x),lk_q(u)), lk_x2(lk_p(x),lk_q(u))):
+(* Full functional.  p = s^2 is fed directly (mgga_kinetic_p) so the sigma
+   derivatives are cancellation-free. *)
+lk_f := (p, u) ->
+  lk_f0(lk_x1(p, mgga_q(u)), lk_x2(p, mgga_q(u))):
 
 f := (rs, z, xt, xs0, xs1, u0, u1, t0, t1) ->
-  mgga_kinetic(lk_f, rs, z, xs0, xs1, u0, u1):
+  mgga_kinetic_p(lk_f, rs, z, xs0, xs1, u0, u1):

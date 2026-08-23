@@ -16,7 +16,7 @@
 #define XC_HYB_GGA_XC_MPW3PW        415 /* mixture with the mPW functional       */
 #define XC_HYB_GGA_XC_MPW3LYP       419 /* mixture of mPW and LYP                */
 #define XC_HYB_GGA_XC_MB3LYP_RC04   437 /* B3LYP with RC04 LDA                   */
-#define XC_HYB_GGA_XC_REVB3LYP      454 /* Revised B3LYP                         */
+#define XC_HYB_GGA_XC_REVB3LYP      454 /* Revised B3LYP a.k.a. OpB3LYP; B3LYP reoptimized in 6-311++G(2d,2p) basis set */
 #define XC_HYB_GGA_XC_B3LYPS        459 /* B3LYP* functional                     */
 #define XC_HYB_GGA_XC_B3LYP5        475 /* B3LYP with VWN functional 5 instead of RPA */
 #define XC_HYB_GGA_XC_B3LYP3        394 /* B3LYP with VWN functional 3 instead of RPA */
@@ -28,7 +28,6 @@
 #define XC_HYB_GGA_XC_QTP17         460 /* global hybrid for vertical ionization potentials */
 #define XC_HYB_GGA_XC_B3LYP_MCM1    461 /* B3LYP reoptimized in 6-31+G(2df,p) for enthalpies of formation */
 #define XC_HYB_GGA_XC_B3LYP_MCM2    462 /* B3LYP reoptimized in 6-31+G(2df,p) for enthalpies of formation */
-#define XC_HYB_GGA_XC_OPB3LYP       386 /* B3LYP reoptimized in 6-311++G(2d,2p) basis set */
 
 /*************************************************************/
 
@@ -44,7 +43,6 @@ static const double mpw3lyp_values[B3LYP_N_PAR]  = {0.218, 0.709, 0.871};
 static const double revb3lyp_values[B3LYP_N_PAR] = {0.20, 0.67, 0.84};
 static const double b3lyps_values[B3LYP_N_PAR]   = {0.15, 0.72, 0.81};
 static const double b5050lyp_values[B3LYP_N_PAR] = {0.50, 0.42, 0.81};
-static const double opb3lyp_values[B3LYP_N_PAR] = {0.20, 0.67, 0.84};
 
 void
 xc_hyb_gga_xc_b3pw91_init(xc_func_type *p)
@@ -84,7 +82,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_b3pw91 = {
   "The original (ACM, B3PW91) hybrid of Becke",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Becke1993_5648, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {B3LYP_N_PAR, b3lyp_names, b3lyp_desc, b3lyp_values, b3pw91_set_ext_params},
   xc_hyb_gga_xc_b3pw91_init, NULL,
@@ -111,25 +109,9 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_b3lyp = {
   "B3LYP",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Stephens1994_11623, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {B3LYP_N_PAR, b3lyp_names, b3lyp_desc, b3lyp_values, b3pw91_set_ext_params},
-  xc_hyb_gga_xc_b3lyp_init, NULL,
-  NULL, NULL, NULL
-};
-
-#ifdef __cplusplus
-extern "C"
-#endif
-const xc_func_info_type xc_func_info_hyb_gga_xc_opb3lyp = {
-  XC_HYB_GGA_XC_OPB3LYP,
-  XC_EXCHANGE_CORRELATION,
-  "opB3LYP: B3LYP reoptimized in 6-311++G(2d,2p) basis set",
-  XC_FAMILY_HYB_GGA,
-  {&xc_ref_Lu2015_502, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
-  1e-15,
-  {B3LYP_N_PAR, b3lyp_names, b3lyp_desc, opb3lyp_values, b3pw91_set_ext_params},
   xc_hyb_gga_xc_b3lyp_init, NULL,
   NULL, NULL, NULL
 };
@@ -154,7 +136,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_b3lyp5 = {
   "B3LYP with VWN functional 5 instead of RPA",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Stephens1994_11623, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {B3LYP_N_PAR, b3lyp_names, b3lyp_desc, b3lyp_values, b3pw91_set_ext_params},
   xc_hyb_gga_xc_b3lyp5_init, NULL,
@@ -180,7 +162,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_b3lyp3 = {
   "B3LYP with VWN functional 3 instead of RPA",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Stephens1994_11623, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {B3LYP_N_PAR, b3lyp_names, b3lyp_desc, b3lyp_values, b3pw91_set_ext_params},
   xc_hyb_gga_xc_b3lyp3_init, NULL,
@@ -206,7 +188,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_b3p86 = {
   "B3P86",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_gaussianimplementation, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {B3LYP_N_PAR, b3lyp_names, b3lyp_desc, b3lyp_values, b3pw91_set_ext_params},
   xc_hyb_gga_xc_b3p86_init, NULL,
@@ -232,7 +214,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_b3p86_nwchem = {
   "B3P86, NWChem version",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_nwchemimplementation, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_gga_xc_b3p86_nwchem_init, NULL,
@@ -259,7 +241,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_mpw3pw = {
   "MPW3PW of Adamo & Barone",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Adamo1998_664, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {B3LYP_N_PAR, b3lyp_names, b3lyp_desc, b3lyp_values, b3pw91_set_ext_params},
   xc_hyb_gga_xc_mpw3pw_init, NULL,
@@ -286,7 +268,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_mpw3lyp = {
   "MPW3LYP",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Zhao2004_6908, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {B3LYP_N_PAR, b3lyp_names, b3lyp_desc, mpw3lyp_values, b3pw91_set_ext_params},
   xc_hyb_gga_xc_mpw3lyp_init, NULL,
@@ -343,7 +325,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_mb3lyp_rc04 = {
   "B3LYP with RC04 LDA",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Tognetti2007_381, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {RC04_N_PAR, rc04_names, rc04_desc, rc04_values, rc04_set_ext_params},
   xc_hyb_gga_xc_mb3lyp_rc04_init, NULL,
@@ -357,10 +339,10 @@ extern "C"
 const xc_func_info_type xc_func_info_hyb_gga_xc_revb3lyp = {
   XC_HYB_GGA_XC_REVB3LYP,
   XC_EXCHANGE_CORRELATION,
-  "Revised B3LYP",
+  "Revised B3LYP a.k.a. OpB3LYP; B3LYP reoptimized in 6-311++G(2d,2p) basis set",
   XC_FAMILY_HYB_GGA,
-  {&xc_ref_Lu2013_64, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  {&xc_ref_Lu2013_64, &xc_ref_Lu2015_502, NULL, NULL, NULL},
+  XC_FLAGS_3D,
   1e-15,
   {B3LYP_N_PAR, b3lyp_names, b3lyp_desc, revb3lyp_values, b3pw91_set_ext_params},
   xc_hyb_gga_xc_b3lyp_init, NULL,
@@ -378,7 +360,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_b3lyps = {
   "B3LYP*",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Reiher2001_48, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {B3LYP_N_PAR, b3lyp_names, b3lyp_desc, b3lyps_values, b3pw91_set_ext_params},
   xc_hyb_gga_xc_b3lyp_init, NULL,
@@ -406,7 +388,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_b5050lyp = {
   "B5050LYP",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Shao2003_4807, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {B3LYP_N_PAR, b3lyp_names, b3lyp_desc, b5050lyp_values, b3pw91_set_ext_params},
   xc_hyb_gga_xc_b5050lyp_init, NULL,
@@ -461,7 +443,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_kmlyp = {
   "Kang-Musgrave hybrid",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Kang2001_11040, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {KMLYP_N_PAR, kmlyp_names, kmlyp_desc, kmlyp_values, kmlyp_set_ext_params},
   xc_hyb_gga_xc_kmlyp_init, NULL,
@@ -479,7 +461,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_qtp17 = {
   "Global hybrid for vertical ionization potentials",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Jin2018_064111, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {KMLYP_N_PAR, kmlyp_names, kmlyp_desc, qtp17_values, kmlyp_set_ext_params},
   xc_hyb_gga_xc_kmlyp_init, NULL,
@@ -524,7 +506,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_apf = {
   "APF hybrid functional",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Austin2012_4989, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_gga_xc_apf_init, NULL,
@@ -560,7 +542,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_wc04 = {
   "hybrid fitted to carbon NMR shifts",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Wiitala2006_1085, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_gga_xc_wc04_init, NULL,
@@ -597,7 +579,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_wp04 = {
   "hybrid fitted to proton NMR shifts",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Wiitala2006_1085, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_gga_xc_wp04_init, NULL,
@@ -664,7 +646,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_b3lyp_mcm1 = {
   "B3LYP-MCM1",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Caldeira2019_62, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {MCM1_N_PAR, mcm1_names, mcm1_desc, mcm1_values, mcm1_set_ext_params},
   xc_hyb_gga_xc_b3lyp_mcm_init, NULL,
@@ -680,7 +662,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_b3lyp_mcm2 = {
   "B3LYP-MCM2",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Caldeira2019_62, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {MCM1_N_PAR, mcm1_names, mcm1_desc, mcm2_values, mcm1_set_ext_params},
   xc_hyb_gga_xc_b3lyp_mcm_init, NULL,

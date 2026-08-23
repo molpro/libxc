@@ -13,6 +13,16 @@
 
 #define XC_MGGA_C_R2SCANL        719 /* Deorbitalized r^2SCAN correlation */
 
+/* The deorbitalization is performed symbolically in
+   maple/mgga_exc/mgga_c_r2scanl.mpl: r2SCAN correlation's iso-orbital indicator
+   is taken from PC07 rather than assembled from a kinetic energy density at run
+   time.  r2SCAN correlation's regularization parameter eta is not exposed here,
+   so it is baked at its default in the Maple source and only PC07's parameters
+   survive. */
+typedef struct{
+  double pc07_a, pc07_b;
+} mgga_c_r2scanl_params;
+
 #define N_PAR 2
 static const char *names[N_PAR] = {
   "_a", "_b"  /* parameters of pc07 */
@@ -25,17 +35,14 @@ static const double par_r2scanl[N_PAR] = {
 };
 
 static void
-r2scanl_set_ext_params(xc_func_type *p, const double *ext_params)
-{
-  assert(p != NULL && p->func_aux != NULL);
-  xc_func_set_ext_params(p->func_aux[1], &ext_params[0]);
-}
-
-static void
 mgga_c_r2scanl_init(xc_func_type *p)
 {
-  xc_deorbitalize_init(p, XC_MGGA_C_R2SCAN, XC_MGGA_K_PC07_OPT);
+  assert(p != NULL && p->params == NULL);
+  p->params = libxc_malloc_flags(sizeof(mgga_c_r2scanl_params), p->info->flags);
 }
+
+#include "maple2c/mgga_exc/mgga_c_r2scanl.c"
+#include "work_mgga.c"
 
 #ifdef __cplusplus
 extern "C"
@@ -48,7 +55,7 @@ const xc_func_info_type xc_func_info_mgga_c_r2scanl = {
   {&xc_ref_Mejia2020_121109, &xc_ref_Furness2020_8208, &xc_ref_Furness2020_9248, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_NEEDS_LAPLACIAN | XC_FLAGS_I_HAVE_ALL,
   1e-15,
-  {N_PAR, names, desc, par_r2scanl, r2scanl_set_ext_params},
+  {N_PAR, names, desc, par_r2scanl, set_ext_params_cpy},
   mgga_c_r2scanl_init, NULL,
-  NULL, NULL, &xc_deorbitalize_func
+  NULL, NULL, &work_mgga
 };

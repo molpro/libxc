@@ -17,6 +17,8 @@
 #define XC_MGGA_C_REVM06_L      294 /* Revised Minnesota M06-L correlation functional  */
 #define XC_MGGA_C_REVM06        306 /* Revised Minnesota M06 correlation functional    */
 #define XC_MGGA_C_M06_SX        311 /* Minnesota M06-SX correlation functional         */
+#define XC_MGGA_C_PI_M06_2X_DL  768 /* Dispersionless physically-informed Minnesota M06-2X correlation functional */
+#define XC_MGGA_C_PI_M06_2X     770 /* Physically-informed Minnesota M06-2X correlation functional */
 
 typedef struct{
   double gamma_ss, gamma_ab, alpha_ss, alpha_ab;
@@ -30,13 +32,13 @@ mgga_c_m06l_init(xc_func_type *p)
   assert(p != NULL);
 
   p->n_func_aux  = 1;
-  p->func_aux    = (xc_func_type **) libxc_malloc(1*sizeof(xc_func_type *));
-  p->func_aux[0] = (xc_func_type *)  libxc_malloc(  sizeof(xc_func_type));
+  p->func_aux    = (xc_func_type **) libxc_malloc_flags(1*sizeof(xc_func_type *), p->info->flags);
+  p->func_aux[0] = (xc_func_type *)  libxc_malloc_flags(  sizeof(xc_func_type), p->info->flags);
 
-  xc_func_init(p->func_aux[0], XC_LDA_C_PW_MOD, XC_POLARIZED);
+  xc_func_init_flags(p->func_aux[0], XC_LDA_C_PW_MOD, XC_POLARIZED, p->info->flags);
 
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(mgga_c_m06l_params));
+  p->params = libxc_malloc_flags(sizeof(mgga_c_m06l_params), p->info->flags);
 }
 
 #define M06L_N_PAR 27
@@ -110,6 +112,22 @@ static const double m06sx_values[M06L_N_PAR] = {
   1.63738167314691E-01, -4.36481171027951E-01, -1.90232628449712E+00, -1.42432902881841E+00, -9.05909137360893E-01,
   8.17322574473352E-02, -2.88531085759385E-02,  9.05917734868130E-02, 0.0, 0.0, -4.86297499082106E-04,
   7.40594619832397E-01,  1.23306511345974E-02, -1.88253421850249E-02, 0.0, 0.0,  4.87276242162303E-04,
+  1e-10
+};
+static const double pi_m06_2x_dl_values[M06L_N_PAR] = {
+  0.06, 0.0031, 0.00515088, 0.00304966,
+  2.70283368e+01, -2.20733555e+00, -2.28984013e+01,  3.66739237e+01, -3.70195328e+01,
+  2.95107885e+01, -6.43287326e+01,  4.33840077e+01, -1.36853427e+01,  5.09108510e+00,
+  -2.63995705e+01, 2.04900938e-01, -1.28889658e-01, -9.75282842e-04,  4.50949166e-04, 0.00000000e+00,
+  -2.85255664e+01, 1.08768648e-01, -1.05521341e-01, -8.72951987e-05,  7.99015876e-04, 0.00000000e+00,
+  1e-10
+};
+static const double pi_m06_2x_values[M06L_N_PAR] = {
+  0.06, 0.0031, 0.00515088, 0.00304966,
+  -8.05221504e+01, -8.39774959e+00,  1.22023642e+02, -2.24496186e+02,  1.86914316e+02,
+  3.18795645e+00,   9.16748052e+01, -7.69104553e+01, -8.38251785e+00, -1.24255278e+01,
+  8.27200920e+01,  -4.05032800e-01,  7.26404883e-01,  2.16125420e-03, -1.31463880e-02, 0.00000000e+00,
+  -2.35239666e+00, -2.86778663e-01, -1.43194201e-02, -2.15170742e-04, -2.17407873e-03, 0.00000000e+00,
   1e-10
 };
 
@@ -224,6 +242,38 @@ const xc_func_info_type xc_func_info_mgga_c_m06_sx = {
   XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
   1.0e-14,
   {M06L_N_PAR, m06l_names, m06l_desc, m06sx_values, set_ext_params_cpy},
+  mgga_c_m06l_init, NULL,
+  NULL, NULL, &work_mgga,
+};
+
+#ifdef __cplusplus
+extern "C"
+#endif
+const xc_func_info_type xc_func_info_mgga_c_pi_m06_2x_dl = {
+  XC_MGGA_C_PI_M06_2X_DL,
+  XC_CORRELATION,
+  "Dispersionless physically-informed Minnesota M06-2X correlation functional",
+  XC_FAMILY_MGGA,
+  {&xc_ref_Losev2024_10921, NULL, NULL, NULL, NULL},
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
+  1.0e-12,
+  {M06L_N_PAR, m06l_names, m06l_desc, pi_m06_2x_dl_values, set_ext_params_cpy},
+  mgga_c_m06l_init, NULL,
+  NULL, NULL, &work_mgga,
+};
+
+#ifdef __cplusplus
+extern "C"
+#endif
+const xc_func_info_type xc_func_info_mgga_c_pi_m06_2x = {
+  XC_MGGA_C_PI_M06_2X,
+  XC_CORRELATION,
+  "Physically-informed Minnesota M06-2X correlation functional",
+  XC_FAMILY_MGGA,
+  {&xc_ref_Losev2024_10921, NULL, NULL, NULL, NULL},
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
+  1.0e-12,
+  {M06L_N_PAR, m06l_names, m06l_desc, pi_m06_2x_values, set_ext_params_cpy},
   mgga_c_m06l_init, NULL,
   NULL, NULL, &work_mgga,
 };

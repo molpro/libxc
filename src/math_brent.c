@@ -36,7 +36,7 @@ double xc_math_brent
   if (fa * fb > 0){
 #ifndef HAVE_CUDA
     fprintf(stderr, "Brent: bracketing error [%lf,%lf]\n", a, b);
-    exit(1);
+    abort();
 #endif
   }
 
@@ -52,8 +52,12 @@ double xc_math_brent
   d = 0;     /* Only used if mflag is unset (mflag == false) */
 
   for (iter=1; iter<MAX_ITER; ++iter){
-    /* stop if converged or error is less than tolerance */
-    if (fabs(b - a) < TOL)
+    /* Stop when the bracket is tight to within TOL of the current
+       bracket magnitude. The (1 + |b|) factor turns TOL into a
+       relative tolerance scaled to the answer, so callers can pass
+       TOL = 2*DBL_EPSILON for "exact to floating-point precision"
+       without the test stalling at the |b|*DBL_EPSILON floor. */
+    if (fabs(b - a) < TOL * (1.0 + fabs(b)))
       return (b + a)/2.0;
 
     if (fa != fc && fb != fc){

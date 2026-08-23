@@ -19,7 +19,7 @@ static void
 gga_k_rational_p_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(gga_k_rational_p_params));
+  p->params = libxc_malloc_flags(sizeof(gga_k_rational_p_params), p->info->flags);
 }
 
 #define N_PAR 2

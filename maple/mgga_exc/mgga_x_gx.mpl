@@ -21,7 +21,6 @@ params_a_c1       := -0.643560:
 params_a_alphainf :=  0.852:
 $endif
 
-gx_alpha := (x, t) -> (t - x^2/8)/K_FACTOR_C:
 
 gx_cx0 := 4/3*(2/Pi)^(1/3):
 gx_cx1 := X_FACTOR_C:
@@ -33,11 +32,11 @@ gx_gx0 := a ->
 gx_gx1 := a ->
   1 + (1 - params_a_alphainf)*(1 - a)/(1 + a):
 
+(* gx_gx0 and gx_gx1 both equal 1 at a = 1, so this switch is C0 *)
 gx_f_a := a->
-  + gx_gx0(a)*Heaviside(1 - a)
-  + gx_gx1(a)*Heaviside(a - 1):
+  my_piecewise3(a < 1, gx_gx0(a), gx_gx1(a)):
 
 gx_f := (x, u, t) ->
-  gx_f_a(gx_alpha(x, t)):
+  gx_f_a(mgga_alpha(x, t)):
 
 f := (rs, z, xt, xs0, xs1, u0, u1, t0, t1) -> mgga_exchange(gx_f, rs, z, xs0, xs1, u0, u1, t0, t1):

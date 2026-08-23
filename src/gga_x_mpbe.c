@@ -22,7 +22,7 @@ gga_x_mpbe_init(xc_func_type *p)
   gga_x_mpbe_params *params;
 
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(gga_x_mpbe_params));
+  p->params = libxc_malloc_flags(sizeof(gga_x_mpbe_params), p->info->flags);
   params = (gga_x_mpbe_params *) (p->params);
 
   switch(p->info->number){
@@ -34,7 +34,7 @@ gga_x_mpbe_init(xc_func_type *p)
     break;
   default:
     fprintf(stderr, "Internal error in gga_x_mpbe\n");
-    exit(1);
+    abort();
   }
 }
 

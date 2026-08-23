@@ -9,6 +9,23 @@
 
 #include "util.h"
 
+/* check if cpu or gpu version is compiled */
+#ifdef HAVE_CUDA
+static int default_flags = XC_FLAGS_ON_DEVICE;
+#else
+static int default_flags = XC_FLAGS_ON_HOST;
+#endif
+
+int xc_func_info_get_default_flags(void)
+{
+  return default_flags;
+}
+
+void xc_func_info_set_default_flags(int flags)
+{
+  default_flags = flags;
+}
+
 int xc_func_info_get_number(const xc_func_info_type *info)
 {
   return info->number;

@@ -9,6 +9,6 @@
 (* type: gga_exc *)
 
 pearson_f0 := s -> 1 + 5/27*s^2/(1 + s^6):
-pearson_f  := x -> pearson_f0(X2S*x):
+pearson_f  := x -> pearson_f0(gga_s(x)):
 
 f := (rs, zeta, xt, xs0, xs1) -> gga_kinetic(pearson_f, rs, zeta, xs0, xs1):

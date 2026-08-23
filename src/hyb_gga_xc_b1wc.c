@@ -16,8 +16,8 @@
 #define XC_HYB_GGA_XC_MPW1PBE   484  /* Becke 1-parameter mixture of mPW91 and PBE       */
 #define XC_HYB_GGA_XC_MPW1PW    418  /* Becke 1-parameter mixture of mPW91 and PW91      */
 #define XC_HYB_GGA_XC_MPW1K     405  /* mixture of mPW91 and PW91 optimized for kinetics */
-#define XC_HYB_GGA_XC_BHANDH    435  /* Becke half-and-half or BHLYP                     */
-#define XC_HYB_GGA_XC_BHANDHLYP 436  /* Becke half-and-half with B88 exchange            */
+#define XC_HYB_GGA_XC_BHANDH    435  /* Gaussian implementation of Becke half-and-half of HF and LDA exchange with 100% LYP correlation */
+#define XC_HYB_GGA_XC_BHANDHLYP 436  /* Gaussian implementation of Becke half-and-half of HF and B88 exchange with 100% LYP correlation, a.k.a. BHLYP */
 #define XC_HYB_GGA_XC_MPWLYP1M  453  /* MPW with 1 par. for metals/LYP                   */
 #define XC_HYB_GGA_XC_BLYP35    499  /* Becke 1-parameter mixture for mixed-valence systems */
 
@@ -68,7 +68,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_b1wc = {
   "B1WC",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Bilc2008_165107, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {N_PAR, names, desc, par_b1wc, set_ext_params},
   xc_hyb_gga_xc_b1wc_init,
@@ -95,7 +95,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_b1lyp = {
   "B1LYP",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Adamo1997_242, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {N_PAR, names, desc, par_quarter, set_ext_params},
   xc_hyb_gga_xc_b1lyp_init,
@@ -121,7 +121,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_b1pw91 = {
   "B1PW91",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Adamo1997_242, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {N_PAR, names, desc, par_quarter, set_ext_params},
   xc_hyb_gga_xc_b1pw91_init,
@@ -148,7 +148,7 @@ xc_hyb_gga_xc_mpw1pw_init(xc_func_type *p)
   default:
     fprintf(stderr,"Error in hyb_gga_xc_mpw1pw_init\n");
     fflush(stderr);
-    exit(1);
+    abort();
   }
 
   xc_mix_init(p, 2, funcs_id, funcs_coef);
@@ -164,7 +164,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_mpw1lyp = {
   "mPW1LYP",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Adamo1998_664, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {N_PAR, names, desc, par_quarter, set_ext_params},
   xc_hyb_gga_xc_mpw1pw_init,
@@ -180,7 +180,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_mpw1pbe = {
   "mPW1PBE",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Adamo1998_664, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {N_PAR, names, desc, par_quarter, set_ext_params},
   xc_hyb_gga_xc_mpw1pw_init,
@@ -196,7 +196,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_mpw1pw = {
   "mPW1PW",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Adamo1998_664, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {N_PAR, names, desc, par_quarter, set_ext_params},
   xc_hyb_gga_xc_mpw1pw_init,
@@ -223,7 +223,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_mpw1k = {
   "mPW1K",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Lynch2000_4811, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {N_PAR, names, desc, par_mpw1k, set_ext_params},
   xc_hyb_gga_xc_mpw1k_init,
@@ -247,10 +247,10 @@ extern "C"
 const xc_func_info_type xc_func_info_hyb_gga_xc_bhandh = {
   XC_HYB_GGA_XC_BHANDH,
   XC_EXCHANGE_CORRELATION,
-  "BHandH i.e. BHLYP",
+  "BHandH: 50% LDA exchange and 50% HF exchange with 100% LYP correlation",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Becke1993_1372, &xc_ref_gaussianimplementation, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {N_PAR, names, desc, par_half, set_ext_params},
   xc_hyb_gga_xc_bhandh_init,
@@ -274,10 +274,10 @@ extern "C"
 const xc_func_info_type xc_func_info_hyb_gga_xc_bhandhlyp = {
   XC_HYB_GGA_XC_BHANDHLYP,
   XC_EXCHANGE_CORRELATION,
-  "BHandHLYP",
+  "BHandHLYP a.k.a. BHLYP: 50% B88 exchange and 50% HF exchange with 100% LYP correlation",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Becke1993_1372, &xc_ref_gaussianimplementation, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {N_PAR, names, desc, par_half, set_ext_params},
   xc_hyb_gga_xc_bhandhlyp_init,
@@ -304,7 +304,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_blyp35 = {
   "BLYP35",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Renz2009_16292, &xc_ref_Kaupp2011_16973, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {N_PAR, names, desc, par_b35, set_ext_params},
   xc_hyb_gga_xc_blyp35_init,
@@ -331,7 +331,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_mpwlyp1m = {
   "MPW with 1 par. for metals/LYP",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Schultz2005_11127, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {N_PAR, names, desc, par_mpwlyp1m, set_ext_params},
   xc_hyb_gga_xc_mpwlyp1m_init,

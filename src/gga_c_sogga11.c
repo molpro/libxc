@@ -31,7 +31,7 @@ static const double par_sogga11_x[N_PAR] = {
 
 static void gga_c_sogga11_init(xc_func_type *p) {
   assert(p != NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(gga_c_sogga11_params));
+  p->params = libxc_malloc_flags(sizeof(gga_c_sogga11_params), p->info->flags);
 }
 
 #include "maple2c/gga_exc/gga_c_sogga11.c"

@@ -12,14 +12,19 @@
 #define XC_MGGA_K_PC07_OPT      634 /* Reoptimized version by Mejia-Rodriguez and Trickey */
 
 typedef struct{
-  double a, b;
+  /* Named pc07_a / pc07_b rather than a / b: the deorbitalized functionals
+     compose PC07 with a SCAN-family parent in one symbolic namespace, where a
+     bare `a` collides with the PW92 correlation parameter list that PBE (and
+     hence SCAN correlation) pulls in.  The user-visible parameter names below
+     are unchanged. */
+  double pc07_a, pc07_b;
 } mgga_k_pc07_params;
 
 static void
 mgga_k_pc07_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(mgga_k_pc07_params));
+  p->params = libxc_malloc_flags(sizeof(mgga_k_pc07_params), p->info->flags);
 }
 
 #define PC07_N_PAR 2

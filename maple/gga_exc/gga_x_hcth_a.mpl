@@ -16,7 +16,7 @@
 *)
 
 (* eq 31 *)
-hcth_b88x := (beta,x) -> beta*x^2/(1+params_a_gamma*beta*x*arcsinh(x)):
+hcth_b88x := (beta,x) -> beta*x^2/(1+params_a_gamma*beta*x*xc_asinh(x)):
 (* eq 30 *)
 hcth_a_f := x -> params_a_c0 - params_a_c1/X_FACTOR_C*hcth_b88x(params_a_beta,x) - params_a_c2/X_FACTOR_C*eval(diff(hcth_b88x(beta,x),beta),beta=params_a_beta):
 

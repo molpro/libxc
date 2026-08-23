@@ -29,11 +29,65 @@ def work_gga_exc(params):
   '''Process a GGA functional for the energy'''
 
   derivatives = partials_to_derivatives(params, "gga", partials)
-  
+
   der_def, out_c = maple_define_derivatives(variables, derivatives, "mf")
-  
+
   out_c = ", ".join(out_c)
   if out_c != "": out_c = ", " + out_c
+
+  maple_zk = " zk_0_ = mzk(" + ", ".join(variables) + ")"
+
+  if params.get("spin_density") and params.get("spin_scaled"):
+    # Spin-density path for exchange / kinetic functionals (see lda.py
+    # for the rationale). Each spin channel is evaluated independently
+    # from its own same-spin density and gradient, at full spin
+    # polarization (zeta = 1). The total reduced gradient xt and the
+    # opposite-channel reduced gradient are unused by spin-scaled
+    # exchange; xt is passed as zero and the opposite-channel argument
+    # is set to the same channel value (it only feeds a screened-out
+    # branch).
+    maple_code = '''
+# xs_chan: reduced density gradient of a single spin channel
+xs_chan := (n_s, sigma_ss) -> sqrt(sigma_ss)/n_s^(1 + 1/DIMENSIONS):
+
+# f_chan: energy per unit volume of a single spin channel with spin
+# density n_s and same-spin sigma_ss, evaluated at full polarization.
+f_chan := (n_s, sigma_ss) -> {} \\
+  n_s*f(r_ws(n_s), 1, 0, xs_chan(n_s, sigma_ss), xs_chan(n_s, sigma_ss)) \\
+  {} :
+
+$include <util.mpl>
+'''.format(params["simplify_begin"], params["simplify_end"])
+
+    # we build 2 variants of the functional, for unpolarized, and polarized densities
+    variants = {
+      "unpol": '''
+# unpolarized: both channels carry half of the density and gradient
+mf   := (r0, r1, s0, s1, s2) -> eval(2*f_chan(r0/2, s0/4)):
+mzk  := (r0, r1, s0, s1, s2) -> eval(mf(r0, r1, s0, s1, s2)/r0):
+
+{}
+
+{}
+C([{}{}], optimize, deducetypes=false):
+
+'''.format(der_def, maple_code, maple_zk, out_c),
+
+      "pol": '''
+# polarized: each channel is evaluated from its own spin density
+mf   := (r0, r1, s0, s1, s2) -> eval(f_chan(r0, s0) + f_chan(r1, s2)):
+mzk  := (r0, r1, s0, s1, s2) -> eval(mf(r0, r1, s0, s1, s2)/(r0 + r1)):
+
+{}
+
+{}
+C([{}{}], optimize, deducetypes=false):
+
+'''.format(der_def, maple_code, maple_zk, out_c)
+    }
+
+    maple2c_run(params, variables, derivatives, variants, 0, input_args, output_args)
+    return
 
   # we join all the pieces
   maple_code  = '''
@@ -48,8 +102,6 @@ mzk  := (r0, r1, s0, s1, s2) -> \\
 
 $include <util.mpl>
 '''.format(params["simplify_begin"], params["simplify_end"])
-  
-  maple_zk = " zk_0_ = mzk(" + ", ".join(variables) + ")"
 
   # we build 2 variants of the functional, for unpolarized, and polarized densities
   variants = {

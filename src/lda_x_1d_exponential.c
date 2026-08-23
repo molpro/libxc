@@ -19,7 +19,7 @@ static void
 lda_x_1d_exponential_init(xc_func_type *p)
 {
   assert(p->params == NULL);
-  p->params = libxc_malloc(sizeof(lda_x_1d_exponential_params));
+  p->params = libxc_malloc_flags(sizeof(lda_x_1d_exponential_params), p->info->flags);
 }
 
 GPU_FUNCTION
@@ -29,7 +29,7 @@ static inline double FT_inter(double x)
 }
 
 GPU_FUNCTION
-static void func1(double *x, int n, void *dummy)
+static void func1(double *x, int n, const void *dummy)
 {
   int ii;
 
@@ -38,7 +38,7 @@ static void func1(double *x, int n, void *dummy)
 }
 
 GPU_FUNCTION
-static void func2(double *x, int n, void *dummy)
+static void func2(double *x, int n, const void *dummy)
 {
   int ii;
 

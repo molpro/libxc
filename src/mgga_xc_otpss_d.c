@@ -18,7 +18,7 @@ mgga_xc_otpss_d_init(xc_func_type *p)
   static double funcs_coef[2] = {1.0, 1.0};
 
   static double par_x_tpss[] = {3.43, 0.75896, 0.165, 0.778, 0.41567, 2.0, 0.0};
-  static double par_c_tpss[] = {0.08861, 0.7, 0.59, 0.9269, 0.6225, 2.1540};
+  static double par_c_tpss[] = {0.08861, 0.7, 0.53, 0.87, 0.50, 2.26};
 
   xc_mix_init(p, 2, funcs_id, funcs_coef);
   xc_func_set_ext_params(p->func_aux[0], par_x_tpss);
@@ -34,7 +34,7 @@ const xc_func_info_type xc_func_info_mgga_xc_otpss_d = {
   "oTPSS-D functional of Goerigk and Grimme",
   XC_FAMILY_MGGA,
   {&xc_ref_Goerigk2010_107, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {0, NULL, NULL, NULL, NULL},
   mgga_xc_otpss_d_init,

@@ -145,7 +145,6 @@ extern xc_func_info_type xc_func_info_gga_x_airy;
 extern xc_func_info_type xc_func_info_gga_x_lag;
 extern xc_func_info_type xc_func_info_gga_xc_mohlyp;
 extern xc_func_info_type xc_func_info_gga_xc_mohlyp2;
-extern xc_func_info_type xc_func_info_gga_xc_th_fl;
 extern xc_func_info_type xc_func_info_gga_xc_th_fc;
 extern xc_func_info_type xc_func_info_gga_xc_th_fcfo;
 extern xc_func_info_type xc_func_info_gga_xc_th_fco;
@@ -183,8 +182,16 @@ extern xc_func_info_type xc_func_info_gga_x_pbe_gaussian;
 extern xc_func_info_type xc_func_info_gga_c_pbe_gaussian;
 extern xc_func_info_type xc_func_info_gga_x_ncapr;
 extern xc_func_info_type xc_func_info_gga_xc_b97_3c;
+extern xc_func_info_type xc_func_info_gga_xc_dlb97;
+extern xc_func_info_type xc_func_info_gga_x_t_pbe1;
+extern xc_func_info_type xc_func_info_gga_x_t_pbe2;
 extern xc_func_info_type xc_func_info_gga_x_bkl1;
 extern xc_func_info_type xc_func_info_gga_x_bkl2;
+extern xc_func_info_type xc_func_info_gga_c_bkl1;
+extern xc_func_info_type xc_func_info_gga_c_bkl2;
+extern xc_func_info_type xc_func_info_gga_x_df3_opt1;
+extern xc_func_info_type xc_func_info_gga_x_df3_opt2;
+extern xc_func_info_type xc_func_info_gga_x_llp;
 extern xc_func_info_type xc_func_info_gga_x_s12g;
 extern xc_func_info_type xc_func_info_gga_k_vw;
 extern xc_func_info_type xc_func_info_gga_k_ge2;
@@ -405,7 +412,6 @@ const xc_func_info_type *xc_gga_known_funct[] = {
   &xc_func_info_gga_x_lag,
   &xc_func_info_gga_xc_mohlyp,
   &xc_func_info_gga_xc_mohlyp2,
-  &xc_func_info_gga_xc_th_fl,
   &xc_func_info_gga_xc_th_fc,
   &xc_func_info_gga_xc_th_fcfo,
   &xc_func_info_gga_xc_th_fco,
@@ -443,8 +449,16 @@ const xc_func_info_type *xc_gga_known_funct[] = {
   &xc_func_info_gga_c_pbe_gaussian,
   &xc_func_info_gga_x_ncapr,
   &xc_func_info_gga_xc_b97_3c,
+  &xc_func_info_gga_xc_dlb97,
+  &xc_func_info_gga_x_t_pbe1,
+  &xc_func_info_gga_x_t_pbe2,
   &xc_func_info_gga_x_bkl1,
   &xc_func_info_gga_x_bkl2,
+  &xc_func_info_gga_c_bkl1,
+  &xc_func_info_gga_c_bkl2,
+  &xc_func_info_gga_x_df3_opt1,
+  &xc_func_info_gga_x_df3_opt2,
+  &xc_func_info_gga_x_llp,
   &xc_func_info_gga_x_s12g,
   &xc_func_info_gga_k_vw,
   &xc_func_info_gga_k_ge2,

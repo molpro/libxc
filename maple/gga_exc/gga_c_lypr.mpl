@@ -20,7 +20,7 @@ lypr_eta := rr -> -2/(3*sqrt(Pi))*params_a_m2*params_a_omega
   * exp(-params_a_m2^2*params_a_omega^2*rr^2):
 
 lypr_t7 := (rr, z, xt, xs0, xs1) -> 
-  -rr * (1 - z^2)/4 * (
+  -rr * one_minus_z_pow_n(z, 2)/4 * (
     + 7/6*(xt^2 - lyp_aux6*(xs0^2*opz_pow_n(z,8/3) + xs1^2*opz_pow_n(-z,8/3)))
     + (1 + (1 + z)/6)*xs0^2*lyp_aux6*opz_pow_n( z, 8/3)
     + (1 + (1 - z)/6)*xs1^2*lyp_aux6*opz_pow_n(-z, 8/3)
@@ -31,8 +31,8 @@ lypr_t7 := (rr, z, xt, xs0, xs1) ->
 f_lypr_rr := (rr, z, xt, xs0, xs1) -> params_a_a*(
   + erfc(params_a_m1*params_a_omega*rr)*lyp_t1(rr, z)
   + erfc(params_a_m2*params_a_omega*rr)*lyp_omega(rr)*(
-    + lyp_t2(rr, z, xt) + lyp_t3(z) + lyp_t4(rr, z, xs0, xs1)
-    + lyp_t5(rr, z, xs0, xs1) + lyp_t6(z, xs0, xs1)
+    + lyp_t2(rr, z, xt^2) + lyp_t3(z) + lyp_t4(rr, z, xs0^2, xs1^2)
+    + lyp_t5(rr, z, xs0^2, xs1^2) + lyp_t6(z, xs0^2, xs1^2)
   )
   + lyp_omega(rr)*lypr_eta(rr)*lypr_t7(rr, z, xt, xs0, xs1)
 ):

@@ -15,5 +15,8 @@ b1 := -0.0311:
 b2 :=  2.39:
 
 (* eq 25 *)
+(* log((rs/RS_FACTOR + b2)/(rs/RS_FACTOR)) = log(1 + b2*RS_FACTOR/rs);
+   routed through log1p so large rs (small b2*RS_FACTOR/rs) keeps
+   precision. *)
 f := (rs, zeta) -> a1/(1 + a2*rs/RS_FACTOR)
-  + b1*log((rs/RS_FACTOR + b2)/(rs/RS_FACTOR)):
+  + b1*xc_log1p(b2*RS_FACTOR/rs):

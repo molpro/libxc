@@ -16,9 +16,17 @@
 
 (* Functional is based on Chachiyo correlation *)
 $include "lda_c_chachiyo.mpl"
-(* .. but with a different scaling function *)
+(* .. but with a different scaling function.
+   Algebraic identity:
+     1 - g^3 = (1 - g)*(1 + g + g^2),
+     1 - g   = -(opz_pow_n_m1(z, 2/3) + opz_pow_n_m1(-z, 2/3))/2,
+   so g_zeta = 2*(1 - g^3)
+            = -(opz_pow_n_m1(z, 2/3) + opz_pow_n_m1(-z, 2/3)) * (1 + g + g^2),
+   which is cancellation-free at z = 0 where g -> 1 and the direct
+   1 - g^3 form computes 1 - close-to-1. *)
 g := z -> (opz_pow_n(z,2/3) + opz_pow_n(-z,2/3))/2:
-g_zeta := zeta -> 2*(1 - g(zeta)^3):
+g_zeta := zeta ->
+  -(opz_pow_n_m1(zeta, 2/3) + opz_pow_n_m1(-zeta, 2/3))*(1 + g(zeta) + g(zeta)^2):
 
 f_chachiyo := (rs, zeta) -> e0(rs) + (e1(rs) - e0(rs))*g_zeta(zeta):
 f := (rs, zeta) -> f_chachiyo(rs, zeta):

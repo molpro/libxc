@@ -11,7 +11,7 @@
 $include "mbeef.mpl"
 
 (* MS2 f(alpha) transformation *)
-mbeef_xj0 := a -> (1 - a^2)^3/(1 + a^3*(1 + 4*a^3)):
+mbeef_xj0 := a -> one_minus_z_pow_n(a, 2)^3/(1 + a^3*(1 + 4*a^3)):
 
 mbeef_n := 8:
 mbeef_coefs := [

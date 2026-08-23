@@ -13,6 +13,6 @@ $define xc_dimensions_2d
 _2d_b88_beta := 0.007:
 _2d_b88_csi  := 8: (* for harmonic potentials *)
 
-_2d_b88_f := x -> 1 + _2d_b88_beta/X_FACTOR_2D_C*x^2/(1 + _2d_b88_csi*_2d_b88_beta*x*arcsinh(x)):
+_2d_b88_f := x -> 1 + _2d_b88_beta/X_FACTOR_2D_C*x^2/(1 + _2d_b88_csi*_2d_b88_beta*x*xc_asinh(x)):
 
 f := (rs, zeta, xt, xs0, xs1) -> gga_exchange(_2d_b88_f, rs, zeta, xs0, xs1):

@@ -22,17 +22,18 @@ $ifdef gga_c_pbe_params
 params_a_beta  := 0.06672455060314922:
 params_a_gamma := (1 - log(2))/Pi^2:
 params_a_BB    := 1:
+params_a_tscale := 1:
 $endif
 
 mgamma := params_a_gamma:
 mbeta  := (rs, t) -> params_a_beta:
 BB     := params_a_BB:
 
-tp   := (rs, z, xt) -> tt(rs, z, xt):
+tp   := (rs, z, xt) -> params_a_tscale*tt(rs, z, xt):
 
 (* Equation (8) *)
 A := (rs, z, t) ->
-  mbeta(rs, t)/(mgamma*(exp(-f_pw(rs, z)/(mgamma*mphi(z)^3)) - 1)):
+  mbeta(rs, t)/(mgamma*xc_expm1(-f_pw(rs, z)/(mgamma*mphi(z)^3))):
 
 (* Helpers for equation (7)
 
@@ -44,10 +45,19 @@ f1 := (rs, z, t) -> t^2 + BB*A(rs, z, t)*t^4:
 f2 := (rs, z, t) -> mbeta(rs, t)*f1(rs, z, t)/(mgamma*(1 + A(rs, z, t)*f1(rs, z, t))):
 
 (* Equation (7) *)
-fH := (rs, z, t) -> mgamma*mphi(z)^3*log(1 + f2(rs, z, t)):
+fH := (rs, z, t) -> mgamma*mphi(z)^3*xc_log1p(f2(rs, z, t)):
+
+(* The gradient correction f_pbe - f_pw, as a function of the full
+   GGA argument list.  Exposed as a named helper so consumers that
+   need the gradient part alone (e.g. mgga_c_m08, which interpolates
+   the pieces of PBE correlation with tau-dependent weights) can take
+   it directly instead of forming f_pbe - f_pw, which catastrophically
+   cancels when the gradient correction is small.  f_pbe is derived
+   from it so the two stay single-source. *)
+f_pbe_grad := (rs, z, xt, xs0, xs1) -> fH(rs, z, tp(rs, z, xt)):
 
 f_pbe  := (rs, z, xt, xs0, xs1) ->
-  f_pw(rs, z) + fH(rs, z, tp(rs, z, xt)):
+  f_pw(rs, z) + f_pbe_grad(rs, z, xt, xs0, xs1):
 
 f  := (rs, z, xt, xs0, xs1) -> f_pbe(rs, z, xt, xs0, xs1):
 

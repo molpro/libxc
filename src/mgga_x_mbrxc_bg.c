@@ -25,8 +25,9 @@ double xc_mgga_x_mbrxc_get_x(double Q)
 {
   double rhs, tol, x1, x2;
 
-  tol = 5e-12;
-  if(fabs(Q) < 5e-12)
+  /* See xc_mgga_x_br89_get_x for the precision rationale. */
+  tol = 2.0*XC_EPSILON;
+  if(fabs(Q) < tol)
     return 3.0;
 
   /* build right-hand side of the non-linear equation

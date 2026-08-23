@@ -1,0 +1,40 @@
+#!/usr/bin/python3
+
+import os
+import sys
+
+import pytest
+
+if __name__ == "__main__":
+    # pytest must run from the top level directory, identified by pyproject.toml
+    cwd = os.getcwd()
+    here = os.path.dirname(os.path.abspath(__file__))
+    while not os.path.exists(os.path.join(cwd, 'pyproject.toml')):
+        cwd = os.path.dirname(cwd)
+        os.chdir(cwd)
+    # Need to be able to find pylibxc
+    sys.path.append(cwd)
+
+    # Any arguments are paths relative to this script's directory, so that
+    # ctest can register one test per family instead of one opaque test over
+    # the whole suite. They are made absolute here because we have just
+    # changed directory to the project root. With no arguments the full suite
+    # runs, as before.
+    args = []
+    for a in sys.argv[1:]:
+        cand = os.path.join(here, a)
+        args.append(cand if os.path.exists(cand) else a)
+
+    # -q keeps each family's output to a couple of lines, so a passing ctest
+    # run still shows what ran rather than nothing at all; the summary of any
+    # failure is still printed in full.
+    if not any(a.startswith("-") for a in args):
+        args.insert(0, "-q")
+
+    rc = pytest.main(args)
+    # EXIT_NOTESTSCOLLECTED. Splitting the suite across ctest tests means a
+    # partition can legitimately select nothing (everything in it deselected
+    # by a marker), which is not a failure.
+    if rc == 5:
+        rc = 0
+    sys.exit(rc)

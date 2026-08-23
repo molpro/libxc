@@ -23,8 +23,12 @@
 fd_beta := params_a_beta:
 fd_csi  := 2^(1/3):
 
+(* log(x + sqrt(x^2 + 1)) is the closed form for asinh(x); use the
+   xc_asinh wrapper so the codegen emits a direct asinh() call --
+   Maple's `arcsinh` would re-expand to the log+sqrt closed form
+   which reintroduces the log(close-to-1) cancellation at small x. *)
 fd_f_inter := (n, t) -> -3/4 * fd_beta*fd_csi*log(t)^n /
-  (1 + 3*fd_beta*fd_csi*t*log(fd_csi*t + sqrt((fd_csi*t)^2 + 1))):
+  (1 + 3*fd_beta*fd_csi*t*xc_asinh(fd_csi*t)):
 
 fd_f := x -> 1 - x/X_FACTOR_C*(fd_int0(x/fd_csi)*log(x/fd_csi) - fd_int1(x/fd_csi)):
 

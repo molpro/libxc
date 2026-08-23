@@ -15,8 +15,8 @@
   params = (lda_c_chachiyo_params * )(p->params);
 *)
 
-e0 := rs -> params_a_ap*log(1 + params_a_bp/rs + params_a_cp/rs^2):
-e1 := rs -> params_a_af*log(1 + params_a_bf/rs + params_a_cf/rs^2):
+e0 := rs -> params_a_ap*xc_log1p(params_a_bp/rs + params_a_cp/rs^2):
+e1 := rs -> params_a_af*xc_log1p(params_a_bf/rs + params_a_cf/rs^2):
 
 f_chachiyo := (rs, zeta) -> e0(rs) + (e1(rs) - e0(rs))*f_zeta(zeta):
 f := (rs, zeta) -> f_chachiyo(rs, zeta):

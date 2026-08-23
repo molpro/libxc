@@ -15,7 +15,7 @@
 *)
 
 lb_f0 := (rs, z, x) -> -my_piecewise3(x < 300,
-         params_a_beta*x^2/(1 + 3*params_a_beta*x*arcsinh(params_a_gamma*x)),
+         params_a_beta*x^2/(1 + 3*params_a_beta*x*xc_asinh(params_a_gamma*x)),
          x/(3*log(2*params_a_gamma*x))):
 
 lb_f := (rs, z, x) -> (params_a_alpha*(4/3)*LDA_X_FACTOR + lb_f0(rs, z, x))*n_spin(rs, z)^(1/3):

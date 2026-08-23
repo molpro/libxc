@@ -26,7 +26,7 @@ static void
 gga_x_hjs_init(xc_func_type *p)
 {
   assert(p->params == NULL);
-  p->params = libxc_malloc(sizeof(gga_x_hjs_params));
+  p->params = libxc_malloc_flags(sizeof(gga_x_hjs_params), p->info->flags);
 
   xc_hyb_init_hybrid(p, 0.0);
 }

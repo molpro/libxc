@@ -14,59 +14,48 @@
 void
 xc_lda_sanity_check(const xc_func_info_type *info, int order, xc_lda_out_params *out)
 {
+  traceRangePush(__func__);
+
   /* sanity check */
   if(order < 0 || order > 4){
     fprintf(stderr, "Order of derivatives '%d' not implemented\n",
 	    order);
-    exit(1);
+    abort();
   }
 
-  if(out->zk != NULL && !(info->flags & XC_FLAGS_HAVE_EXC)){
-    fprintf(stderr, "Functional '%s' does not provide an implementation of Exc\n",
-	    info->name);
-    exit(1);
-  }
+  xc_require_implementation(out->zk,     info->flags, XC_FLAGS_HAVE_EXC, info->name, "Exc");
+  xc_require_implementation(out->vrho,   info->flags, XC_FLAGS_HAVE_VXC, info->name, "vxc");
+  xc_require_implementation(out->v2rho2, info->flags, XC_FLAGS_HAVE_FXC, info->name, "fxc");
+  xc_require_implementation(out->v3rho3, info->flags, XC_FLAGS_HAVE_KXC, info->name, "kxc");
 
-  if(out->vrho != NULL && !(info->flags & XC_FLAGS_HAVE_VXC)){
-    fprintf(stderr, "Functional '%s' does not provide an implementation of vxc\n",
-	    info->name);
-    exit(1);
-  }
-
-  if(out->v2rho2 != NULL && !(info->flags & XC_FLAGS_HAVE_FXC)){
-    fprintf(stderr, "Functional '%s' does not provide an implementation of fxc\n",
-	    info->name);
-    exit(1);
-  }
-
-  if(out->v3rho3 != NULL && !(info->flags & XC_FLAGS_HAVE_KXC)){
-    fprintf(stderr, "Functional '%s' does not provide an implementation of kxc\n",
-	    info->name);
-    exit(1);
-  }
+  traceRangePop(); // __func__
 }
 
 
 void
 xc_lda_initalize(const xc_func_type *func, size_t np, xc_lda_out_params *out)
 {
+  traceRangePush(__func__);
+
   const xc_dimensions *dim = &(func->dim);
 
   /* initialize output */
   if(out->zk != NULL)
-    libxc_memset(out->zk,     0, np*sizeof(double)*dim->zk);
+    libxc_memset_flags(out->zk,     0, np*sizeof(double)*dim->zk, func->info->flags);
 
   if(out->vrho != NULL)
-    libxc_memset(out->vrho,   0, np*sizeof(double)*dim->vrho);
+    libxc_memset_flags(out->vrho,   0, np*sizeof(double)*dim->vrho, func->info->flags);
 
   if(out->v2rho2 != NULL)
-    libxc_memset(out->v2rho2, 0, np*sizeof(double)*dim->v2rho2);
+    libxc_memset_flags(out->v2rho2, 0, np*sizeof(double)*dim->v2rho2, func->info->flags);
 
   if(out->v3rho3 != NULL)
-    libxc_memset(out->v3rho3, 0, np*sizeof(double)*dim->v3rho3);
+    libxc_memset_flags(out->v3rho3, 0, np*sizeof(double)*dim->v3rho3, func->info->flags);
 
   if(out->v4rho4 != NULL)
-    libxc_memset(out->v4rho4, 0, np*sizeof(double)*dim->v4rho4);
+    libxc_memset_flags(out->v4rho4, 0, np*sizeof(double)*dim->v4rho4, func->info->flags);
+
+  traceRangePop(); // __func__
 }
 
 
@@ -75,10 +64,13 @@ void
 xc_lda_new(const xc_func_type *func, int order, size_t np, const double *rho,
        xc_lda_out_params *out)
 {
+  traceRangePush(__func__);
+
   xc_lda_sanity_check(func->info, order, out);
   xc_lda_initalize(func, np, out);
 
   /* call the LDA routines */
+  traceRangePush("evaluate_functional");
   if(func->info->lda != NULL){
     if(func->nspin == XC_UNPOLARIZED){
       if(func->info->lda->unpol[order] != NULL)
@@ -88,6 +80,7 @@ xc_lda_new(const xc_func_type *func, int order, size_t np, const double *rho,
         func->info->lda->pol[order](func, np, rho, out);
     }
   }
+  traceRangePop(); // "evaluate_functional"
 
   if(func->mix_coef != NULL)
     xc_mix_func(func, np, rho, NULL, NULL, NULL, out->zk, out->vrho, NULL, NULL, NULL,
@@ -98,6 +91,8 @@ xc_lda_new(const xc_func_type *func, int order, size_t np, const double *rho,
                 NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
                 NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
                 NULL, NULL, NULL, NULL, NULL);
+
+  traceRangePop(); // __func__
 }
 
 /* old API */
@@ -115,7 +110,7 @@ xc_lda(const xc_func_type *p, size_t np, const double *rho, double *zk, double *
   if(order < 0) return;
 
   xc_lda_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_lda_out_params));
+  memset(&out, 0, sizeof(xc_lda_out_params));
   out.zk     = zk;
   out.vrho   = vrho;
   out.v2rho2 = v2rho2;
@@ -126,112 +121,46 @@ xc_lda(const xc_func_type *p, size_t np, const double *rho, double *zk, double *
 }
 
 
-/* specializations */
-void
-xc_lda_exc(const xc_func_type *p, size_t np, const double *rho, double *zk)
-{
-  xc_lda_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_lda_out_params));
-  out.zk   = zk;
+/* specializations -- generated from a table (see gga.c for the rationale) */
+#define LDA_P0 double *zk
+#define LDA_P1 double *vrho
+#define LDA_P2 double *v2rho2
+#define LDA_P3 double *v3rho3
+#define LDA_P4 double *v4rho4
+#define LDA_A0 out.zk = zk;
+#define LDA_A1 out.vrho = vrho;
+#define LDA_A2 out.v2rho2 = v2rho2;
+#define LDA_A3 out.v3rho3 = v3rho3;
+#define LDA_A4 out.v4rho4 = v4rho4;
 
-  xc_lda_new(p, 0, np, rho, &out);
-}
+#define XC_LDA_WRAPPER(suffix, order, ASGN, ...)                             \
+  void xc_lda_##suffix(const xc_func_type *p, size_t np, const double *rho,  \
+                       __VA_ARGS__) {                                        \
+    xc_lda_out_params out;                                                   \
+    memset(&out, 0, sizeof(xc_lda_out_params));                            \
+    ASGN                                                                     \
+    xc_lda_new(p, order, np, rho, &out);                                     \
+  }
 
-void
-xc_lda_exc_vxc(const xc_func_type *p, size_t np, const double *rho, double *zk, double *vrho)
-{
-  xc_lda_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_lda_out_params));
-  out.zk   = zk;
-  out.vrho = vrho;
+XC_LDA_WRAPPER(exc,             0, LDA_A0,                        LDA_P0)
+XC_LDA_WRAPPER(vxc,             1, LDA_A1,                        LDA_P1)
+XC_LDA_WRAPPER(fxc,             2, LDA_A2,                        LDA_P2)
+XC_LDA_WRAPPER(kxc,             3, LDA_A3,                        LDA_P3)
+XC_LDA_WRAPPER(lxc,             4, LDA_A4,                        LDA_P4)
+XC_LDA_WRAPPER(exc_vxc,         1, LDA_A0 LDA_A1,                 LDA_P0, LDA_P1)
+XC_LDA_WRAPPER(vxc_fxc,         2, LDA_A1 LDA_A2,                 LDA_P1, LDA_P2)
+XC_LDA_WRAPPER(exc_vxc_fxc,     2, LDA_A0 LDA_A1 LDA_A2,         LDA_P0, LDA_P1, LDA_P2)
+XC_LDA_WRAPPER(vxc_fxc_kxc,     3, LDA_A1 LDA_A2 LDA_A3,         LDA_P1, LDA_P2, LDA_P3)
+XC_LDA_WRAPPER(exc_vxc_fxc_kxc, 3, LDA_A0 LDA_A1 LDA_A2 LDA_A3, LDA_P0, LDA_P1, LDA_P2, LDA_P3)
 
-  xc_lda_new(p, 1, np, rho, &out);
-}
-
-void
-xc_lda_exc_vxc_fxc(const xc_func_type *p, size_t np, const double *rho, double *zk, double *vrho, double *v2rho2)
-{
-  xc_lda_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_lda_out_params));
-  out.zk     = zk;
-  out.vrho   = vrho;
-  out.v2rho2 = v2rho2;
-
-  xc_lda_new(p, 2, np, rho, &out);
-}
-
-void
-xc_lda_vxc_fxc(const xc_func_type *p, size_t np, const double *rho, double *vrho, double *v2rho2)
-{
-  xc_lda_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_lda_out_params));
-  out.vrho   = vrho;
-  out.v2rho2 = v2rho2;
-
-  xc_lda_new(p, 2, np, rho, &out);
-}
-
-void
-xc_lda_exc_vxc_fxc_kxc(const xc_func_type *p, size_t np, const double *rho, double *zk, double *vrho, double *v2rho2, double *v3rho3)
-{
-  xc_lda_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_lda_out_params));
-  out.zk     = zk;
-  out.vrho   = vrho;
-  out.v2rho2 = v2rho2;
-  out.v3rho3 = v3rho3;
-
-  xc_lda_new(p, 3, np, rho, &out);
-}
-
-void
-xc_lda_vxc_fxc_kxc(const xc_func_type *p, size_t np, const double *rho, double *vrho, double *v2rho2, double *v3rho3)
-{
-  xc_lda_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_lda_out_params));
-  out.vrho   = vrho;
-  out.v2rho2 = v2rho2;
-  out.v3rho3 = v3rho3;
-
-  xc_lda_new(p, 3, np, rho, &out);
-}
-
-void
-xc_lda_vxc(const xc_func_type *p, size_t np, const double *rho, double *vrho)
-{
-  xc_lda_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_lda_out_params));
-  out.vrho   = vrho;
-
-  xc_lda_new(p, 1, np, rho, &out);
-}
-
-void
-xc_lda_fxc(const xc_func_type *p, size_t np, const double *rho, double *v2rho2)
-{
-  xc_lda_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_lda_out_params));
-  out.v2rho2 = v2rho2;
-
-  xc_lda_new(p, 2, np, rho, &out);
-}
-
-void
-xc_lda_kxc(const xc_func_type *p, size_t np, const double *rho, double *v3rho3)
-{
-  xc_lda_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_lda_out_params));
-  out.v3rho3 = v3rho3;
-
-  xc_lda_new(p, 3, np, rho, &out);
-}
-
-void
-xc_lda_lxc(const xc_func_type *p, size_t np, const double *rho, double *v4rho4)
-{
-  xc_lda_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_lda_out_params));
-  out.v4rho4 = v4rho4;
-
-  xc_lda_new(p, 4, np, rho, &out);
-}
+#undef LDA_P0
+#undef LDA_P1
+#undef LDA_P2
+#undef LDA_P3
+#undef LDA_P4
+#undef LDA_A0
+#undef LDA_A1
+#undef LDA_A2
+#undef LDA_A3
+#undef LDA_A4
+#undef XC_LDA_WRAPPER

@@ -33,7 +33,7 @@ params_a_taur := 1e-4:
 
 rscan_f := (rs, z, xt, xs0, xs1, ts0, ts1) ->
   f_pbe(rs, z, xt, xs0, xs1) + rscan_f_alpha(rscan_alpha(rs, z, xt, ts0, ts1), rscan_fc)*(
-    + scan_e0(rs, z, X2S*2^(1/3)*xt)
+    + scan_e0(rs, z, gga_s_total(xt))
     - f_pbe(rs, z, xt, xs0, xs1)
   ):
 

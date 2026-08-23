@@ -26,7 +26,7 @@ static const double par_dk87_r2[N_PAR] = {0.861213, 0.042076, 0.98};
 
 static void gga_x_dk87_init(xc_func_type *p) {
   assert(p != NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(gga_x_dk87_params));
+  p->params = libxc_malloc_flags(sizeof(gga_x_dk87_params), p->info->flags);
 }
 
 #include "maple2c/gga_exc/gga_x_dk87.c"

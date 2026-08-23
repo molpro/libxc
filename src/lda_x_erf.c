@@ -55,7 +55,7 @@ const xc_func_info_type xc_func_info_hyb_lda_x_erf = {
   XC_HYB_LDA_X_ERF,
   XC_EXCHANGE,
   "Long-range corrected functional based on short-range LDA exchange (erfc)",
-  XC_FAMILY_LDA,
+  XC_FAMILY_HYB_LDA,
   {&xc_ref_Gill1996_1005, &xc_ref_Toulouse2004_1047, &xc_ref_Tawada2004_8425, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_HYB_CAM | MAPLE2C_FLAGS,
   1e-15,

@@ -10,7 +10,7 @@ extern xc_func_info_type xc_func_info_hyb_gga_xc_pbe50;
 extern xc_func_info_type xc_func_info_hyb_gga_xc_hflyp;
 extern xc_func_info_type xc_func_info_hyb_gga_xc_b3p86_nwchem;
 extern xc_func_info_type xc_func_info_hyb_gga_xc_relpbe0;
-extern xc_func_info_type xc_func_info_hyb_gga_xc_opb3lyp;
+extern xc_func_info_type xc_func_info_hyb_gga_xc_cqtp25;
 extern xc_func_info_type xc_func_info_hyb_gga_xc_case21;
 extern xc_func_info_type xc_func_info_hyb_gga_xc_pbe_2x;
 extern xc_func_info_type xc_func_info_hyb_gga_xc_pbe38;
@@ -125,7 +125,7 @@ const xc_func_info_type *xc_hyb_gga_known_funct[] = {
   &xc_func_info_hyb_gga_xc_hflyp,
   &xc_func_info_hyb_gga_xc_b3p86_nwchem,
   &xc_func_info_hyb_gga_xc_relpbe0,
-  &xc_func_info_hyb_gga_xc_opb3lyp,
+  &xc_func_info_hyb_gga_xc_cqtp25,
   &xc_func_info_hyb_gga_xc_case21,
   &xc_func_info_hyb_gga_xc_pbe_2x,
   &xc_func_info_hyb_gga_xc_pbe38,

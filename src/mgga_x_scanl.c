@@ -1,5 +1,6 @@
 /*
  Copyright (C) 2019 Daniel Mejia-Rodriguez
+               2026 Susi Lehtola
 
  This Source Code Form is subject to the terms of the Mozilla Public
  License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -12,6 +13,15 @@
 
 #define XC_MGGA_X_SCANL         700 /* Deorbitalized SCAN exchange */
 #define XC_MGGA_X_REVSCANL      701 /* Deorbitalized revSCAN exchange */
+
+/* The deorbitalization is performed symbolically in
+   maple/mgga_exc/mgga_x_scanl.mpl: SCAN's iso-orbital indicator is taken
+   straight from PC07 instead of being assembled from a kinetic energy density
+   at run time.  Both parents' parameters therefore live in one struct. */
+typedef struct{
+  double c1, c2, d, k1;   /* SCAN */
+  double pc07_a, pc07_b;  /* PC07 */
+} mgga_x_scanl_params;
 
 #define N_PAR 6
 static const char *names[N_PAR] = {
@@ -35,31 +45,12 @@ static const double par_revscanl[N_PAR] = {
 static void
 mgga_x_scanl_init(xc_func_type *p)
 {
-  switch(p->info->number){
-  case(XC_MGGA_X_SCANL):
-    xc_deorbitalize_init(p, XC_MGGA_X_SCAN, XC_MGGA_K_PC07_OPT);
-    break;
-  case(XC_MGGA_X_REVSCANL):
-    xc_deorbitalize_init(p, XC_MGGA_X_REVSCAN, XC_MGGA_K_PC07_OPT);
-    break;
-  default:
-    fprintf(stderr,"Internal error in mgga_x_scanl_init\n");
-    exit(1);
-  }
+  assert(p != NULL && p->params == NULL);
+  p->params = libxc_malloc_flags(sizeof(mgga_x_scanl_params), p->info->flags);
 }
 
-static void
-set_ext_params(xc_func_type *p, const double *ext_params)
-{
-  const double *par_scan = NULL, *par_pc07 = NULL;
-  if(ext_params != NULL) {
-    par_scan = ext_params;
-    par_pc07 = ext_params+4;
-  }
-  assert(p != NULL && p->func_aux != NULL);
-  xc_func_set_ext_params(p->func_aux[0], par_scan);
-  xc_func_set_ext_params(p->func_aux[1], par_pc07);
-}
+#include "maple2c/mgga_exc/mgga_x_scanl.c"
+#include "work_mgga.c"
 
 #ifdef __cplusplus
 extern "C"
@@ -72,9 +63,9 @@ const xc_func_info_type xc_func_info_mgga_x_scanl = {
   {&xc_ref_Mejia2017_052512, &xc_ref_Mejia2018_115161, &xc_ref_Sun2015_036402, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_NEEDS_LAPLACIAN | XC_FLAGS_I_HAVE_ALL,
   1e-15,
-  {N_PAR, names, desc, par_scanl, set_ext_params},
+  {N_PAR, names, desc, par_scanl, set_ext_params_cpy},
   mgga_x_scanl_init, NULL,
-  NULL, NULL, &xc_deorbitalize_func
+  NULL, NULL, &work_mgga
 };
 
 #ifdef __cplusplus
@@ -88,7 +79,7 @@ const xc_func_info_type xc_func_info_mgga_x_revscanl = {
   {&xc_ref_Mejia2017_052512, &xc_ref_Mejia2018_115161, &xc_ref_Mezei2018_2469, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_NEEDS_LAPLACIAN | XC_FLAGS_I_HAVE_ALL,
   1e-15,
-  {N_PAR, names, desc, par_revscanl, set_ext_params},
+  {N_PAR, names, desc, par_revscanl, set_ext_params_cpy},
   mgga_x_scanl_init, NULL,
-  NULL, NULL, &xc_deorbitalize_func
+  NULL, NULL, &work_mgga
 };

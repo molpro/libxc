@@ -12,102 +12,90 @@
 #include "funcs_hyb_gga.c"
 
 /* macro to check is a buffer exists */
-#define check_out_var(VAR) if(out->VAR == NULL){fprintf(stderr, "error: output variable, out->" #VAR ", is a null pointer\n"); exit(1);}
+#define check_out_var(VAR) if(out->VAR == NULL){fprintf(stderr, "error: output variable, out->" #VAR ", is a null pointer\n"); abort();}
 
 void
 xc_gga_sanity_check(const xc_func_info_type *info, int order, xc_gga_out_params *out)
 {
+  traceRangePush(__func__);
+
   /* sanity check */
   if(order < 0 || order > 4){
     fprintf(stderr, "Order of derivatives '%d' not implemented\n",
 	    order);
-    exit(1);
+    abort();
   }
   
   /* sanity check */
-  if(out->zk != NULL && !(info->flags & XC_FLAGS_HAVE_EXC)){
-    fprintf(stderr, "Functional '%s' does not provide an implementation of Exc\n",
-	    info->name);
-    exit(1);
-  }
+  xc_require_implementation(out->zk, info->flags, XC_FLAGS_HAVE_EXC, info->name, "Exc");
 
   if(out->vrho != NULL){
-    if(!(info->flags & XC_FLAGS_HAVE_VXC)){
-      fprintf(stderr, "Functional '%s' does not provide an implementation of vxc\n",
-              info->name);
-      exit(1);
-    }
+    xc_require_implementation(out->vrho, info->flags, XC_FLAGS_HAVE_VXC, info->name, "vxc");
     check_out_var(vsigma);
   }
 
   if(out->v2rho2 != NULL){
-    if(!(info->flags & XC_FLAGS_HAVE_FXC)){
-      fprintf(stderr, "Functional '%s' does not provide an implementation of fxc\n",
-              info->name);
-      exit(1);
-    }
-    check_out_var(v2rhosigma); 
+    xc_require_implementation(out->v2rho2, info->flags, XC_FLAGS_HAVE_FXC, info->name, "fxc");
+    check_out_var(v2rhosigma);
     check_out_var(v2sigma2);
   }
 
   if(out->v3rho3){
-    if(!(info->flags & XC_FLAGS_HAVE_KXC)){
-      fprintf(stderr, "Functional '%s' does not provide an implementation of kxc\n",
-              info->name);
-      exit(1);
-    }
+    xc_require_implementation(out->v3rho3, info->flags, XC_FLAGS_HAVE_KXC, info->name, "kxc");
     check_out_var(v3rho2sigma);
     check_out_var(v3rhosigma2);
     check_out_var(v3sigma3);
   }
 
   if(out->v4rho4 != NULL){
-    if(!(info->flags & XC_FLAGS_HAVE_LXC)){
-      fprintf(stderr, "Functional '%s' does not provide an implementation of lxc\n",
-              info->name);
-      exit(1);
-    }
+    xc_require_implementation(out->v4rho4, info->flags, XC_FLAGS_HAVE_LXC, info->name, "lxc");
     check_out_var(v4rho3sigma);
     check_out_var(v4rho2sigma2);
     check_out_var(v4rhosigma3);
     check_out_var(v4sigma4);
   }
+
+  traceRangePop(); // __func__
 }
 
 void
 xc_gga_initalize(const xc_func_type *func, size_t np, xc_gga_out_params *out)
 {
+  traceRangePush(__func__);
+
   const xc_dimensions *dim = &(func->dim);
 
     /* initialize output to zero */
   if(out->zk != NULL)
-    libxc_memset(out->zk, 0, dim->zk*np*sizeof(double));
+    libxc_memset_flags(out->zk, 0, dim->zk*np*sizeof(double), func->info->flags);
 
   if(out->vrho != NULL){
-    libxc_memset(out->vrho,   0, dim->vrho  *np*sizeof(double));
-    libxc_memset(out->vsigma, 0, dim->vsigma*np*sizeof(double));
+    libxc_memset_flags(out->vrho,   0, dim->vrho  *np*sizeof(double), func->info->flags);
+    libxc_memset_flags(out->vsigma, 0, dim->vsigma*np*sizeof(double), func->info->flags);
   }
 
   if(out->v2rho2 != NULL){
-    libxc_memset(out->v2rho2,     0, dim->v2rho2    *np*sizeof(double));
-    libxc_memset(out->v2rhosigma, 0, dim->v2rhosigma*np*sizeof(double));
-    libxc_memset(out->v2sigma2,   0, dim->v2sigma2  *np*sizeof(double));
+    libxc_memset_flags(out->v2rho2,     0, dim->v2rho2    *np*sizeof(double), func->info->flags);
+    libxc_memset_flags(out->v2rhosigma, 0, dim->v2rhosigma*np*sizeof(double), func->info->flags);
+    libxc_memset_flags(out->v2sigma2,   0, dim->v2sigma2  *np*sizeof(double), func->info->flags);
   }
 
   if(out->v3rho3 != NULL){
-    libxc_memset(out->v3rho3,      0, dim->v3rho3     *np*sizeof(double));
-    libxc_memset(out->v3rho2sigma, 0, dim->v3rho2sigma*np*sizeof(double));
-    libxc_memset(out->v3rhosigma2, 0, dim->v3rhosigma2*np*sizeof(double));
-    libxc_memset(out->v3sigma3,    0, dim->v3sigma3   *np*sizeof(double));
+    libxc_memset_flags(out->v3rho3,      0, dim->v3rho3     *np*sizeof(double), func->info->flags);
+    libxc_memset_flags(out->v3rho2sigma, 0, dim->v3rho2sigma*np*sizeof(double), func->info->flags);
+    libxc_memset_flags(out->v3rhosigma2, 0, dim->v3rhosigma2*np*sizeof(double), func->info->flags);
+    libxc_memset_flags(out->v3sigma3,    0, dim->v3sigma3   *np*sizeof(double), func->info->flags);
   }
 
   if(out->v4rho4 != NULL){
-    libxc_memset(out->v4rho4,       0, dim->v4rho4      *np*sizeof(double));
-    libxc_memset(out->v4rho3sigma,  0, dim->v4rho3sigma *np*sizeof(double));
-    libxc_memset(out->v4rho2sigma2, 0, dim->v4rho2sigma2*np*sizeof(double));
-    libxc_memset(out->v4rhosigma3,  0, dim->v4rhosigma3 *np*sizeof(double));
-    libxc_memset(out->v4sigma4,     0, dim->v4sigma4    *np*sizeof(double));
+    libxc_memset_flags(out->v4rho4,       0, dim->v4rho4      *np*sizeof(double), func->info->flags);
+    libxc_memset_flags(out->v4rho3sigma,  0, dim->v4rho3sigma *np*sizeof(double), func->info->flags);
+    libxc_memset_flags(out->v4rho2sigma2, 0, dim->v4rho2sigma2*np*sizeof(double), func->info->flags);
+    libxc_memset_flags(out->v4rhosigma3,  0, dim->v4rhosigma3 *np*sizeof(double), func->info->flags);
+    libxc_memset_flags(out->v4sigma4,     0, dim->v4sigma4    *np*sizeof(double), func->info->flags);
    }
+
+  traceRangePop(); // __func__
 
 }
 
@@ -150,11 +138,13 @@ if nspin == 2
 void xc_gga_new(const xc_func_type *func, int order, size_t np, const double *rho, const double *sigma,
             xc_gga_out_params *out)
 {
+  traceRangePush(__func__);
 
   xc_gga_sanity_check(func->info, order, out);
   xc_gga_initalize(func, np, out);
   
   /* call the GGA routines */
+  traceRangePush("evaluate_functional");
   if(func->info->gga != NULL){
     if(func->nspin == XC_UNPOLARIZED){
       if(func->info->gga->unpol[order] != NULL)
@@ -164,6 +154,7 @@ void xc_gga_new(const xc_func_type *func, int order, size_t np, const double *rh
         func->info->gga->pol[order](func, np, rho, sigma, out);
     }
   }
+  traceRangePop(); // "evaluate_functional"
 
   if(func->mix_coef != NULL)
     xc_mix_func(func, np, rho, sigma, NULL, NULL, out->zk, out->vrho, out->vsigma, NULL, NULL,
@@ -174,6 +165,8 @@ void xc_gga_new(const xc_func_type *func, int order, size_t np, const double *rh
                 out->v4rhosigma3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
                 out->v4sigma4, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
                 NULL, NULL, NULL, NULL, NULL);
+
+  traceRangePop(); // __func__
 }
 
 /* old API */
@@ -196,7 +189,7 @@ xc_gga(const xc_func_type *p, size_t np, const double *rho, const double *sigma,
   if(order < 0) return;
 
   xc_gga_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_gga_out_params));
+  memset(&out, 0, sizeof(xc_gga_out_params));
   out.zk     = zk;
   out.vrho   = vrho; out.vsigma = vsigma;
   out.v2rho2 = v2rho2; out.v2rhosigma = v2rhosigma; out.v2sigma2 = v2sigma2;
@@ -208,127 +201,55 @@ xc_gga(const xc_func_type *p, size_t np, const double *rho, const double *sigma,
 }
 
 
-/* specializations */
-void
-xc_gga_exc(const xc_func_type *p, size_t np, const double *rho, const double *sigma,
-	    double *zk)
-{
-  xc_gga_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_gga_out_params));
-  out.zk   = zk;
-  
-  xc_gga_new(p, 0, np, rho, sigma, &out);
-}
+/* specializations
+ *
+ * The convenience entry points (xc_gga_exc, xc_gga_exc_vxc, ...) are all
+ * the same boilerplate -- zero an xc_gga_out_params, set the output
+ * pointers for the requested orders, and call xc_gga_new with the highest
+ * order -- so they are generated from a table instead of hand-written.
+ * Each row lists the per-order parameter declarations (GGA_Pn) and the
+ * matching pointer assignments (GGA_An) for the orders it exposes.
+ */
+#define GGA_P0 double *zk
+#define GGA_P1 double *vrho, double *vsigma
+#define GGA_P2 double *v2rho2, double *v2rhosigma, double *v2sigma2
+#define GGA_P3 double *v3rho3, double *v3rho2sigma, double *v3rhosigma2, double *v3sigma3
+#define GGA_P4 double *v4rho4, double *v4rho3sigma, double *v4rho2sigma2, double *v4rhosigma3, double *v4sigma4
+#define GGA_A0 out.zk = zk;
+#define GGA_A1 out.vrho = vrho; out.vsigma = vsigma;
+#define GGA_A2 out.v2rho2 = v2rho2; out.v2rhosigma = v2rhosigma; out.v2sigma2 = v2sigma2;
+#define GGA_A3 out.v3rho3 = v3rho3; out.v3rho2sigma = v3rho2sigma; out.v3rhosigma2 = v3rhosigma2; out.v3sigma3 = v3sigma3;
+#define GGA_A4 out.v4rho4 = v4rho4; out.v4rho3sigma = v4rho3sigma; out.v4rho2sigma2 = v4rho2sigma2; out.v4rhosigma3 = v4rhosigma3; out.v4sigma4 = v4sigma4;
 
-void
-xc_gga_exc_vxc(const xc_func_type *p, size_t np, const double *rho, const double *sigma,
-		double *zk, double *vrho, double *vsigma)
-{
-  xc_gga_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_gga_out_params));
-  out.zk   = zk;
-  out.vrho = vrho; out.vsigma = vsigma;
-  
-  xc_gga_new(p, 1, np, rho, sigma, &out);
-}
+#define XC_GGA_WRAPPER(suffix, order, ASGN, ...)                              \
+  void xc_gga_##suffix(const xc_func_type *p, size_t np, const double *rho,   \
+                       const double *sigma, __VA_ARGS__) {                    \
+    xc_gga_out_params out;                                                    \
+    memset(&out, 0, sizeof(xc_gga_out_params));                              \
+    ASGN                                                                      \
+    xc_gga_new(p, order, np, rho, sigma, &out);                              \
+  }
 
-void
-xc_gga_exc_vxc_fxc (const xc_func_type *p, size_t np, const double *rho, const double *sigma,
-                    double *zk, double *vrho, double *vsigma,
-                    double *v2rho2, double *v2rhosigma, double *v2sigma2)
-{
-  xc_gga_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_gga_out_params));
-  out.zk     = zk;
-  out.vrho   = vrho; out.vsigma = vsigma;
-  out.v2rho2 = v2rho2; out.v2rhosigma = v2rhosigma; out.v2sigma2 = v2sigma2;
-  
-  xc_gga_new(p, 2, np, rho, sigma, &out);
-}
+/*               suffix          order  assignments                 declarations    */
+XC_GGA_WRAPPER(exc,             0, GGA_A0,                        GGA_P0)
+XC_GGA_WRAPPER(vxc,             1, GGA_A1,                        GGA_P1)
+XC_GGA_WRAPPER(fxc,             2, GGA_A2,                        GGA_P2)
+XC_GGA_WRAPPER(kxc,             3, GGA_A3,                        GGA_P3)
+XC_GGA_WRAPPER(lxc,             4, GGA_A4,                        GGA_P4)
+XC_GGA_WRAPPER(exc_vxc,         1, GGA_A0 GGA_A1,                 GGA_P0, GGA_P1)
+XC_GGA_WRAPPER(vxc_fxc,         2, GGA_A1 GGA_A2,                 GGA_P1, GGA_P2)
+XC_GGA_WRAPPER(exc_vxc_fxc,     2, GGA_A0 GGA_A1 GGA_A2,         GGA_P0, GGA_P1, GGA_P2)
+XC_GGA_WRAPPER(vxc_fxc_kxc,     3, GGA_A1 GGA_A2 GGA_A3,         GGA_P1, GGA_P2, GGA_P3)
+XC_GGA_WRAPPER(exc_vxc_fxc_kxc, 3, GGA_A0 GGA_A1 GGA_A2 GGA_A3, GGA_P0, GGA_P1, GGA_P2, GGA_P3)
 
-void
-xc_gga_vxc_fxc (const xc_func_type *p, size_t np, const double *rho, const double *sigma,
-                double *vrho, double *vsigma,
-                double *v2rho2, double *v2rhosigma, double *v2sigma2)
-{
-  xc_gga_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_gga_out_params));
-  out.vrho   = vrho; out.vsigma = vsigma;
-  out.v2rho2 = v2rho2; out.v2rhosigma = v2rhosigma; out.v2sigma2 = v2sigma2;
-  
-  xc_gga_new(p, 2, np, rho, sigma, &out);
-}
-
-void
-xc_gga_exc_vxc_fxc_kxc (const xc_func_type *p, size_t np, const double *rho, const double *sigma,
-                        double *zk, double *vrho, double *vsigma, double *v2rho2, double *v2rhosigma, double *v2sigma2,
-                        double *v3rho3, double *v3rho2sigma, double *v3rhosigma2, double *v3sigma3)
-{
-  xc_gga_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_gga_out_params));
-  out.zk     = zk;
-  out.vrho   = vrho; out.vsigma = vsigma;
-  out.v2rho2 = v2rho2; out.v2rhosigma = v2rhosigma; out.v2sigma2 = v2sigma2;
-  out.v3rho3 = v3rho3; out.v3rho2sigma = v3rho2sigma; out.v3rhosigma2 = v3rhosigma2; out.v3sigma3 = v3sigma3;
-  
-  xc_gga_new(p, 3, np, rho, sigma, &out);
-}
-
-void
-xc_gga_vxc_fxc_kxc (const xc_func_type *p, size_t np, const double *rho, const double *sigma,
-                    double *vrho, double *vsigma, double *v2rho2, double *v2rhosigma, double *v2sigma2,
-                    double *v3rho3, double *v3rho2sigma, double *v3rhosigma2, double *v3sigma3)
-{
-  xc_gga_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_gga_out_params));
-  out.vrho   = vrho; out.vsigma = vsigma;
-  out.v2rho2 = v2rho2; out.v2rhosigma = v2rhosigma; out.v2sigma2 = v2sigma2;
-  out.v3rho3 = v3rho3; out.v3rho2sigma = v3rho2sigma; out.v3rhosigma2 = v3rhosigma2; out.v3sigma3 = v3sigma3;
-
-  xc_gga_new(p, 3, np, rho, sigma, &out);
-}
-
-void
-xc_gga_vxc(const xc_func_type *p, size_t np, const double *rho, const double *sigma,
-           double *vrho, double *vsigma)
-{
-  xc_gga_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_gga_out_params));
-  out.vrho   = vrho; out.vsigma = vsigma;
-
-  xc_gga_new(p, 1, np, rho, sigma, &out);
-}
-
-void
-xc_gga_fxc(const xc_func_type *p, size_t np, const double *rho, const double *sigma,
-           double *v2rho2, double *v2rhosigma, double *v2sigma2)
-{
-  xc_gga_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_gga_out_params));
-  out.v2rho2 = v2rho2; out.v2rhosigma = v2rhosigma; out.v2sigma2 = v2sigma2;
-
-  xc_gga_new(p, 2, np, rho, sigma, &out);
-}
-
-void
-xc_gga_kxc(const xc_func_type *p, size_t np, const double *rho, const double *sigma,
-           double *v3rho3, double *v3rho2sigma, double *v3rhosigma2, double *v3sigma3)
-{
-  xc_gga_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_gga_out_params));
-  out.v3rho3 = v3rho3; out.v3rho2sigma = v3rho2sigma; out.v3rhosigma2 = v3rhosigma2; out.v3sigma3 = v3sigma3;
-
-  xc_gga_new(p, 3, np, rho, sigma, &out);
-}
-
-
-void
-xc_gga_lxc(const xc_func_type *p, size_t np, const double *rho, const double *sigma,
-           double *v4rho4, double *v4rho3sigma, double *v4rho2sigma2, double *v4rhosigma3, double *v4sigma4)
-{
-  xc_gga_out_params out;
-  libxc_memset(&out, 0, sizeof(xc_gga_out_params));
-  out.v4rho4 = v4rho4; out.v4rho3sigma = v4rho3sigma; out.v4rho2sigma2 = v4rho2sigma2; out.v4rhosigma3 = v4rhosigma3; out.v4sigma4 = v4sigma4;
-
-  xc_gga_new(p, 4, np, rho, sigma, &out);
-}
+#undef GGA_P0
+#undef GGA_P1
+#undef GGA_P2
+#undef GGA_P3
+#undef GGA_P4
+#undef GGA_A0
+#undef GGA_A1
+#undef GGA_A2
+#undef GGA_A3
+#undef GGA_A4
+#undef XC_GGA_WRAPPER

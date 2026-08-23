@@ -9,7 +9,7 @@
 
 (* Equation 28 squared with Equation 25 built in *)
 tpss_xi2 := (z, xt, xs0, xs1) ->
-  (1 - z^2)*(t_total(z, xs0^2, xs1^2) - xt^2)/(2*(3*Pi^2)^(1/3))^2:
+  one_minus_z_pow_n(z, 2)*(t_total(z, xs0^2, xs1^2) - xt^2)/(2*(3*Pi^2)^(1/3))^2:
 
 (* Equation 33 *)
 tpss_C00 := (cc, z) ->
@@ -21,7 +21,7 @@ tpss_C00 := (cc, z) ->
    to severe numerical instabilities. I can not correct for the bad design of
    the functional, and this is the possible solution that I found *)
 tpss_C0_den := (z, xt, xs0, xs1) ->
-  1 + tpss_xi2(z, xt, xs0, xs1)*((1 + z)^(-4/3) + (1 - z)^(-4/3))/2:
+  1 + tpss_xi2(z, xt, xs0, xs1)*(opz_pow_n(z, -4/3) + opz_pow_n(-z, -4/3))/2:
 tpss_C0 := (cc, z, xt, xs0, xs1) -> my_piecewise3(1 - m_abs(z) <= 1e-12,
   add(cc[i], i=1..4),
   tpss_C00(cc, z) / tpss_C0_den(z_thr(z), xt, xs0, xs1)^4):
@@ -30,11 +30,18 @@ tpss_C0 := (cc, z, xt, xs0, xs1) -> my_piecewise3(1 - m_abs(z) <= 1e-12,
 tpss_aux := (z, xt, ts0, ts1) ->
   m_min(xt^2/(8*t_total(z, ts0, ts1)), 1):
 
+(* Max of two GGA-correlation values, taking the two RESULTS as scalar params.
+   Keeping the f_gga > f_gga comparison on va/vb inside this helper (rather than
+   as a kernel piecewise condition over two large inlined f_gga bodies) avoids
+   inlining f_gga into a condition -- which otherwise explodes simplify_conditions'
+   cancel (987 -> 1.17M ops) and bloats the generated C. *)
+tpss_fmax := (va, vb) -> m_max(va, vb):
+
 (* n_sigma/n \epsilon^sigma in Equation 25 *)
 tpss_par_s0 := (f_gga, rs, z, xt, xs0, xs1) ->
-  m_max(f_gga(rs*(2/(1 + z))^(1/3),  1, xs0, xs0, 0), f_gga(rs, z, xt, xs0, xs1))*(1 + z)/2:
+  tpss_fmax(f_gga(rs*(2/(1 + z))^(1/3),  1, xs0, xs0, 0), f_gga(rs, z, xt, xs0, xs1))*(1 + z)/2:
 tpss_par_s1 := (f_gga, rs, z, xt, xs0, xs1) ->
-  m_max(f_gga(rs*(2/(1 - z))^(1/3), -1, xs1, 0, xs1), f_gga(rs, z, xt, xs0, xs1))*(1 - z)/2:
+  tpss_fmax(f_gga(rs*(2/(1 - z))^(1/3), -1, xs1, 0, xs1), f_gga(rs, z, xt, xs0, xs1))*(1 - z)/2:
 
 (* Second line of Equation 25 *)
 (* The screening of the density is important in order to stabilize this functional

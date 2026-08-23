@@ -17,8 +17,8 @@
 ml1_C := 6.187335:
 ml1_b := [2.763169, 1.757515, 1.741397, 0.568985, 1.572202, 1.885389]:
 
-ml1_alpha := z -> params_a_fc*((1 + z)^params_a_q + (1 - z)^params_a_q):
-ml1_beta  := z -> (1 - z^2)^(1/3)/((1 + z)^(1/3) + (1 - z)^(1/3)):
+ml1_alpha := z -> params_a_fc*(opz_pow_n(z, params_a_q) + opz_pow_n(-z, params_a_q)):
+ml1_beta  := z -> one_minus_z_pow_n(z, 2)^(1/3)/((1 + z)^(1/3) + (1 - z)^(1/3)):
 
 (* From the paper: "Note that the antiparailel-spin correlation length
    diverges when the spin-polarization parameter tends to 1", which means
@@ -28,7 +28,7 @@ ml1_k := (rs, z) -> ml1_C*n_total(rs)^(1/3) * ml1_alpha(z)*ml1_beta(z):
 (* Eq. 32 *)
 ml1_Q := (rs, z) ->
   - ml1_b[1]/(1 + ml1_b[2]*ml1_k(rs, z))
-  + ml1_b[3]*log(1 + ml1_b[4]/ml1_k(rs, z))/ml1_k(rs, z)
+  + ml1_b[3]*xc_log1p(ml1_b[4]/ml1_k(rs, z))/ml1_k(rs, z)
   + ml1_b[5]/ml1_k(rs, z)
   - ml1_b[6]/ml1_k(rs, z)^2:
 
@@ -43,6 +43,6 @@ ml1_Q := (rs, z) ->
    Note that in the Erratum the authors afirm that all the results are correct,
    and only the formulas had misspells. *)
 ml1_f := (rs, z) -> n_total(rs) *
-  my_piecewise3(1 - abs(z) <= p_a_zeta_threshold, 0, (1 - z^2)/4 * ml1_Q(rs, z_thr(z))):
+  my_piecewise3(1 - abs(z) <= p_a_zeta_threshold, 0, one_minus_z_pow_n(z, 2)/4 * ml1_Q(rs, z_thr(z))):
 
 f := (rs, z) -> ml1_f(rs, z):

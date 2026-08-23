@@ -16,9 +16,9 @@
 *)
 
 lsrpbe_f0 := s -> 1 + params_a_kappa * (
-  1 - exp(-params_a_mu*s^2/params_a_kappa)
-) - (params_a_kappa+1)*(1 - exp(-params_a_alpha*s^2)):
-lsrpbe_f  := x -> lsrpbe_f0(X2S*x):
+  -xc_expm1(-params_a_mu*s^2/params_a_kappa)
+) - (params_a_kappa+1)*(-xc_expm1(-params_a_alpha*s^2)):
+lsrpbe_f  := x -> lsrpbe_f0(gga_s(x)):
 
 f := (rs, z, xt, xs0, xs1) -> gga_exchange(lsrpbe_f, rs, z, xs0, xs1):
 

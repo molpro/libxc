@@ -15,8 +15,8 @@
   params = (gga_x_cap_params * )(p->params);
 *)
 
-cap_f0 := s -> 1 - params_a_alphaoAx*s*log(1 + s)/(1 + params_a_c*log(1 + s)):
-cap_f  := x -> cap_f0(X2S*x):
+cap_f0 := s -> 1 - params_a_alphaoAx*s*xc_log1p(s)/(1 + params_a_c*xc_log1p(s)):
+cap_f  := x -> cap_f0(gga_s(x)):
 
 f := (rs, z, xt, xs0, xs1) -> gga_exchange(cap_f, rs, z, xs0, xs1):
 

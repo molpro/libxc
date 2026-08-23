@@ -44,7 +44,7 @@ hyb_mgga_xc_kcis_init(xc_func_type *p)
     break;
   default:
     fprintf(stderr, "Internal error in hyb_mgga_xc_kcis\n");
-    exit(1);
+    abort();
   }
 
   /* Initialize mix */
@@ -67,7 +67,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_mpw1kcis = {
   "MPW1KCIS for barrier heights",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Zhao2005_2012, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {0, NULL, NULL, NULL, NULL},
   hyb_mgga_xc_kcis_init,
@@ -83,7 +83,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_mpwkcis1k = {
   "MPWKCIS1K for barrier heights",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Zhao2005_2012, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {0, NULL, NULL, NULL, NULL},
   hyb_mgga_xc_kcis_init,
@@ -99,7 +99,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_pbe1kcis = {
   "PBE1KCIS for binding energies",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Zhao2005_415, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {0, NULL, NULL, NULL, NULL},
   hyb_mgga_xc_kcis_init,
@@ -115,7 +115,7 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_tpss1kcis = {
   "TPSS1KCIS for thermochemistry and kinetics",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Zhao2005_43, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {0, NULL, NULL, NULL, NULL},
   hyb_mgga_xc_kcis_init,

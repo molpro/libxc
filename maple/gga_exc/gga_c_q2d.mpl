@@ -19,9 +19,14 @@ q2d_dd := 1e6:
 
 q2d_rs2D := (rs, xt) -> rs2D_factor*rs*sqrt(X2S*xt)/RS_FACTOR:
 
-q2d_fac := t -> t^4*(1 + t^2)/(q2d_dd + t^6):
+(* KEEP IN SYNC: q2d_fac and q2d_one_minus_fac partition unity.
+   1 - t^4*(1+t^2)/(dd + t^6) = (dd - t^4)/(dd + t^6), algebraically
+   equivalent and cancellation-free as q2d_fac -> 1 at moderate-to-
+   large t (where the direct form computes 1 - close-to-1). *)
+q2d_fac           := t -> (t^4 + t^6)/(q2d_dd + t^6):
+q2d_one_minus_fac := t -> (q2d_dd - t^4)/(q2d_dd + t^6):
 
 q2d_f := (rs, z, xt, xs0, xs1) ->
-  (1 - q2d_fac(tt(rs, z, xt)))*f_pbe(rs, z, xt, xs0, xs1) + q2d_fac(tt(rs, z, xt))*f_amgb(q2d_rs2D(rs, xt), z):
+  q2d_one_minus_fac(tt(rs, z, xt))*f_pbe(rs, z, xt, xs0, xs1) + q2d_fac(tt(rs, z, xt))*f_amgb(q2d_rs2D(rs, xt), z):
 
 f := (rs, z, xt, xs0, xs1) -> q2d_f(rs, z, xt, xs0, xs1):

@@ -108,7 +108,7 @@ for item in formatted_bibliography:
 
   # now we write the files
   fh_c.write('func_reference_type xc_ref_' + item.key + ' = {\n' +
-             '  "' + item.text.render(backend) + '",\n' +
+             '  "' + item.text.render(backend).replace('.,',',') + '",\n' +
              '  "' + doi + '",\n' +
              '  "' + bibtex + '",\n' +
              '  "' + item.key + '"\n' +

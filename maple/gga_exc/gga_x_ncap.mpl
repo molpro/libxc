@@ -14,7 +14,7 @@
   params = (gga_x_ncap_params * )(p->params);
 *)
 
-ncap_f0 := s -> 1 + params_a_mu*tanh(s)*arcsinh(s)*( 1 + params_a_alpha*((1-params_a_zeta)*s*log(1+s) + params_a_zeta*s))/(1 + params_a_beta*tanh(s)*arcsinh(s)):
-ncap_f  := x -> ncap_f0(X2S*x):
+ncap_f0 := s -> 1 + params_a_mu*tanh(s)*xc_asinh(s)*( 1 + params_a_alpha*((1-params_a_zeta)*s*xc_log1p(s) + params_a_zeta*s))/(1 + params_a_beta*tanh(s)*xc_asinh(s)):
+ncap_f  := x -> ncap_f0(gga_s(x)):
 
 f := (rs, zeta, xt, xs0, xs1) -> gga_exchange(ncap_f, rs, zeta, xs0, xs1):

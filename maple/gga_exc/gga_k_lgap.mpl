@@ -15,8 +15,8 @@
 *)
 
 (* Equation (20) *)
-lgap_f0 := s -> 1 + params_a_kappa*(1-exp(-add(params_a_mu[i]*s^(i), i=1..3))):
-lgap_f := x -> lgap_f0(X2S*x):
+lgap_f0 := s -> 1 + params_a_kappa*(-xc_expm1(-add(params_a_mu[i]*s^(i), i=1..3))):
+lgap_f := x -> lgap_f0(gga_s(x)):
 
 f := (rs, z, xt, xs0, xs1) ->
   gga_kinetic(lgap_f, rs, z, xs0, xs1):

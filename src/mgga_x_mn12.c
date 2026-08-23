@@ -186,7 +186,7 @@ static void
 mgga_x_mn12_init(xc_func_type *p)
 {
   assert(p->params == NULL);
-  p->params = libxc_malloc(sizeof(mgga_x_mn12_params));
+  p->params = libxc_malloc_flags(sizeof(mgga_x_mn12_params), p->info->flags);
 
   if(p->info->number == XC_HYB_MGGA_X_MN12_SX)
     xc_hyb_init_cam(p, 0.0, 0.0, 0.0);

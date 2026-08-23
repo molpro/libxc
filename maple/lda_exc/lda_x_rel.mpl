@@ -12,6 +12,29 @@ params_a_alpha := 1:
 $include "lda_x.mpl"
 
 beta := rs -> (9*Pi/4)^(1/3)/(rs*M_C):
-phi  := rs -> 1 - 1.5*(sqrt(1 + beta(rs)^2)/beta(rs) - arcsinh(beta(rs))/beta(rs)^2)^2:
+
+(* Stable bracket = b*sqrt(1+b^2) - arcsinh(b).  Direct evaluation
+   has a catastrophic small-b cancellation:
+     b*sqrt(1+b^2) = b + b^3/2 - b^5/8 + ...
+     arcsinh(b)    = b - b^3/6 + 3 b^5/40 - ...
+     difference    = 2 b^3/3 - b^5/5 + 3 b^7/28 - 5 b^9/72 + ...
+   No algebraic rewrite eliminates the cancellation, so Taylor is
+   used in the small-b regime.  Boundary chosen for ULP-level match
+   between the two branches:
+     direct at b = 1/2 loses log10(0.5 / 0.078) ~ 0.8 digits,
+       leaving ~6 ULPs of imprecision in the difference;
+     Taylor truncation ratio at large k asymptotes to b^2 = 1/4 per
+       term, so order 58 (terms up to b^57, ~28 nonzero) drops the
+       truncation to ~ 0.25^28 = 3.5e-18 relative -- well below ULP.
+   The series radius of convergence is 1 (singularities at b = +-i),
+   so the cutoff cannot be pushed up to 1 without an explosion in
+   the order needed; 1/2 is the natural balance. *)
+lda_x_rel_bracket_taylor := b ->
+  eval(convert(taylor(t*sqrt(1+t^2) - arcsinh(t), t=0, 58), polynom), t=b):
+lda_x_rel_bracket := b -> my_piecewise3(b < 1/2,
+  lda_x_rel_bracket_taylor(b),
+  b*sqrt(1 + b^2) - xc_asinh(b)):
+
+phi := rs -> 1 - 1.5*(lda_x_rel_bracket(beta(rs))/beta(rs)^2)^2:
 
 f    := (rs, z) -> f_lda_x(rs, z)*phi(rs):

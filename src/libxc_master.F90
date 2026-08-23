@@ -21,6 +21,8 @@ module xc_f03_lib_m
     xc_f03_reference_key, &
     ! func_info
     xc_f03_func_info_t, &
+    xc_f03_func_info_get_default_flags, &
+    xc_f03_func_info_set_default_flags, &
     xc_f03_func_info_get_number, &
     xc_f03_func_info_get_kind, &
     xc_f03_func_info_get_name, &
@@ -40,6 +42,7 @@ module xc_f03_lib_m
     ! func
     xc_f03_func_t, &
     xc_f03_func_init, &
+    xc_f03_func_init_flags, &
     xc_f03_func_end, &
     xc_f03_func_get_info, &
     xc_f03_functional_get_name, &
@@ -148,7 +151,9 @@ module xc_f03_lib_m
     XC_FLAGS_DEVELOPMENT     =  16384,   &
     XC_FLAGS_NEEDS_LAPLACIAN =  32768,   &
     XC_FLAGS_NEEDS_TAU       =  65536,   &
-    XC_FLAGS_ENFORCE_FHC     = 131072
+    XC_FLAGS_ENFORCE_FHC     = 131072,   &
+    XC_FLAGS_ON_DEVICE       = 262144,   &
+    XC_FLAGS_ON_HOST         = 524288
 
   integer(c_int), parameter, public :: &
     XC_MAX_REFERENCES       =     5
@@ -185,6 +190,15 @@ module xc_f03_lib_m
   end type xc_f03_func_info_t
 
   interface
+    integer(c_int) function xc_func_info_get_default_flags() bind(c)
+      import
+    end function xc_func_info_get_default_flags
+
+    subroutine xc_func_info_set_default_flags(flags) bind(c)
+      import
+      integer(c_int), value :: flags
+    end subroutine xc_func_info_set_default_flags
+
     integer(c_int) function xc_func_info_get_number(info) bind(c)
       import
       type(c_ptr), value :: info
@@ -286,6 +300,12 @@ module xc_f03_lib_m
       integer(c_int), value :: functional, nspin
     end function xc_func_init
 
+    integer(c_int) function xc_func_init_flags(p, functional, nspin, flags) bind(c)
+      import
+      type(c_ptr),    value :: p
+      integer(c_int), value :: functional, nspin, flags
+    end function xc_func_init_flags
+
     subroutine xc_func_end(p) bind(c)
       import
       type(c_ptr), value :: p
@@ -295,11 +315,6 @@ module xc_f03_lib_m
       import
       type(c_ptr), value :: p
     end subroutine xc_func_free
-
-    subroutine libxc_free(p) bind(c)
-      import
-      type(c_ptr), value :: p
-    end subroutine libxc_free
 
     type(c_ptr) function xc_func_get_info(p) bind(c)
       import
@@ -867,6 +882,19 @@ end interface
   end subroutine xc_f03_reference_key
 
   !----------------------------------------------------------------
+  integer(c_int) function xc_f03_func_info_get_default_flags() result(flags)
+
+    flags = xc_func_info_get_default_flags()
+
+  end function xc_f03_func_info_get_default_flags
+
+  subroutine xc_f03_func_info_set_default_flags(flags)
+    integer(c_int), intent(in) :: flags
+
+    call xc_func_info_set_default_flags(flags)
+
+  end subroutine xc_f03_func_info_set_default_flags
+
   integer(c_int) function xc_f03_func_info_get_number(info) result(number)
     type(xc_f03_func_info_t), intent(in) :: info
 
@@ -908,16 +936,24 @@ end interface
 
     type(c_ptr) :: next_ref
 
-    reference%ptr = xc_func_info_get_references(info%ptr, number)
-    if (.not. c_associated(reference%ptr)) then
-       number = -1
-    else
-       next_ref = xc_func_info_get_references(info%ptr, INT(number + 1, c_int))
-       if (c_associated(next_ref)) then
-          number = number + 1
-       else
+    if (number >= 0 .and. number < XC_MAX_REFERENCES) then
+       reference%ptr = xc_func_info_get_references(info%ptr, number)
+       if (.not. c_associated(reference%ptr)) then
           number = -1
+       else
+          if (number >= 0 .and. number < XC_MAX_REFERENCES - 1) then
+             next_ref = xc_func_info_get_references(info%ptr, INT(number + 1, c_int))
+             if (c_associated(next_ref)) then
+                number = number + 1
+             else
+                number = -1
+             end if
+          else
+             number = -1
+          end if
        end if
+    else
+       number = -1
     end if
 
   end function xc_f03_func_info_get_references
@@ -997,6 +1033,21 @@ end interface
     if(present(err)) err = ierr
   end subroutine xc_f03_func_init
 
+  subroutine xc_f03_func_init_flags(p, functional, nspin, flags, err)
+    type(xc_f03_func_t),      intent(inout) :: p
+    integer(c_int),           intent(in)    :: functional
+    integer(c_int),           intent(in)    :: nspin
+    integer(c_int),           intent(in)    :: flags
+    integer(c_int), optional, intent(out)   :: err
+
+    integer(c_int) :: ierr
+
+    p%ptr = xc_func_alloc()
+    ierr = xc_func_init_flags(p%ptr, functional, nspin, flags)
+
+    if(present(err)) err = ierr
+  end subroutine xc_f03_func_init_flags
+
   subroutine xc_f03_func_end(p)
     type(xc_f03_func_t), intent(inout) :: p
 
@@ -1016,9 +1067,16 @@ end interface
     integer(c_int), intent(in) :: number
     type(c_ptr) :: cstr
 
+    interface
+      subroutine c_free(p) bind(c, name="free")
+        import
+        type(c_ptr), value :: p
+      end subroutine c_free
+    end interface
+
     cstr = xc_functional_get_name(number)
     call c_to_f_string_ptr(cstr, name)
-    call libxc_free(cstr)
+    call c_free(cstr)
 
   end function xc_f03_functional_get_name
 
@@ -1747,20 +1805,18 @@ module xc_f03_funcs_m
        ! List of functionals
 #include "libxc_inc.f90"
 
-  ! These are old names kept for compatibility
+  ! These are old names kept for compatibility, see xc_funcs_removed.h
   integer(c_int), parameter, public :: &
+    XC_LDA_C_1D_CSC         =  18,     &
     XC_LDA_X_1D             =  21,     &
     XC_GGA_X_BGCP           =  38,     &
     XC_GGA_C_BGCP           =  39,     &
     XC_GGA_C_BCGP           =  39,     &
     XC_GGA_C_VPBE           =  83,     &
-    XC_GGA_XC_LB            = 160,     &
-    XC_MGGA_C_CC06          = 229,     &
+    XC_MGGA_X_MK00          = 230,     &
     XC_GGA_K_ABSR1          = 506,     &
     XC_GGA_K_ABSR2          = 507,     &
-    XC_LDA_C_LP_A           = 547,     &
-    XC_LDA_C_LP_B           = 548,     &
-    XC_MGGA_C_LP90          = 564
+    XC_HYB_GGA_XC_BHLYP     = 436
 
 end module xc_f03_funcs_m
 

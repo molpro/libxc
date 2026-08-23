@@ -22,7 +22,7 @@ cs1_ess := (rs, z, xs) ->
 
 (* Equation (25) corrected in Equation (6) in Proynov2006_436 *)
 cs1_eab := (rs, z, xt) ->
-  + (1 - z^2)/4 * 1/(1 + cs1_d*n_total(rs)^(-1/3))
+  + one_minus_z_pow_n(z, 2)/4 * 1/(1 + cs1_d*n_total(rs)^(-1/3))
   * (cs1_C3 + cs1_C4*cs1_gamma^2*xt^4/(1 + cs1_gamma*xt^2)^2):
 
 f_cs1 := (rs, z, xt, xs0, xs1) ->

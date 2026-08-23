@@ -687,7 +687,7 @@ size_t check_xc(int id, int nspin, xc_values_type values, double threshold) {
   /* Initialize functional */
   if (xc_func_init(&func, id, nspin) != 0) {
     fprintf(stderr, "Error initializing functional id '%d'\n", id);
-    exit(1);
+    abort();
   }
 
   /* Initialize pointers, this is from gen-xc-pointers.sh */
@@ -841,7 +841,7 @@ double get_threshold(int id) {
   xc_func_type func;
   if (xc_func_init(&func, id, XC_POLARIZED) != 0) {
     fprintf(stderr, "Error initializing functional id '%d'\n", id);
-    exit(1);
+    abort();
   }
   thr = func.dens_threshold;
 
@@ -982,7 +982,7 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  libxc_free(fname);
+  free(fname);
 
   return 0;
 }

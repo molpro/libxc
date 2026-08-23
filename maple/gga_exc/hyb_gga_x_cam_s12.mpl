@@ -17,10 +17,17 @@
 $include "gga_x_s12.mpl"
 $include "gga_x_ityh.mpl"
 
-(* we remove the params_a_bx parameter from the definition of s12g_f *)
-ityh_enhancement := xs  -> s12g_f(xs)/params_a_bx:
+(* use the bx-free body of s12g_f directly (see gga_x_s12.mpl) *)
+ityh_enhancement := xs -> s12g_f_inner(xs):
 
+(* Algebraic identity:
+     1 - alpha - beta*att_erf = (1 - alpha - beta) + beta*(1 - att_erf).
+   At high density (small attenuation argument) att_erf -> 1 and
+   the direct form computes 1 - alpha - beta*close-to-1, which
+   cancels down to beta*epsilon when alpha + beta = 1.  Routing
+   through ityh_one_minus_f_aa removes that cancellation. *)
 cam_s12_f := (rs, z, xs) -> ityh_enhancement(xs) *
-  (1 - p_a_cam_alpha - p_a_cam_beta*ityh_f_aa(rs, z, xs)):
+  ((1 - p_a_cam_alpha - p_a_cam_beta)
+   + p_a_cam_beta*ityh_one_minus_f_aa(rs, z, xs)):
 
 f := (rs, z, xt, xs0, xs1) -> gga_exchange_nsp(cam_s12_f, rs, z, xs0, xs1):

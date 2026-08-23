@@ -19,8 +19,13 @@ $define lda_c_pw_params
 $define lda_c_pw_modified_params
 $include "lda_c_pw.mpl"
 
-XX := s -> 1/(1 + params_a_alpha*s^2):
-ff := s -> XX(s) + params_a_gamma*(1 - XX(s)):
+(* Algebraic identity:
+     XX + gamma*(1 - XX)
+       = 1/(1 + alpha s^2) + gamma * alpha s^2 / (1 + alpha s^2)
+       = (1 + gamma * alpha s^2) / (1 + alpha s^2).
+   The original 1 - XX(s) cancels 1 - close-to-1 at small s
+   (high density); the single-fraction form is cancellation-free. *)
+ff := s -> (1 + params_a_gamma*params_a_alpha*s^2)/(1 + params_a_alpha*s^2):
 
 f := (rs, z, xt, xs0, xs1) -> f_pw(rs, z)*(
   + opz_pow_n( z,1)/2 * ff(X2S*xs0)

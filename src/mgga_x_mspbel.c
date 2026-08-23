@@ -20,7 +20,7 @@ static void
 mgga_x_mspbel_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(mgga_x_mspbel_params));
+  p->params = libxc_malloc_flags(sizeof(mgga_x_mspbel_params), p->info->flags);
 }
 
 #define N_PAR 4

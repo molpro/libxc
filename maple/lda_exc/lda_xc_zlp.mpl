@@ -11,4 +11,9 @@
 a0 := 0.93222*RS_FACTOR:
 kk := 9.47362e-3*RS_FACTOR:
 
-f := (rs, zeta) -> -a0*(1 - kk*log(1 + rs/kk)/rs)/rs:
+(* 1 - kk*log1p(rs/kk)/rs = kk*(rs/kk - log1p(rs/kk))/rs
+                          = kk*xc_x_minus_log1p(rs/kk)/rs,
+   cancellation-free at small rs (where the bracket -> 0 as
+   close-to-1 - 1).  At the typical density regime rs/kk is large
+   (kk ~ 6e-3, rs >~ 0.1), but the rewrite is cleaner regardless. *)
+f := (rs, zeta) -> -a0*kk*xc_x_minus_log1p(rs/kk)/rs^2:

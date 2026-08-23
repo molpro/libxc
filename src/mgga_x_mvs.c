@@ -19,7 +19,7 @@ static void
 mgga_x_mvs_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(mgga_x_mvs_params));
+  p->params = libxc_malloc_flags(sizeof(mgga_x_mvs_params), p->info->flags);
 }
 
 #define MVS_N_PAR 4

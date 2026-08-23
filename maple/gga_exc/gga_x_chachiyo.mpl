@@ -11,8 +11,10 @@
 (* x has a different definition in the Chachiyo paper  *)
 chachiyo_x := x -> 2/9 * (Pi/3)**(1/3) * (2**(-1/3) * x):
 
-(* equation 1 *)
-chachiyo_f0 := x -> (3*x^2 + Pi^2*log(x+1)) / ((3*x + Pi^2)*log(x+1)):
+(* equation 1.  log(x + 1) routed through xc_log1p so the small-x
+   limit -- where the log is itself O(x) and used in both numerator
+   and denominator -- doesn't lose precision in the log evaluation. *)
+chachiyo_f0 := x -> (3*x^2 + Pi^2*xc_log1p(x)) / ((3*x + Pi^2)*xc_log1p(x)):
 
 chachiyo_f := x -> chachiyo_f0(chachiyo_x(x)):
 

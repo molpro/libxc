@@ -16,7 +16,7 @@
 
 (* Equation (20) *)
 lgap_ge_f0 := s -> 1 + add(params_a_mu[i]*s^(i), i=1..3):
-lgap_ge_f := x -> lgap_ge_f0(X2S*x):
+lgap_ge_f := x -> lgap_ge_f0(gga_s(x)):
 
 f := (rs, z, xt, xs0, xs1) ->
   gga_kinetic(lgap_ge_f, rs, z, xs0, xs1):

@@ -21,7 +21,7 @@ gga_c_zvpbeint_init(xc_func_type *p)
   gga_c_zvpbeint_params *params;
 
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(gga_c_zvpbeint_params));
+  p->params = libxc_malloc_flags(sizeof(gga_c_zvpbeint_params), p->info->flags);
   params = (gga_c_zvpbeint_params *) (p->params);
 
   switch(p->info->number){
@@ -37,7 +37,7 @@ gga_c_zvpbeint_init(xc_func_type *p)
     break;
   default:
     fprintf(stderr, "Internal error in gga_c_zvpbeint\n");
-    exit(1);
+    abort();
   }
 }
 

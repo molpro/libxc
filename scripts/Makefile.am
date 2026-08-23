@@ -7,4 +7,4 @@
 
 dist_noinst_SCRIPTS = get_functional_info.py get_references.py	\
   maple2c.py maple2c_lib/lda.py maple2c_lib/gga.py		\
-  maple2c_lib/mgga.py maple2c_lib/utils.py math_deorbitalize.py
+  maple2c_lib/mgga.py maple2c_lib/utils.py

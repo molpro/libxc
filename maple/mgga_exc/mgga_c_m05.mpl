@@ -22,7 +22,7 @@ $include "b97.mpl"
 
 (* The parallel and perpendicular components of the energy *)
 m05_comp := (rs, z, spin, xs, t) ->
-  + lda_stoll_par(f_pw, rs,  z,  1)
+  + lda_stoll_par(f_pw, rs,  z)
   * b97_g(params_a_gamma_ss, params_a_css, xs)
   * Fermi_D_corrected(xs, t):
 

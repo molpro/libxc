@@ -17,6 +17,10 @@ $include "gga_x_pw91.mpl"
 bpccac_malpha :=  1:
 bpccac_mbeta  := 19:
 
+(* The non-spin-polarized x is used in Equation (3), while the spin-polarized
+   x_sigma was used in the original implementation of the functional.
+   The implementation below uses x_sigma.
+*)
 bpccac_fab := x -> 1/(1 + exp(-bpccac_malpha*(x - bpccac_mbeta))):
 bpccac_f   := x -> (1 - bpccac_fab(x))*pbe_f(x) + bpccac_fab(x)*pw91_f(x):
 

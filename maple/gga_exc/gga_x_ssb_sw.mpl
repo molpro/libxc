@@ -17,6 +17,6 @@
 ssb_sw_f0 := s -> params_a_A
    + params_a_B*s^2/(1 + params_a_C*s^2)
    - params_a_D*s^2/(1 + params_a_E*s^4):
-ssb_sw_f := x -> ssb_sw_f0(X2S*x):
+ssb_sw_f := x -> ssb_sw_f0(gga_s(x)):
 
 f := (rs, zeta, xt, xs0, xs1) -> gga_exchange(ssb_sw_f, rs, zeta, xs0, xs1):

@@ -1,61 +1,94 @@
-cmake_policy(SET CMP0048 NEW)  # project_VERSION* variables populated from project(... VERSION x.x.x) string
+cmake_minimum_required(VERSION 3.21)
+cmake_policy(SET CMP0048 NEW)   # project_VERSION* variables populated from project(... VERSION x.x.x) string
+if(POLICY CMP0148)
+  cmake_policy(SET CMP0148 OLD) # The FindPythonInterp and FindPythonLibs modules are removed in CMake 3.27
+endif()
+if(POLICY CMP0104)
+  cmake_policy(SET CMP0104 OLD) # Don't initialize CMAKE_CUDA_ARCHITECTURES when CMAKE_CUDA_COMPILER_ID is NVIDIA. Empty CUDA_ARCHITECTURES is allowed.
+endif()
 project(Libxc
   LANGUAGES C)
 set(Libxc_AUTHORS      "Miguel A.L. Marques and others")
 set(Libxc_DESCRIPTION  "Exchange-correlation functionals for density-functional theory")
-set(Libxc_EMAIL        "libxc@tddft.org")
-set(Libxc_URL          "http://www.tddft.org/programs/Libxc")
+set(Libxc_EMAIL        "https://gitlab.com/libxc/libxc/")
+set(Libxc_URL          "https://libxc.gitlab.io/")
 set(Libxc_LICENSE      "Mozilla Public License, version 2.0 (MPL-2.0)")
 
-cmake_minimum_required(VERSION 3.1...3.10)
-set(CMAKE_C_STANDARD 99)
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
 if(ENABLE_CUDA)
-  cmake_minimum_required(VERSION 3.8)
-  set(CMAKE_VERBOSE_MAKEFILE ON)
-  enable_language(CUDA)
-  set(CMAKE_CUDA_STANDARD 98)
-  if(POLICY CMP0104)
-    cmake_policy(SET CMP0104 OLD)
+  if(ENABLE_HIP)
+    message(FATAL_ERROR "Can only enable either CUDA or HIP, not both")
   endif()
+  enable_language(CUDA)
 endif()
+
+if(ENABLE_HIP)
+  enable_language(HIP)
+endif()
+
+# Loaded early so install-directory variables (CMAKE_INSTALL_INCLUDEDIR
+# etc.) are available when option defaults are computed below.
+include(GNUInstallDirs)
 
 ################################### Options ####################################
 include(psi4OptionsTools)
 option_with_default(CMAKE_BUILD_TYPE "Build type" Release)
-option_with_print(BUILD_SHARED_LIBS "Build final library as shared, not static. For Windows, also add CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=ON" OFF)
-option_with_print(BUILD_TESTING "Compile the testing infrastructure" ON)
+option_with_print(BUILD_SHARED_LIBS "Build final library as shared, not static. For Windows, also add CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=ON" ON)
+# Test only if libXC is built directly and not as a dependency of something else
+if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
+  option_with_print(BUILD_TESTING "Compile the testing infrastructure" ON)
+else()
+  set(BUILD_TESTING OFF)
+endif()
 option_with_default(BUILD_FPIC "Libraries will be compiled with position independent code" ON)
 if((${BUILD_SHARED_LIBS}) AND NOT ${BUILD_FPIC})
   message(FATAL_ERROR "BUILD_SHARED_LIBS ON and BUILD_FPIC OFF are incompatible, as shared library requires position independent code")
 endif()
 option_with_default(NAMESPACE_INSTALL_INCLUDEDIR "Location within CMAKE_INSTALL_INCLUDEDIR to which headers are installed (e.g., /libxc)" /)
-option_with_print(ENABLE_GENERIC "Enable mostly static linking in shared library" OFF)
 option_with_print(ENABLE_FORTRAN "Build Fortran 2003 interface" OFF)
+option_with_default(FORTRAN_MODULE_INSTALL_DIR "Install location for Fortran .mod files (defaults to the header install dir, matching --with-custom-fmoddir from Autotools)" "${CMAKE_INSTALL_INCLUDEDIR}${NAMESPACE_INSTALL_INCLUDEDIR}")
 option_with_print(ENABLE_PYTHON "Install Python API interface" OFF)
 if(${ENABLE_PYTHON} AND NOT ${BUILD_SHARED_LIBS})
   message(FATAL_ERROR "ENABLE_PYTHON ON requires BUILD_SHARED_LIBS ON because only shared libraries can be dynamically loaded")
 endif()
-include(xhost)  # defines: option(ENABLE_XHOST "Enable processor-specific optimization" ON)
-option_with_print(DISABLE_VXC "Don't compile first derivative code" OFF)
-option_with_print(DISABLE_FXC "Don't compile second derivative code" OFF)
-option_with_print(DISABLE_KXC "Don't compile third derivative code" ON)
-option_with_print(DISABLE_LXC "Don't compile fourth derivative code" ON)
+# Highest derivative order compiled into the library:
+#   0 = energy (exc) only, 1 = +vxc, 2 = +fxc, 3 = +kxc, 4 = +lxc.
+set(MAXORDER 2 CACHE STRING "Highest derivative order to build (0..4)")
+# Deprecated per-order switches, kept as aliases for one release. Pre-7.1 these
+# were the primary control and the built order was the highest one NOT disabled.
+# Reproduce that: if any truthy -DDISABLE_<ORDER> is given, derive MAXORDER from
+# the disabled orders (starting from the full order 4), overriding the default --
+# so e.g. -DDISABLE_LXC=ON gives 3, and -DDISABLE_KXC=OFF -DDISABLE_LXC=ON gives 3.
+set(_maxorder 4)
+set(_dep_used FALSE)
+foreach(_dep "LXC;3" "KXC;2" "FXC;1" "VXC;0")
+  list(GET _dep 0 _o)
+  list(GET _dep 1 _cap)
+  if(DEFINED DISABLE_${_o} AND DISABLE_${_o})
+    set(_dep_used TRUE)
+    if(_maxorder GREATER ${_cap})
+      set(_maxorder ${_cap})
+    endif()
+  endif()
+endforeach()
+if(_dep_used)
+  message(DEPRECATION "DISABLE_*XC are deprecated; use -DMAXORDER=${_maxorder}")
+  set(MAXORDER ${_maxorder})
+endif()
+message(STATUS "MAXORDER: ${MAXORDER}")
+add_compile_definitions(XC_MAXORDER=${MAXORDER})
 option_with_print(DISABLE_FHC "Disable enforcement of Fermi hole curvature?" OFF)
+option_with_print(XC_CHECK_NUMERICS "Check functional outputs for NaN/Inf and (where supported) trap FPEs during evaluation" OFF)
+option_with_print(XC_PROFILING "Enable additional profiling code" OFF)
 
 ######################### Process & Validate Options ###########################
 include(autocmake_safeguards)
-include(custom_static_library)
 
 ################################# Main Project #################################
-include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 
 set(PN ${PROJECT_NAME})
-
-# Need BASH to run test suite
-find_program(BASH_EXECUTABLE bash)
 
 # link -lm only if necessary
 find_package(StandardMathLibraryC)
@@ -69,28 +102,20 @@ if (HAVE_CBRT)
   add_definitions (-DHAVE_CBRT)
 endif (HAVE_CBRT)
 
-# Turn off derivative code
-if(DISABLE_VXC)
-  add_definitions (-DXC_DONT_COMPILE_VXC)
-  add_definitions (-DXC_DONT_COMPILE_FXC)
-  add_definitions (-DXC_DONT_COMPILE_KXC)
-  add_definitions (-DXC_DONT_COMPILE_LXC)
-endif(DISABLE_VXC)
-if(DISABLE_FXC)
-  add_definitions (-DXC_DONT_COMPILE_FXC)
-  add_definitions (-DXC_DONT_COMPILE_KXC)
-  add_definitions (-DXC_DONT_COMPILE_LXC)
-endif(DISABLE_FXC)
-if(DISABLE_KXC)
-  add_definitions (-DXC_DONT_COMPILE_KXC)
-  add_definitions (-DXC_DONT_COMPILE_LXC)
-endif(DISABLE_KXC)
-if(DISABLE_LXC)
-  add_definitions (-DXC_DONT_COMPILE_LXC)
-endif(DISABLE_LXC)
-if(NOT DISABLE_FHC)
-  add_definitions (-DXC_ENFORCE_FERMI_HOLE_CURVATURE)
-endif(NOT DISABLE_FHC)
+# check if feenableexcept exists (GNU extension, used by optional FPE
+# trapping in work_*_inc.c) and declare HAVE_FEENABLEEXCEPT if it does
+set(CMAKE_REQUIRED_LIBRARIES_BACKUP "${CMAKE_REQUIRED_LIBRARIES}")
+list(APPEND CMAKE_REQUIRED_LIBRARIES ${STANDARD_MATH_LIBRARY})
+check_c_source_compiles (
+  "#define _GNU_SOURCE 1
+#include <fenv.h>
+int main() {
+  return feenableexcept(0);
+}" HAVE_FEENABLEEXCEPT)
+set(CMAKE_REQUIRED_LIBRARIES "${CMAKE_REQUIRED_LIBRARIES_BACKUP}")
+if (HAVE_FEENABLEEXCEPT)
+  add_definitions (-DHAVE_FEENABLEEXCEPT)
+endif (HAVE_FEENABLEEXCEPT)
 
 # <<<  Build  >>>
 
@@ -136,338 +161,22 @@ set(${PROJECT_NAME}_SOVERSION ${XC_CURRENT}:${XC_REVISION}:${XC_AGE})
 math(EXPR ${PROJECT_NAME}_SOMAJOR "${XC_CURRENT} - ${XC_AGE}")
 message(STATUS "SO Version: Full ${${PROJECT_NAME}_SOVERSION} Major ${${PROJECT_NAME}_SOMAJOR}")
 
-set(raw_sources_list
-  bessel.c
-  expint_e1.c
-  faddeeva.c
-  func_info.c
-  func_reference.c
-  functionals.c
-  hybrids.c
-  gga.c
-  gga_c_acgga.c
-  gga_c_acggap.c
-  gga_c_am05.c
-  gga_c_bmk.c
-  gga_c_chachiyo.c
-  gga_c_cs1.c
-  gga_c_ft97.c
-  gga_c_gapc.c
-  gga_c_gaploc.c
-  gga_c_hcth_a.c
-  gga_c_lm.c
-  gga_c_lyp.c
-  gga_c_lypr.c
-  gga_c_op_b88.c
-  gga_c_op_g96.c
-  gga_c_op_pbe.c
-  gga_c_op_pw91.c
-  gga_c_op_xalpha.c
-  gga_c_optc.c
-  gga_c_p86.c
-  gga_c_p86vwn.c
-  gga_c_pbe.c
-  gga_c_pbe_vwn.c
-  gga_c_pbeloc.c
-  gga_c_pbe_erf_gws.c
-  gga_c_pw91.c
-  gga_c_q2d.c
-  gga_c_regtpss.c
-  gga_c_revtca.c
-  gga_c_scan_e0.c
-  gga_c_sg4.c
-  gga_c_sogga11.c
-  gga_c_tca.c
-  gga_c_w94.c
-  gga_c_wi.c
-  gga_c_wl.c
-  gga_c_zpbeint.c
-  gga_c_zvpbeint.c
-  gga_c_zvpbeloc.c
-  gga_k_dk.c
-  gga_k_pg.c
-  gga_k_rational_p.c
-  gga_k_meyer.c
-  gga_k_ol1.c
-  gga_k_ol2.c
-  gga_x_ol2.c
-  gga_k_pearson.c
-  gga_k_tflw.c
-  gga_k_thakkar.c
-  gga_k_gds08.c
-  gga_k_exp4.c
-  gga_x_2d_b86.c
-  gga_x_2d_b86_mgc.c
-  gga_x_2d_b88.c
-  gga_x_2d_pbe.c
-  gga_x_airy.c
-  gga_x_ak13.c
-  gga_x_am05.c
-  gga_x_b86.c
-  gga_x_b88.c
-  gga_k_llp.c
-  gga_k_pw86.c
-  gga_k_mpbe.c
-  gga_k_apbe.c
-  gga_k_apbeint.c
-  gga_k_lc94.c
-  gga_k_lkt.c
-  gga_k_vt84f.c
-  gga_x_bayesian.c
-  gga_x_beefvdw.c
-  gga_x_bpccac.c
-  gga_x_c09x.c
-  gga_x_cap.c
-  gga_x_chachiyo.c
-  gga_x_dk87.c
-  gga_x_ev93.c
-  gga_x_ft97.c
-  gga_x_g96.c
-  gga_x_gg99.c
-  gga_x_hcth_a.c
-  gga_x_hjs.c
-  gga_x_hjs_b88_v2.c
-  gga_x_htbs.c
-  gga_x_ityh.c
-  gga_x_ityh_optx.c
-  gga_x_ityh_pbe.c
-  gga_x_kt.c
-  gga_x_lb.c
-  gga_x_lg93.c
-  gga_x_lspbe.c
-  gga_x_lsrpbe.c
-  gga_x_lv_rpw86.c
-  gga_x_mpbe.c
-  gga_x_n12.c
-  gga_x_ncap.c
-  gga_x_optx.c
-  gga_x_pbe.c
-  gga_x_pbea.c
-  gga_x_pbeint.c
-  gga_x_pbepow.c
-  gga_x_pbetrans.c
-  gga_x_pbe_erf_gws.c
-  gga_x_pw86.c
-  gga_x_pw91.c
-  gga_x_q1d.c
-  gga_x_q2d.c
-  gga_x_rge2.c
-  gga_x_rpbe.c
-  gga_x_s12.c
-  gga_x_sfat.c
-  gga_x_sfat_pbe.c
-  gga_x_sg4.c
-  gga_x_sogga11.c
-  gga_x_ssb_sw.c
-  gga_x_vmt.c
-  gga_x_vmt84.c
-  gga_x_wc.c
-  gga_x_wpbeh.c
-  gga_x_fd_lb94.c
-  gga_xc_1w.c
-  gga_xc_b97.c
-  gga_xc_edf1.c
-  gga_xc_oblyp_d.c
-  gga_xc_th1.c
-  gga_xc_th2.c
-  gga_xc_th3.c
-  gga_xc_vv10.c
-  gga_k_lgap.c
-  gga_k_lgap_ge.c
-  gga_c_ccdf.c
-  gga_x_bkl.c
-  hyb_gga_xc_b1wc.c
-  hyb_gga_xc_b3lyp.c
-  hyb_gga_xc_cam_b3lyp.c
-  hyb_gga_xc_camy_b3lyp.c
-  hyb_gga_xc_camy_blyp.c
-  hyb_gga_xc_edf2.c
-  hyb_gga_xc_hse.c
-  hyb_gga_xc_lc_blyp.c
-  hyb_gga_xc_lcy_blyp.c
-  hyb_gga_xc_lcy_pbe.c
-  hyb_gga_xc_o3lyp.c
-  hyb_gga_xc_pbeh.c
-  hyb_gga_xc_wb97.c
-  hyb_lda_xc_cam_lda0.c
-  hyb_lda_xc_bn05.c
-  hyb_mgga_x_dldf.c
-  hyb_mgga_x_m05.c
-  hyb_mgga_x_mvsh.c
-  hyb_mgga_xc_b88b95.c
-  hyb_mgga_xc_kcis.c
-  hyb_mgga_xc_tpssh.c
-  hyb_mgga_xc_wb97mv.c
-  hyb_mgga_x_js18.c
-  hyb_mgga_x_pjs18.c
-  hyb_gga_xc_cam_o3lyp.c
-  hyb_gga_x_cam_s12.c
-  hyb_gga_xc_case21.c
-  hyb_mgga_xc_gas22.c
-  integrate.c
-  lda.c
-  lda_c_1d_csc.c
-  lda_c_1d_loos.c
-  lda_c_2d_amgb.c
-  lda_c_2d_prm.c
-  lda_c_chachiyo.c
-  lda_c_chachiyo_mod.c
-  lda_c_gombas.c
-  lda_c_hl.c
-  lda_c_lp96.c
-  lda_c_ml1.c
-  lda_c_pk09.c
-  lda_c_pw.c
-  lda_c_pz.c
-  lda_c_rc04.c
-  lda_c_rpa.c
-  lda_c_vwn.c
-  lda_c_vwn_1.c
-  lda_c_vwn_2.c
-  lda_c_vwn_3.c
-  lda_c_vwn_4.c
-  lda_c_vwn_rpa.c
-  lda_c_wigner.c
-  lda_c_gk72.c
-  lda_c_w20.c
-  lda_c_pw_erf.c
-  lda_k_tf.c
-  lda_k_zlp.c
-  lda_k_gds08_worker.c
-  lda_x.c
-  lda_x_1d_soft.c
-  lda_x_1d_exponential.c
-  lda_x_2d.c
-  lda_x_erf.c
-  lda_x_rel.c
-  lda_xc_1d_ehwlrg.c
-  lda_xc_ksdt.c
-  lda_xc_teter93.c
-  lda_xc_zlp.c
-  lda_c_pmgb06.c
-  lda_xc_tih.c
-  lda_x_sloc.c
-  lda_x_yukawa.c
-  lda_c_epc17.c
-  lda_c_epc18.c
-  mgga.c
-  mgga_c_b88.c
-  mgga_c_b94.c
-  mgga_c_bc95.c
-  mgga_c_cs.c
-  mgga_c_kcis.c
-  mgga_c_kcisk.c
-  mgga_xc_lp90.c
-  mgga_c_m05.c
-  mgga_c_m06l.c
-  mgga_c_m08.c
-  mgga_c_pkzb.c
-  mgga_c_revscan.c
-  mgga_c_revtpss.c
-  mgga_c_rscan.c
-  mgga_c_scan.c
-  mgga_c_scanl.c
-  mgga_c_tpss.c
-  mgga_c_tpssloc.c
-  mgga_c_vsxc.c
-  mgga_c_cc.c
-  mgga_c_ccalda.c
-  mgga_k_pc07.c
-  mgga_k_csk.c
-  mgga_k_csk_loc.c
-  mgga_k_pgslb.c
-  mgga_x_2d_prhg07.c
-  mgga_x_2d_prp10.c
-  mgga_x_br89.c
-  mgga_x_br89_explicit.c
-  mgga_x_tb09.c
-  mgga_x_gvt4.c
-  mgga_x_gx.c
-  mgga_x_jk.c
-  mgga_x_lta.c
-  mgga_x_m06l.c
-  mgga_x_m08.c
-  mgga_x_m11.c
-  mgga_x_m11_l.c
-  mgga_x_mbeef.c
-  mgga_x_mbeefvdw.c
-  mgga_x_mn12.c
-  mgga_x_ms.c
-  mgga_x_msb.c
-  mgga_x_mvs.c
-  mgga_x_mvsb.c
-  mgga_x_pbe_gx.c
-  mgga_x_pkzb.c
-  mgga_x_rscan.c
-  mgga_x_sa_tpss.c
-  mgga_x_scan.c
-  mgga_x_scanl.c
-  mgga_x_tau_hcth.c
-  mgga_x_tm.c
-  mgga_x_regtm.c
-  mgga_x_revtm.c
-  mgga_x_tpss.c
-  mgga_x_regtpss.c
-  mgga_x_vt84.c
-  mgga_x_rtpss.c
-  mgga_xc_b97mv.c
-  mgga_xc_cc06.c
-  mgga_xc_hle17.c
-  mgga_xc_otpss_d.c
-  mgga_xc_zlp.c
-  mgga_xc_b98.c
-  mgga_x_2d_js17.c
-  mgga_x_edmgga.c
-  mgga_x_gdme.c
-  mgga_x_rlda.c
-  mgga_x_scanl.c
-  mgga_c_scanl.c
-  mgga_x_mbrxh_bg.c
-  mgga_x_mbrxc_bg.c
-  mgga_x_task.c
-  mgga_x_mggac.c
-  mgga_x_th.c
-  mgga_x_mbr.c
-  mgga_c_ltapw.c
-  mgga_x_r2scan.c
-  mgga_c_r2scan.c
-  mgga_k_lk.c
-  mgga_k_rda.c
-  mgga_k_gea2.c
-  mgga_k_gea4.c
-  mgga_x_r2scanl.c
-  mgga_c_r2scanl.c
-  mgga_c_rregtm.c
-  mgga_x_mcml.c
-  mgga_c_rmggac.c
-  mgga_x_rppscan.c
-  mgga_c_rppscan.c
-  mgga_x_r4scan.c
-  mgga_x_ft98.c
-  mgga_x_ktbm.c
-  mgga_x_mspbel.c
-  mgga_x_msrpbel.c
-  mgga_x_msb86bl.c
-  hyb_mgga_xc_br3p86.c
-  mgga_x_vcml.c
-  hyb_mgga_xc_r2scan.c
-  mgga_x_eel.c
-  mgga_x_lak.c
-  mix_func.c
-  deorbitalize_func.c
-  references.c
-  special_functions.c
-  math_brent.c
-  util.c
-  version.c
-  )
+file(READ "src/sources.mk" _sources_mk)
+string(REGEX MATCHALL "[a-z_0-9][a-z_0-9]*\\.c" raw_sources_list "${_sources_mk}")
 
 set(src_prefix "src/")
 string(REGEX REPLACE "([^;]+)" "${src_prefix}\\1" sources_list "${raw_sources_list}")
 
+# Derivative-order compile gating is driven by MAXORDER (the global
+# XC_MAXORDER definition set above).
+if(NOT DISABLE_FHC)
+  add_compile_definitions(XC_ENFORCE_FERMI_HOLE_CURVATURE)
+endif()
 
 if(ENABLE_CUDA)
   set_source_files_properties(${sources_list} PROPERTIES LANGUAGE CUDA)
+elseif(ENABLE_HIP)
+  set_source_files_properties(${sources_list} PROPERTIES LANGUAGE HIP)
 endif()
 
 set(raw_sources_list_f90
@@ -492,7 +201,70 @@ set(CMAKE_INSTALL_RPATH ${base} ${base}/${relDir})
 
 # STATIC/SHARED on below governed by BUILD_SHARED_LIBS
 add_library(xc ${sources_list})
-set_target_properties(xc PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+get_target_property(XC_TARGET_TYPE xc TYPE)
+if(ENABLE_CUDA)
+  set_target_properties(xc PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+  if(XC_PROFILING)
+    find_package(CUDAToolkit REQUIRED)
+    target_link_libraries(xc PRIVATE CUDA::nvtx3)
+  endif()
+elseif(ENABLE_HIP)
+  # clang replaces pow()/exp() with the llvm.pow.f64/llvm.exp.f64 intrinsics,
+  # but with -fgpu-rdc the amdgcn ISA is generated at link time, where the
+  # AMDGPULibCalls pass that would lower them to __ocml_*_f64 no longer runs, so
+  # lld aborts with "Cannot select fpow" / "no libcall available for fexp".
+  # -fno-builtin-pow/-fno-builtin-exp keep pow()/exp() as ordinary calls that
+  # resolve to the HIP __device__ overloads (OCML) instead of the intrinsics,
+  # while leaving sqrt() etc. as native amdgcn ops. (-fmath-errno would instead
+  # force host-libm libcalls -- sqrt/sqrtl/powl/expl -- that the GPU has no
+  # implementation for.)
+  target_compile_options(xc PRIVATE
+    $<$<COMPILE_LANGUAGE:HIP>:-fgpu-rdc>
+    $<$<COMPILE_LANGUAGE:HIP>:-fno-builtin-pow>
+    $<$<COMPILE_LANGUAGE:HIP>:-fno-builtin-exp>)
+  if(XC_TARGET_TYPE STREQUAL STATIC_LIBRARY)
+    target_link_options(xc PUBLIC $<$<LINK_LANGUAGE:HIP>:-fgpu-rdc --hip-link>)
+  else()
+    target_link_options(xc PRIVATE $<$<LINK_LANGUAGE:HIP>:-fgpu-rdc --hip-link>)
+  endif()
+  if(XC_PROFILING)
+    find_package(rocprofiler-sdk-roctx REQUIRED)
+    target_link_libraries(xc PRIVATE rocprofiler-sdk-roctx::rocprofiler-sdk-roctx)
+  endif()
+else()
+  set_target_properties(xc PROPERTIES C_STANDARD 99 C_STANDARD_REQUIRED ON C_EXTENSIONS OFF)
+endif()
+# 32-bit x86 defaults to 387 math, which keeps intermediates in 80-bit
+# registers and rounds them on spill. Results then depend on register
+# allocation rather than on the arithmetic: on i686 the regression suite misses
+# gga_x_hjs_pbe's v2sigma2 by 2x its tolerance and mgga_x_2d_prhg07_prp10's
+# v2rho2 by 2000x. Since the library's premise is accuracy to floating-point
+# precision whatever the compiler, ask for SSE2 instead, which is what every
+# 64-bit target already uses.
+#
+# -fexcess-precision=standard would fix the semantics without requiring SSE2,
+# but it makes GCC pathological on the larger generated kernels: gga_x_wpbeh.c
+# alone did not finish compiling in 46 minutes, against roughly 5 for the whole
+# library otherwise.
+#
+# The cost is a Pentium 4 / Athlon 64 baseline on 32-bit x86 only. Nothing else
+# is touched: x86-64 already implies SSE2, and other architectures never take
+# this branch.
+if(CMAKE_SIZEOF_VOID_P EQUAL 4
+   AND CMAKE_SYSTEM_PROCESSOR MATCHES "^(i[3-6]86|x86)$"
+   AND (CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_COMPILER_ID MATCHES "Clang"))
+  include(CheckCCompilerFlag)
+  check_c_compiler_flag("-msse2 -mfpmath=sse" XC_HAVE_SSE_MATH)
+  if(XC_HAVE_SSE_MATH)
+    target_compile_options(xc PRIVATE -msse2 -mfpmath=sse)
+    message(STATUS "32-bit x86: using SSE2 math (-msse2 -mfpmath=sse) instead of 387")
+  else()
+    message(WARNING
+      "32-bit x86 without SSE2 support: x87 excess precision will make some "
+      "second derivatives disagree with the reference values.")
+  endif()
+endif()
+
 target_link_libraries(xc PUBLIC ${STANDARD_MATH_LIBRARY})
 set_target_properties(xc PROPERTIES POSITION_INDEPENDENT_CODE ${BUILD_FPIC}
   SOVERSION ${${PROJECT_NAME}_SOMAJOR})
@@ -509,19 +281,50 @@ if(ENABLE_FORTRAN)
   target_link_libraries(xcf03 xc)
   set_target_properties(xcf03 PROPERTIES POSITION_INDEPENDENT_CODE ${BUILD_FPIC}
     SOVERSION ${${PROJECT_NAME}_SOMAJOR})
+  if(ENABLE_CUDA)
+    set_target_properties(xcf03 PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+  endif()
 endif()
 
 add_executable(xc-info "${src_prefix}/xc-info.c")
 if(ENABLE_CUDA)
   set_source_files_properties("${src_prefix}/xc-info.c" PROPERTIES LANGUAGE CUDA)
+elseif(ENABLE_HIP)
+  set_source_files_properties("${src_prefix}/xc-info.c" PROPERTIES LANGUAGE HIP)
+else()
+  set_target_properties(xc-info PROPERTIES C_STANDARD 99 C_STANDARD_REQUIRED ON C_EXTENSIONS OFF)
 endif()
 target_link_libraries(xc-info xc)
 
 add_executable(xc-threshold "${src_prefix}/xc-threshold.c")
 if(ENABLE_CUDA)
   set_source_files_properties("${src_prefix}/xc-threshold.c" PROPERTIES LANGUAGE CUDA)
+elseif(ENABLE_HIP)
+  set_source_files_properties("${src_prefix}/xc-threshold.c" PROPERTIES LANGUAGE HIP)
+else()
+  set_target_properties(xc-threshold PROPERTIES C_STANDARD 99 C_STANDARD_REQUIRED ON C_EXTENSIONS OFF)
 endif()
 target_link_libraries(xc-threshold xc)
+
+add_executable(xc-sanity "${src_prefix}/xc-sanity.c")
+if(ENABLE_CUDA)
+  set_source_files_properties("${src_prefix}/xc-sanity.c" PROPERTIES LANGUAGE CUDA)
+elseif(ENABLE_HIP)
+  set_source_files_properties("${src_prefix}/xc-sanity.c" PROPERTIES LANGUAGE HIP)
+else()
+  set_target_properties(xc-sanity PROPERTIES C_STANDARD 99 C_STANDARD_REQUIRED ON C_EXTENSIONS OFF)
+endif()
+target_link_libraries(xc-sanity xc)
+
+add_executable(genwiki "${src_prefix}/genwiki.c")
+if(ENABLE_CUDA)
+  set_source_files_properties("${src_prefix}/genwiki.c" PROPERTIES LANGUAGE CUDA)
+elseif(ENABLE_HIP)
+  set_source_files_properties("${src_prefix}/genwiki.c" PROPERTIES LANGUAGE HIP)
+else()
+  set_target_properties(genwiki PROPERTIES C_STANDARD 99 C_STANDARD_REQUIRED ON C_EXTENSIONS OFF)
+endif()
+target_link_libraries(genwiki xc)
 
 
 include_directories(${PROJECT_SOURCE_DIR}/${src_prefix}  # for util.h
@@ -530,15 +333,51 @@ include_directories(${PROJECT_SOURCE_DIR}/${src_prefix}  # for util.h
 )
 
 if(BUILD_TESTING)
-  find_program(BZip2_EXECUTABLE
-    NAMES bzip2
-    DOC "Path to zipping utility")
-  if(BZip2_EXECUTABLE)
-    enable_testing ()
-    add_subdirectory(testsuite)  
-  else()
-    message(FATAL_ERROR "Install `bzip2` command to enable tests")
+  find_package(PythonInterp REQUIRED)
+  execute_process(
+    COMMAND ${PYTHON_EXECUTABLE} -m pytest --version
+    RESULT_VARIABLE status)
+  if(NOT status EQUAL 0)
+    message(FATAL_ERROR "Pytest not found")
   endif()
+  set(CMAKE_CTEST_ARGUMENTS "-V")
+  enable_testing ()
+  add_subdirectory(testsuite)
+endif()
+
+add_subdirectory(examples)
+
+# Developer targets to regenerate bookkeeping files from the Maple sources
+# and BibTeX bibliography. These write into the source tree and are not
+# part of the default build; invoke explicitly with e.g. `make funcs` /
+# `make references`. Mirrors the Autotools targets in src/Makefile.am
+# and Makefile.am. Only created if a Python 3 interpreter is found.
+find_package(Python3 COMPONENTS Interpreter QUIET)
+if(Python3_Interpreter_FOUND)
+  add_custom_target(funcs
+    COMMAND ${Python3_EXECUTABLE} ${PROJECT_SOURCE_DIR}/scripts/get_functional_info.py --srcdir=${PROJECT_SOURCE_DIR}/src
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src
+    COMMENT "Regenerating functional registry files from Maple sources"
+    VERBATIM)
+
+  add_custom_target(references
+    COMMAND ${Python3_EXECUTABLE} ${PROJECT_SOURCE_DIR}/scripts/get_references.py ${PROJECT_SOURCE_DIR}/libxc.bib
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/src
+    COMMENT "Regenerating references.c/references.h from libxc.bib"
+    VERBATIM)
+
+  # Regenerate every src/maple2c/*.c file from the SymPy math definitions
+  # under python/. SymPy-pipeline counterpart of the per-family `maple2c`
+  # targets in maple/*/Makefile.am. Override the derivative order with
+  # -DSYMPY2C_MAXORDER=<n> (default 4).
+  set(SYMPY2C_MAXORDER 4 CACHE STRING
+      "Highest derivative order generated by the sympy2c target")
+  add_custom_target(sympy2c
+    COMMAND ${Python3_EXECUTABLE} ${PROJECT_SOURCE_DIR}/scripts/sympy2c/compile.py
+            --all --maxorder ${SYMPY2C_MAXORDER}
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+    COMMENT "Regenerating src/maple2c/*.c from the SymPy definitions under python/"
+    VERBATIM)
 endif()
 
 # <<<  Install  >>>
@@ -569,7 +408,7 @@ if(ENABLE_FORTRAN)
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}${NAMESPACE_INSTALL_INCLUDEDIR})
   install(FILES "${PROJECT_BINARY_DIR}/xc_f03_lib_m.mod" "${PROJECT_BINARY_DIR}/xc_f03_funcs_m.mod"
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}${NAMESPACE_INSTALL_INCLUDEDIR})
+    DESTINATION ${FORTRAN_MODULE_INSTALL_DIR})
   if(NOT MSVC)
     install(FILES ${PROJECT_BINARY_DIR}/libxcf03.pc
       DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig/)
@@ -609,12 +448,16 @@ endif()
 if(ENABLE_PYTHON)
   set(SOURCE_PYTHON_API
     pylibxc/__init__.py
+    pylibxc/array_backend.py
     pylibxc/core.py
+    pylibxc/dlpack.py
     pylibxc/flags.py
     pylibxc/functional.py
     pylibxc/structs.py
+    pylibxc/testing.py
     pylibxc/util.py
     pylibxc/version.py
+    pylibxc/example_densities.py
   )
   install(
     FILES ${SOURCE_PYTHON_API}

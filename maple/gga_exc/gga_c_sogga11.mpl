@@ -23,8 +23,8 @@ malpha := mbeta/(16*2^(2/3)):
 
 sogga11_yy := (rs, z, xt) -> -malpha*mphi(z)*xt^2/(rs*f_pw(rs, z)):
 
-sogga11_f0 := (rs, z, xt) -> 1 - 1/(1 + sogga11_yy(rs, z, xt)):
-sogga11_f1 := (rs, z, xt) -> 1 - exp(-sogga11_yy(rs, z, xt)):
+sogga11_f0 := (rs, z, xt) -> sogga11_yy(rs, z, xt)/(1 + sogga11_yy(rs, z, xt)):
+sogga11_f1 := (rs, z, xt) -> -xc_expm1(-sogga11_yy(rs, z, xt)):
 
 sogga11_t0 := (rs, z, xt) -> add(params_a_sogga11_a[i]*sogga11_f0(rs, z, xt)^(i-1), i=1..6):
 sogga11_t1 := (rs, z, xt) -> add(params_a_sogga11_b[i]*sogga11_f1(rs, z, xt)^(i-1), i=1..6):

@@ -13,5 +13,7 @@ f_zeta_k := z -> 1/2*(opz_pow_n(z,5/3) + opz_pow_n(-z,5/3)):
 c1 := 3.2372*RS_FACTOR:
 c2 := 0.00196*RS_FACTOR:
 
+(* 1 - c2/rs*log1p(rs/c2) = c2/rs * xc_x_minus_log1p(rs/c2);
+   cancellation-free at small rs. *)
 f := (rs, zeta) -> c1*f_zeta_k(zeta)/rs^2
-  * (1 - c2/rs*log(1 + rs/c2)):
+  * c2/rs*xc_x_minus_log1p(rs/c2):

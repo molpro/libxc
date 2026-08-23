@@ -14,6 +14,15 @@
 #define XC_MGGA_C_SCANL_RVV10    703 /* SCAN correlation + rVV10 correlation */
 #define XC_MGGA_C_SCANL_VV10     704 /* SCAN correlation +  VV10 correlation */
 
+/* The deorbitalization is performed symbolically in
+   maple/mgga_exc/mgga_c_scanl.mpl: SCAN correlation's iso-orbital indicator is
+   taken from PC07 rather than assembled from a kinetic energy density at run
+   time.  SCAN correlation has no parameters of its own -- they are baked into
+   the Maple source -- so only PC07's survive. */
+typedef struct{
+  double pc07_a, pc07_b;
+} mgga_c_scanl_params;
+
 #define N_PAR_SCANL 2
 static const char *names[N_PAR_SCANL] = {
   "_a", "_b"                 /* parameters of pc07 */
@@ -28,15 +37,12 @@ static const double par_scanl[N_PAR_SCANL] = {
 static void
 mgga_c_scanl_init(xc_func_type *p)
 {
-  xc_deorbitalize_init(p, XC_MGGA_C_SCAN, XC_MGGA_K_PC07_OPT);
+  assert(p != NULL && p->params == NULL);
+  p->params = libxc_malloc_flags(sizeof(mgga_c_scanl_params), p->info->flags);
 }
 
-static void
-scanl_set_ext_params(xc_func_type *p, const double *ext_params)
-{
-  assert(p != NULL && p->func_aux != NULL);
-  xc_func_set_ext_params(p->func_aux[1], &ext_params[0]);
-}
+#include "maple2c/mgga_exc/mgga_c_scanl.c"
+#include "work_mgga.c"
 
 #ifdef __cplusplus
 extern "C"
@@ -49,9 +55,9 @@ const xc_func_info_type xc_func_info_mgga_c_scanl = {
   {&xc_ref_Mejia2017_052512, &xc_ref_Mejia2018_115161,&xc_ref_Sun2015_036402, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_NEEDS_LAPLACIAN | XC_FLAGS_I_HAVE_ALL,
   1e-15,
-  {N_PAR_SCANL, names, desc, par_scanl, scanl_set_ext_params},
+  {N_PAR_SCANL, names, desc, par_scanl, set_ext_params_cpy},
   mgga_c_scanl_init, NULL,
-  NULL, NULL, &xc_deorbitalize_func,
+  NULL, NULL, &work_mgga,
 };
 
 
@@ -76,7 +82,7 @@ const xc_func_info_type xc_func_info_mgga_c_scanl_rvv10 = {
   "SCAN-L + rVV10 correlation",
   XC_FAMILY_MGGA,
   {&xc_ref_Mejia2017_052512, &xc_ref_Mejia2018_115161, &xc_ref_Peng2016_041005, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_NEEDS_LAPLACIAN | XC_FLAGS_VV10 | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D | XC_FLAGS_VV10,
   1e-15,
   {0, NULL, NULL, NULL, NULL},
   mgga_c_scan_rvv10_init, NULL,
@@ -104,7 +110,7 @@ const xc_func_info_type xc_func_info_mgga_c_scanl_vv10 = {
   "SCAN-L + VV10 correlation",
   XC_FAMILY_MGGA,
   {&xc_ref_Mejia2017_052512, &xc_ref_Mejia2018_115161, &xc_ref_Brandenburg2016_115144, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_NEEDS_LAPLACIAN | XC_FLAGS_VV10 | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D | XC_FLAGS_VV10,
   1e-15,
   {0, NULL, NULL, NULL, NULL},
   mgga_c_scan_vv10_init, NULL,

@@ -36,7 +36,7 @@ static const double param_values[N_PAR] = {0.8040, 0.2195149727645171, 19.0, 0.5
 static void xc_gga_x_pbe_erf_gws_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(gga_x_pbe_erf_gws_params));
+  p->params = libxc_malloc_flags(sizeof(gga_x_pbe_erf_gws_params), p->info->flags);
 
   xc_hyb_init_hybrid(p, 0.0);
 }
@@ -63,7 +63,7 @@ const xc_func_info_type xc_func_info_gga_x_pbe_erf_gws = {
 static void xc_hyb_gga_x_pbe_erf_gws_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(gga_x_pbe_erf_gws_params));
+  p->params = libxc_malloc_flags(sizeof(gga_x_pbe_erf_gws_params), p->info->flags);
   xc_hyb_init_cam(p, 0.0, 0.0, 0.0);
 }
 

@@ -14,6 +14,9 @@
   params = (gga_k_ol2_params * )(p->params);
 *)
 
+(* The third terms in Equations (14) and (15) are wrong.
+   The expression below reproduces the OL2 results in Table I.
+*)
 ol2_f := x ->
   + params_a_aa
   + params_a_bb*x^2/72.0

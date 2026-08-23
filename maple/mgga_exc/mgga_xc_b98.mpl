@@ -22,7 +22,11 @@ params_a_c_x  := [0.8085,  0.6682, 0.1420]:
 params_a_c_ss := [0.2606, -0.9608, 0.9023]:
 params_a_c_ab := [1.2033, -2.2717, 0.9596]:
 
-b98_q := (x, u, t) -> 1 - (t - x^2/8 - u/4)/K_FACTOR_C:
+(* 1 - (t - x^2/8 - u/4)/K = (K - t + x^2/8 + u/4)/K.  At the uniform-
+   gas limit t -> K (x = u = 0) the K - t residual is a direct
+   subtraction (exact by Sterbenz near the limit), avoiding the
+   1 - close-to-1 cancellation of the original form. *)
+b98_q := (x, u, t) -> (K_FACTOR_C - t + x^2/8 + u/4)/K_FACTOR_C:
 
 b98_g := (gamma, cc, q) -> add(cc[i]*(gamma*q/sqrt(1 + gamma^2*q^2))^(i-1), i=1..3):
 
@@ -31,9 +35,9 @@ b98_f := (rs, z, xs0, xs1, us0, us1, ts0, ts1) ->
     * b98_g( b98_gamma_x, params_a_c_x, b98_q(xs0, us0, ts0))
   + lda_x_spin(rs, -z)
     * b98_g( b98_gamma_x, params_a_c_x, b98_q(xs1, us1, ts1))
-  + lda_stoll_par(f_pw, rs,  z,  1)
+  + lda_stoll_par(f_pw, rs,  z)
     * b98_g(b98_gamma_ss, params_a_c_ss, b98_q(xs0, us0, ts0)) * Fermi_D(xs0, ts0)
-  + lda_stoll_par(f_pw, rs, -z, -1)
+  + lda_stoll_par(f_pw, rs, -z)
     * b98_g(b98_gamma_ss, params_a_c_ss, b98_q(xs1, us1, ts1)) * Fermi_D(xs1, ts1)
   + lda_stoll_perp(f_pw, rs, z)
     * b98_g(b98_gamma_ab, params_a_c_ab, (b98_q(xs0, us0, ts0) + b98_q(xs1, us1, ts1))/2):

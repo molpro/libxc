@@ -8,12 +8,17 @@
 
 (* type: mgga_exc *)
 
-(* This is the definition in the paper *)
-th_f0 := (x, u, t) -> -27*Pi/(10*t) * (1 + 7*x^2/(108*t)):
+(* This is the definition in the paper. The enhancement is LINEAR in the
+   reduced gradient squared x^2, so feeding p = s^2 = X2S^2*x^2 through
+   mgga_exchange_p (x^2 = p/X2S^2) makes every sigma derivative
+   cancellation-free -- in particular d^2/dsigma^2 is identically zero,
+   where the x = sqrt(sigma) route otherwise produced ~1e6 of pure
+   deep-tail roundoff. *)
+th_f0 := (p, u, t) -> -27*Pi/(10*t) * (1 + 7*(p/X2S^2)/(108*t)):
 
 (* Since we write this as an enhancement functional, we need to divide
    out the LDA prefactor. The paper also defines tau without one half *)
-th_f := (x, u, t) -> -th_f0(x,u,2*t) / X_FACTOR_C:
+th_f := (p, u, t) -> -th_f0(p,u,2*t) / X_FACTOR_C:
 
 f := (rs, z, xt, xs0, xs1, u0, u1, t0, t1) ->
-  mgga_exchange(th_f, rs, z, xs0, xs1, u0, u1, t0, t1):
+  mgga_exchange_p(th_f, rs, z, xs0, xs1, u0, u1, t0, t1):

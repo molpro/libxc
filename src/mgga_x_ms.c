@@ -23,7 +23,7 @@ static void
 mgga_x_ms_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(mgga_x_ms_params));
+  p->params = libxc_malloc_flags(sizeof(mgga_x_ms_params), p->info->flags);
 }
 
 #define MS0_N_PAR 3

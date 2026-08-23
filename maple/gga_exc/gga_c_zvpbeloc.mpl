@@ -1,5 +1,6 @@
 (*
  Copyright (C) 2017 M.A.L. Marques
+               2025 Susi Lehtola
 
  This Source Code Form is subject to the terms of the Mozilla Public
  License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -14,10 +15,13 @@ $include "gga_c_pbeloc.mpl"
 params_a_alpha := 0.5:
 params_a_omega := 2:
 
-(* redefine nu of zbpbeint *)
-zvpbeint_nu := (rs, z, t) ->
-  2*(4/(3*Pi^2))^(1/18) * rs^(1/3):
+(* text below equation 8 *)
+zvpbeloc_kv := (rs) ->
+  2*(3/(4*Pi^4))^(1/18) * n_total(rs)^(1/9):
+(* redefine nu of zbpbeint, text below equation 8. nu = |nabla n| / (2 kv rho); x = |nabla n| / rho^(4/3) *)
+zvpbeint_nu := (rs, z, xt) ->
+  xt * n_total(rs)^(1/3) / (2 * zvpbeloc_kv(rs)):
 
 (* Note that f_pbe here is, in fact, pbeloc *)
 f  := (rs, z, xt, xs0, xs1) ->
-  zvpbeint_ff(rs, z, 0) * f_pbe(rs, z, xt, xs0, xs1):
+  zvpbeint_ff(rs, z, xt) * f_pbe(rs, z, xt, xs0, xs1):

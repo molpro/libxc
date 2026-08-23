@@ -15,7 +15,7 @@
 *)
 
 vmt_f0 := s -> 1 + params_a_mu*s^2*exp(-params_a_alpha*s^2)/(1 + params_a_mu*s^2):
-vmt_f  := x -> vmt_f0(X2S*x):
+vmt_f  := x -> vmt_f0(gga_s(x)):
 
 f := (rs, zeta, xt, xs0, xs1) -> gga_exchange(vmt_f, rs, zeta, xs0, xs1):
 

@@ -15,6 +15,6 @@
 *)
 
 rational_p_f0 := s -> (1 + params_a_C2/params_a_p * s^2)^(-params_a_p):
-rational_p_f := x -> rational_p_f0(X2S*x):
+rational_p_f := x -> rational_p_f0(gga_s(x)):
 
 f := (rs, z, xt, xs0, xs1) -> gga_kinetic(rational_p_f, rs, z, xs0, xs1):

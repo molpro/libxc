@@ -24,6 +24,8 @@
 #define XC_GGA_X_LAMBDA_OC2_N  40 /* lambda_OC2(N) version of PBE                   */
 #define XC_GGA_X_BCGP          38 /* Burke, Cancio, Gould, and Pittalis             */
 #define XC_GGA_X_PBEFE        265 /* PBE for formation energies                     */
+#define XC_GGA_X_T_PBE1       335 /* PBE reparametrization (version 1) for band gaps */
+#define XC_GGA_X_T_PBE2       336 /* PBE reparametrization (version 2) for band gaps */
 
 typedef struct{
   double kappa, mu;
@@ -37,7 +39,7 @@ gga_x_pbe_init(xc_func_type *p)
   gga_x_pbe_params *params;
 
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(gga_x_pbe_params));
+  p->params = libxc_malloc_flags(sizeof(gga_x_pbe_params), p->info->flags);
   params = (gga_x_pbe_params *) (p->params);
 
   /* This has to be explicitly initialized here */
@@ -76,6 +78,10 @@ static const double pbe_bcgp_values[PBE_N_PAR] =
   {0.8040, 0.249};
 static const double pbe_fe_values[PBE_N_PAR] =
   {0.437, 0.346};
+static const double pbe_t1_values[PBE_N_PAR] =
+  {3.0+1.0/6.0, 2.0/3.0};
+static const double pbe_t2_values[PBE_N_PAR] =
+  {12.0+5.0/6.0, 1.0/3.0};
 
 #include "maple2c/gga_exc/gga_x_pbe.c"
 #include "work_gga.c"
@@ -285,6 +291,38 @@ const xc_func_info_type xc_func_info_gga_x_pbefe = {
   XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-15,
   {PBE_N_PAR, pbe_names, pbe_desc, pbe_fe_values, set_ext_params_cpy},
+  gga_x_pbe_init, NULL,
+  NULL, &work_gga, NULL
+};
+
+#ifdef __cplusplus
+extern "C"
+#endif
+const xc_func_info_type xc_func_info_gga_x_t_pbe1 = {
+  XC_GGA_X_T_PBE1,
+  XC_EXCHANGE,
+  "PBE reparametrization (version 1) for band gaps",
+  XC_FAMILY_GGA,
+  {&xc_ref_Borlido2020_96, NULL, NULL, NULL, NULL},
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  1e-15,
+  {PBE_N_PAR, pbe_names, pbe_desc, pbe_t1_values, set_ext_params_cpy},
+  gga_x_pbe_init, NULL,
+  NULL, &work_gga, NULL
+};
+
+#ifdef __cplusplus
+extern "C"
+#endif
+const xc_func_info_type xc_func_info_gga_x_t_pbe2 = {
+  XC_GGA_X_T_PBE2,
+  XC_EXCHANGE,
+  "PBE reparametrization (version 2) for band gaps",
+  XC_FAMILY_GGA,
+  {&xc_ref_Borlido2020_96, NULL, NULL, NULL, NULL},
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  1e-15,
+  {PBE_N_PAR, pbe_names, pbe_desc, pbe_t2_values, set_ext_params_cpy},
   gga_x_pbe_init, NULL,
   NULL, &work_gga, NULL
 };

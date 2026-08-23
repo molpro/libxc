@@ -28,11 +28,18 @@ br89_Q := (x, u, t) ->
   (u - 4*params_a_gamma*t + params_a_gamma*x^2/2)/6:
 
 br89_min_Q := 5.0e-13:
-br89_cQ := Q -> my_piecewise3(abs(Q) < br89_min_Q,
+br89_cQ := Q -> my_piecewise3(m_abs(Q) < br89_min_Q,
   my_piecewise3(Q > 0, br89_min_Q, -br89_min_Q), Q):
 
+(* Algebraic identity:
+     1 - exp(-x)*(1 + x/2) = -x/2 + (1 + x/2)*(1 - exp(-x)),
+   so (1 - exp(-x)*(1+x/2))/x = (1 + x/2)*(-xc_expm1(-x))/x - 1/2.
+   The original form computes 1 - close-to-1 at small x; the
+   rewritten form is the sum of two O(1) pieces with no
+   catastrophic cancellation, while reproducing the same large-x
+   limit (-> 1/x). *)
 br89_v := x ->
-  -2*Pi^(1/3)/X_FACTOR_C * exp(x/3)*(1 - exp(-x)*(1 + x/2))/x:
+  -2*Pi^(1/3)/X_FACTOR_C * exp(x/3)*((1 + x/2)*(-xc_expm1(-x))/x - 1/2):
 
 br89_mx := Q -> br89_x(Q):
 

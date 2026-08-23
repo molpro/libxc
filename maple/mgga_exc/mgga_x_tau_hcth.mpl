@@ -18,7 +18,7 @@ hcth_coeff_a := [0, 1, 0, -2, 0, 1]:
 
 (* Equation (29) *)
 hcth_gamX := 0.004:
-hcth_ux   := x -> hcth_gamX*x^2/(1 + hcth_gamX*x^2):
+hcth_ux   := x -> b97_u(hcth_gamX, x^2):
 
 hcth_gxl  := x -> add(params_a_cx_local [i]*hcth_ux(x)^(i-1), i=1..4):
 hcth_gxnl := x -> add(params_a_cx_nlocal[i]*hcth_ux(x)^(i-1), i=1..4):

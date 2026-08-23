@@ -18,7 +18,7 @@ static void
 gga_k_lgap_ge_init(xc_func_type *p)
 {
   assert(p->params == NULL);
-  p->params = libxc_malloc(sizeof(gga_k_lgap_ge_params));
+  p->params = libxc_malloc_flags(sizeof(gga_k_lgap_ge_params), p->info->flags);
 }
 
 #include "maple2c/gga_exc/gga_k_lgap_ge.c"

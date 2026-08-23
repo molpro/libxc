@@ -27,7 +27,6 @@ mgamma := params_a_gamma:
 params_a_dp2 := 0.361:
 
 (* Equation (S6) *)
-r2scan_alpha := (z, xt, ts0, ts1) -> (t_total(z, ts0, ts1) - xt^2/8) / (K_FACTOR_C*t_total(z, 1, 1) + params_a_eta*xt^2/8):
 
 (* Equation (S26) *)
 r2scan_f_alpha_neg := a -> exp(-params_a_c1*a/(1 - a)):
@@ -46,7 +45,7 @@ beta_c := 0.1778:
 mbeta := (rs) -> beta_a*(1 + beta_b*rs)/(1 + beta_c*rs):
 
 (* Equation (S30) *)
-w1 := (rs, z) -> exp(-f_pw(rs, z)/(mgamma*mphi(z)^3)) - 1:
+w1 := (rs, z) -> xc_expm1(-f_pw(rs, z)/(mgamma*mphi(z)^3)):
 
 (* Equation (S27); note that the paper indexes starting from zero *)
 r2scan_dfc2 := ff -> add(i*ff[8-i], i=1..7):
@@ -69,11 +68,14 @@ r2scan_dy := (rs, z, s) -> r2scan_dfc2(rscan_fc)/(27 * mgamma * r2scan_d(z) * mp
 (* Equation (S32) *)
 r2scan_y := (rs, z, t) -> mbeta(rs)*t^2/(mgamma*w1(rs, z)):
 
-(* Equation (S31) *)
-r2scan_g := (rs, z, s, t) -> 1/(1 + 4*(r2scan_y(rs, z, t) - r2scan_dy(rs, z, s)))^(1/4):
+(* Equation (S31). r2scan_g = 1/(1 + 4Y)^(1/4) appears only as
+   `1 - r2scan_g`, so we go straight to that form below. *)
 
-(* Equation (S29) *)
-fH := (rs, z, s, t) -> mgamma*mphi(z)^3*log(1 + w1(rs, z)*(1 - r2scan_g(rs, z, s, t))):
+(* Equation (S29). The factor (1 - r2scan_g) = 1 - (1 + 4Y)^(-1/4)
+   is routed through expm1/log1p so the small-Y limit doesn't lose
+   precision in `1 - close-to-1`. *)
+r2scan_one_minus_g := (rs, z, s, t) -> -xc_expm1(-(1/4)*xc_log1p(4*(r2scan_y(rs, z, t) - r2scan_dy(rs, z, s)))):
+fH := (rs, z, s, t) -> mgamma*mphi(z)^3*xc_log1p(w1(rs, z)*r2scan_one_minus_g(rs, z, s, t)):
 
 (* Now we can build ec1 from (S24) *)
 r2scan_ec1 := (rs, z, s, t) -> f_pw(rs, z) + fH(rs, z, s, t):
@@ -81,10 +83,16 @@ r2scan_ec1 := (rs, z, s, t) -> f_pw(rs, z) + fH(rs, z, s, t):
 (* Equation (S35)-(S41) are same as SCAN *)
 r2scan_ec0 := (rs, z, s) -> scan_e0(rs, z, s):
 
-(* and the functional itself *)
+(* and the functional itself.  r2scan_c_f_a takes the iso-orbital indicator, so
+   that a deorbitalized variant can pass the alpha its kinetic energy functional
+   yields directly; see mgga_c_r2scanl.mpl.  Named to avoid colliding with the
+   exchange kernel's r2scan_f_a. *)
+r2scan_c_f_a := (rs, z, xt, a) ->
+  r2scan_ec1(rs, z, gga_s_total(xt), tt(rs, z, xt)) + r2scan_f_alpha(a, rscan_fc)*(
+    + r2scan_ec0(rs, z, gga_s_total(xt)) - r2scan_ec1(rs, z, gga_s_total(xt), tt(rs, z, xt))):
+
 r2scan_f := (rs, z, xt, xs0, xs1, ts0, ts1) ->
-  r2scan_ec1(rs, z, X2S*2^(1/3)*xt, tt(rs, z, xt)) + r2scan_f_alpha(r2scan_alpha(z, xt, ts0, ts1), rscan_fc)*(
-    + r2scan_ec0(rs, z, X2S*2^(1/3)*xt) - r2scan_ec1(rs, z, X2S*2^(1/3)*xt, tt(rs, z, xt))):
+  r2scan_c_f_a(rs, z, xt, mgga_alpha_total_reg(z, xt, ts0, ts1, params_a_eta)):
 
 f := (rs, z, xt, xs0, xs1, us0, us1, ts0, ts1) ->
   r2scan_f(rs, z, xt, xs0, xs1, ts0, ts1):

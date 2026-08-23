@@ -45,6 +45,7 @@ int main(int argc, char *argv[])
 
   /* Output */
   double *zk MGGA_OUT_PARAMS_NO_EXC(XC_COMMA *, );
+  double exc[1];
 
   if(argc != 12){
     printf("Usage:\n%s funct pol rhoa rhob sigmaaa sigmaab sigmabb lapla laplb taua taub\n", argv[0]);
@@ -93,37 +94,39 @@ int main(int argc, char *argv[])
 
   /* allocate buffers */
   zk MGGA_OUT_PARAMS_NO_EXC(=, ) = NULL;
-  xc_mgga_vars_allocate_all(info->family, 1, &(func.dim),
+  xc_mgga_vars_allocate_all_flags(info->family, 1, &(func.dim),
                             1, 1, 1, 1, 1,
-                            &zk MGGA_OUT_PARAMS_NO_EXC(XC_COMMA &, ));
+                            &zk MGGA_OUT_PARAMS_NO_EXC(XC_COMMA &, ), info->flags);
 
   xc_mgga_evaluate_functional(&func, 1, rho, sigma, lapl, tau,
                               zk MGGA_OUT_PARAMS_NO_EXC(XC_COMMA, ));
 
   /* transform to energy per volume */
   if(nspin == XC_UNPOLARIZED){
-    zk[0] *= rho[0];
+    exc[0] = zk[0]*rho[0];
   }else{
-    zk[0] *= rho[0] + rho[1];
+    exc[0] = zk[0]*(rho[0] + rho[1]);
   }
 
-  printf(" rhoa= %#0.2E", rho[0]);
-  if(nspin == XC_POLARIZED) printf(" rhob= %#0.2E", rho[1]);
+  printf(" rhoa= %#19.12E", rho[0]);
+  if(nspin == XC_POLARIZED) printf(" rhob= %#19.12E", rho[1]);
   if(info->family == XC_FAMILY_GGA || info->family == XC_FAMILY_MGGA){
-    printf(" sigmaaa= %#0.2E", sigma[0]);
-    if(nspin == XC_POLARIZED) printf(" sigmaab= %#0.2E", sigma[1]);
-    if(nspin == XC_POLARIZED) printf(" sigmabb= %#0.2E", sigma[2]);
+    printf(" sigmaaa= %#19.12E", sigma[0]);
+    if(nspin == XC_POLARIZED) printf(" sigmaab= %#19.12E", sigma[1]);
+    if(nspin == XC_POLARIZED) printf(" sigmabb= %#19.12E", sigma[2]);
   }
   if(info->family == XC_FAMILY_MGGA){
-    printf(" lapla= %#0.2E", lapl[0]);
-    if(nspin == XC_POLARIZED) printf(" laplb= %#0.2E",  lapl[1]);
-    printf(" taua= %#0.2E", tau[0]);
-    if(nspin == XC_POLARIZED) printf(" taub= %#0.2E", tau[1]);
+    printf(" lapla= %#19.12E", lapl[0]);
+    if(nspin == XC_POLARIZED) printf(" laplb= %#19.12E",  lapl[1]);
+    printf(" taua= %#19.12E", tau[0]);
+    if(nspin == XC_POLARIZED) printf(" taub= %#19.12E", tau[1]);
   }
   printf("\n\n");
 
   if(info->flags & XC_FLAGS_HAVE_EXC){
+    const char *format = "%3d: %20s[%2d] = %#19.12E\n";
     printVar(nspin, func.dim.zk, "zk", zk);
+    printVar(nspin, func.dim.zk, "exc", exc);
     printf("\n");
   }
 
@@ -271,7 +274,7 @@ int main(int argc, char *argv[])
     }
   }
 
-  xc_mgga_vars_free_all(zk MGGA_OUT_PARAMS_NO_EXC(XC_COMMA, ));
+  xc_mgga_vars_free_all_flags(zk MGGA_OUT_PARAMS_NO_EXC(XC_COMMA, ), info->flags);
   xc_func_end(&func);
 
   return 0;

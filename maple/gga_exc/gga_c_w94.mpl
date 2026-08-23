@@ -13,15 +13,18 @@ b := 11.8:
 c :=  0.150670:
 d := 11.02e-3/RS_FACTOR:
 
-(* I added an abs() to this equation, as otherwise the f_num is
+(* I added an m_abs() to this equation, as otherwise the f_num is
    complex for negative values of z. Of course it is not clear at all
    what was the original intential of Wilson, or if he even considered
    this problem. *)
 if evalb(Polarization = "unpol") then
     f_num := z -> a:
 else
-    (* without the max function we get a float exception for derivatives > 2 *)
-    f_num := z -> a*sqrt(1 -  m_max(m_abs(z), 1e-10)^(5/3)):
+    (* clamp |z| into [floor, 1-floor]: the lower floor avoids the float
+       exception in derivatives > 2 (|z|^(5/3) is non-smooth at z=0); the
+       upper cap keeps 1 - |z|^(5/3) > 0 so the sqrt stays real when |z|
+       rounds to >= 1 at full spin polarization (otherwise sqrt(neg)=NaN). *)
+    f_num := z -> a*sqrt(1 - m_min(m_max(m_abs(z), xc_reduced_floor), 1 - xc_reduced_floor)^(5/3)):
 end if:
 f_den := (rs, xt) -> b + c*xt^(51/16) + d*xt^2*rs + rs:
 

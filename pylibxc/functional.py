@@ -3,32 +3,18 @@ Binds a LibXC Functional struct to a Python object
 """
 
 import ctypes
-import numpy as np
+import os
 
 from .core import core
+from . import array_backend
 from . import flags
 from . import util
 from . import structs
 
 ### Bind required ctypes
 
-# Build out a few common tmps
-_ndptr = np.ctypeslib.ndpointer(dtype=np.double, flags=("C", "A"))
-
-# Workaround to be able to pass NULL pointers to libxc
-# by subclassing the pointer
-_ndptr_w_base = np.ctypeslib.ndpointer(dtype=np.double, flags=("W", "C", "A"))  # Writable
-
-def _from_param(cls, obj):
-    if obj is None:
-        return obj
-    return _ndptr_w_base.from_param(obj)
-
-_ndptr_w = type(
-    "Writable NP Array",
-    (_ndptr_w_base,),
-    {"from_param": classmethod(_from_param)}
-)
+_ndptr = array_backend.pointer(typestr="|f8", flags=("C",))
+_ndptr_w = array_backend.pointer(typestr="|f8", flags=("W", "C", "N"))
 
 _xc_func_p = ctypes.POINTER(structs.xc_func_type)
 _xc_func_info_p = ctypes.POINTER(structs.xc_func_info_type)
@@ -38,6 +24,9 @@ core.xc_func_alloc.restype = _xc_func_p
 
 core.xc_func_init.argtypes = (_xc_func_p, ctypes.c_int, ctypes.c_int)
 core.xc_func_init.restype = ctypes.c_int
+
+core.xc_func_init_flags.argtypes = (_xc_func_p, ctypes.c_int, ctypes.c_int, ctypes.c_int)
+core.xc_func_init_flags.restype = ctypes.c_int
 
 core.xc_func_end.argtypes = (_xc_func_p, )
 
@@ -89,7 +78,7 @@ core.xc_func_set_fhc_enforcement.argtypes = (_xc_func_p, ctypes.c_int)
 
 
 # Bind computers
-def _build_comute_argtype(num_nd, num_nd_write):
+def _build_computer_argtype(num_nd, num_nd_write):
     """
     Small function to build the correct argtypes for the LibXC computers
     """
@@ -100,31 +89,31 @@ def _build_comute_argtype(num_nd, num_nd_write):
 
 
 # LDA computers
-core.xc_lda.argtypes = _build_comute_argtype(1, 5)
-core.xc_lda_exc_vxc.argtypes = _build_comute_argtype(1, 2)
-core.xc_lda_exc.argtypes = _build_comute_argtype(1, 1)
-core.xc_lda_vxc.argtypes = _build_comute_argtype(1, 1)
-core.xc_lda_fxc.argtypes = _build_comute_argtype(1, 1)
-core.xc_lda_kxc.argtypes = _build_comute_argtype(1, 1)
-core.xc_lda_lxc.argtypes = _build_comute_argtype(1, 1)
+core.xc_lda.argtypes = _build_computer_argtype(1, 5)
+core.xc_lda_exc_vxc.argtypes = _build_computer_argtype(1, 2)
+core.xc_lda_exc.argtypes = _build_computer_argtype(1, 1)
+core.xc_lda_vxc.argtypes = _build_computer_argtype(1, 1)
+core.xc_lda_fxc.argtypes = _build_computer_argtype(1, 1)
+core.xc_lda_kxc.argtypes = _build_computer_argtype(1, 1)
+core.xc_lda_lxc.argtypes = _build_computer_argtype(1, 1)
 
 # GGA computers
-core.xc_gga.argtypes = _build_comute_argtype(2, 15)
-core.xc_gga_exc_vxc.argtypes = _build_comute_argtype(2, 3)
-core.xc_gga_exc.argtypes = _build_comute_argtype(2, 1)
-core.xc_gga_vxc.argtypes = _build_comute_argtype(2, 2)
-core.xc_gga_fxc.argtypes = _build_comute_argtype(2, 3)
-core.xc_gga_kxc.argtypes = _build_comute_argtype(2, 4)
-core.xc_gga_lxc.argtypes = _build_comute_argtype(2, 5)
+core.xc_gga.argtypes = _build_computer_argtype(2, 15)
+core.xc_gga_exc_vxc.argtypes = _build_computer_argtype(2, 3)
+core.xc_gga_exc.argtypes = _build_computer_argtype(2, 1)
+core.xc_gga_vxc.argtypes = _build_computer_argtype(2, 2)
+core.xc_gga_fxc.argtypes = _build_computer_argtype(2, 3)
+core.xc_gga_kxc.argtypes = _build_computer_argtype(2, 4)
+core.xc_gga_lxc.argtypes = _build_computer_argtype(2, 5)
 
 # MGGA computers
-core.xc_mgga.argtypes = _build_comute_argtype(4, 70)
-core.xc_mgga_exc_vxc.argtypes = _build_comute_argtype(4, 5)
-core.xc_mgga_exc.argtypes = _build_comute_argtype(4, 1)
-core.xc_mgga_vxc.argtypes = _build_comute_argtype(4, 4)
-core.xc_mgga_fxc.argtypes = _build_comute_argtype(4, 10)
-core.xc_mgga_kxc.argtypes = _build_comute_argtype(4, 20)
-core.xc_mgga_kxc.argtypes = _build_comute_argtype(4, 35)
+core.xc_mgga.argtypes = _build_computer_argtype(4, 70)
+core.xc_mgga_exc_vxc.argtypes = _build_computer_argtype(4, 5)
+core.xc_mgga_exc.argtypes = _build_computer_argtype(4, 1)
+core.xc_mgga_vxc.argtypes = _build_computer_argtype(4, 4)
+core.xc_mgga_fxc.argtypes = _build_computer_argtype(4, 10)
+core.xc_mgga_kxc.argtypes = _build_computer_argtype(4, 20)
+core.xc_mgga_kxc.argtypes = _build_computer_argtype(4, 35)
 
 # hybrid functions
 core.xc_hyb_exx_coef.argtypes = (_xc_func_p, )
@@ -136,7 +125,7 @@ core.xc_hyb_cam_coef.argtypes = (_xc_func_p, ctypes.POINTER(ctypes.c_double),
 
 ### Build LibXCFunctional class
 
-def _check_arrays(current_arrays, fields, sizes, factor, required):
+def _check_arrays(current_arrays, fields, sizes, factor, required, needs_lapl=False, needs_tau=False):
     """
     A specialized function built to construct and check the sizes of arrays given to the LibXCFunctional class.
     """
@@ -146,17 +135,23 @@ def _check_arrays(current_arrays, fields, sizes, factor, required):
         current_arrays = {}
 
     for label in fields:
-        if required:
+        # Determine if we need the output array
+        label_required = required
+        if (label.find('lapl') != -1) and not needs_lapl:
+            label_required = False
+        if (label.find('tau') != -1) and not needs_tau:
+            label_required = False
+        if label_required:
             size = sizes[label]
-            current_arrays[label] = np.zeros((factor, size))
+            current_arrays[label] = array_backend._zeros(shape=(factor, size))
         else:
-            current_arrays[label] = None # np.empty((1))
+            current_arrays[label] = None
 
     return current_arrays
 
 
 class LibXCFunctional:
-    def __init__(self, func_name, spin):
+    def __init__(self, func_name, spin, func_flags = None):
         """
         The primary LibXCFunctional class used to build and compute DFT exchange-correlation quantities.
 
@@ -166,6 +161,8 @@ class LibXCFunctional:
             Either the functional name or ID used to create the LibXCFunctional.
         spin : int or str
             The spin of the requested functional either "unpolarized" (1) or polarized" (2).
+        func_flags : Optional[int]
+            Flags to be passed to functional initialization, e.g. XC_FLAGS_ON_HOST or XC_FLAGS_ON_DEVICE.
 
         Returns
         -------
@@ -199,7 +196,7 @@ class LibXCFunctional:
             func_id = util.xc_functional_get_number(func_name)
             if func_id == -1:
                 raise KeyError("LibXCFunctional: name '%s' not found." % func_name)
-        elif isinstance(func_name, (int, np.integer)):
+        elif array_backend.is_convertible(func_name, ctypes.c_int):
             func_id = func_name
             if util.xc_functional_get_name(func_name) is None:
                 raise KeyError("LibXCFunctional: ID '%d' not found." % func_name)
@@ -231,7 +228,15 @@ class LibXCFunctional:
         for attr in self.xc_func_size_names:
             setattr(self.xc_func.contents, attr, 0)
 
-        ret = core.xc_func_init(self.xc_func, func_id, self._spin)
+        # Undocumented attribute to set obtain default for func_flags from environment, mainly for testing
+        self._default_func_flags = vars(flags).get(os.environ.get("XC_TEST_FLAGS"))
+
+        if func_flags is not None:
+            ret = core.xc_func_init_flags(self.xc_func, func_id, self._spin, func_flags)
+        elif self._default_func_flags is not None:
+            ret = core.xc_func_init_flags(self.xc_func, func_id, self._spin, self._default_func_flags)
+        else:
+            ret = core.xc_func_init(self.xc_func, func_id, self._spin)
         if ret != 0:
             raise ValueError("LibXC Functional construction did not complete. Error code %d" % ret)
         self._xc_func_init = True
@@ -250,21 +255,23 @@ class LibXCFunctional:
         self._flags = core.xc_func_info_get_flags(self.xc_func_info)
 
         # Set needed flags
-        self._needs_laplacian = self._flags & flags.XC_FLAGS_NEEDS_LAPLACIAN
-        self._needs_tau = self._flags & flags.XC_FLAGS_NEEDS_TAU
+        self._needs_laplacian = (self._flags & flags.XC_FLAGS_NEEDS_LAPLACIAN) != 0
+        self._needs_tau = (self._flags & flags.XC_FLAGS_NEEDS_TAU) != 0
 
         # Set derivatives
-        self._have_exc = self._flags & flags.XC_FLAGS_HAVE_EXC
-        self._have_vxc = self._flags & flags.XC_FLAGS_HAVE_VXC
-        self._have_fxc = self._flags & flags.XC_FLAGS_HAVE_FXC
-        self._have_kxc = self._flags & flags.XC_FLAGS_HAVE_KXC
-        self._have_lxc = self._flags & flags.XC_FLAGS_HAVE_LXC
+        self._have_exc = (self._flags & flags.XC_FLAGS_HAVE_EXC) != 0
+        self._have_vxc = (self._flags & flags.XC_FLAGS_HAVE_VXC) != 0
+        self._have_fxc = (self._flags & flags.XC_FLAGS_HAVE_FXC) != 0
+        self._have_kxc = (self._flags & flags.XC_FLAGS_HAVE_KXC) != 0
+        self._have_lxc = (self._flags & flags.XC_FLAGS_HAVE_LXC) != 0
 
         # Set omega
         self._have_cam = self._flags & flags.XC_FLAGS_HYB_CAM
         self._have_cam |= self._flags & flags.XC_FLAGS_HYB_CAMY
         self._have_cam |= self._flags & flags.XC_FLAGS_HYB_LC
         self._have_cam |= self._flags & flags.XC_FLAGS_HYB_LCY
+        self._have_cam = self._have_cam != 0
+
         self._cam_omega = self._cam_alpha = self._cam_beta = False
         if self._have_cam:
             self._cam_omega = self.xc_func.contents.cam_omega
@@ -517,7 +524,8 @@ class LibXCFunctional:
                 "The length of the input external parameters (%d) does not match the length of the functional's external parameters (%d)."
                 % (len(ext_params), num_param))
 
-        core.xc_func_set_ext_params(self.xc_func, np.asarray(ext_params, dtype=np.double))
+        _ext_params = (ctypes.c_double * num_param)(*ext_params)
+        core.xc_func_set_ext_params(self.xc_func, ctypes.cast(_ext_params, ctypes.c_void_p))
 
     def set_dens_threshold(self, dens_threshold):
         """
@@ -574,7 +582,7 @@ class LibXCFunctional:
 
         Parameters
         ----------
-        inp : np.ndarray or dict of np.ndarray
+        inp : array_like or dict of array_like
             A input dictionary of NumPy array-like structures that provide the density on a grid and its derivaties. These are labled:
                 rho - the density on a grid
                 sigma - the contracted density gradients
@@ -586,7 +594,7 @@ class LibXCFunctional:
                 GGA: rho, sigma
                 MGGA: rho, sigma, lapl (optional), tau
 
-        output : dict of np.ndarray (optional, None)
+        output : dict of array_like (optional, None)
             Contains a dictionary of NumPy array-like structures to use as output data. If none are supplied this
             function will build an output space for you. The output dictionary depends on the derivates requested.
             A comprehensive list is provided below for each functional family.
@@ -657,7 +665,7 @@ class LibXCFunctional:
 
         Returns
         -------
-        output : dict of np.ndarray
+        output : dict of array_like
             A dictionary of NumPy array-like structures. See the output section above for the expected returns.
 
         Examples
@@ -695,22 +703,38 @@ class LibXCFunctional:
             raise ValueError("Functional '%s' does not have LXC capabilities built in." % self.get_name())
 
         # Parse input arrays
-        if isinstance(inp, np.ndarray):
-            inp = {"rho": np.asarray(inp, dtype=np.double)}
+        if hasattr(inp, "__array_interface__"):
+            ns = array_backend.array_namespace(inp)
+            inp = {"rho": ns.asarray(inp, dtype=ns.double)}
         elif isinstance(inp, dict):
-            inp = {k: np.asarray(v, dtype=np.double) for k, v in inp.items()}
+            ns = array_backend.array_namespace(inp["rho"])
+            inp = {k: ns.asarray(v, dtype=ns.double) for k, v in inp.items()}
         else:
             raise KeyError("Input must have a 'rho' variable or a single array.")
+
+        # Brutal hack to get zeros on the same device as rho
+        array_backend._zeros = lambda *args, **kwargs: ns.zeros_like(inp["rho"], *args, **kwargs)
 
         # How long are we?
         npoints = int(inp["rho"].size / self._spin)
         if (inp["rho"].size % self._spin):
             raise ValueError("Rho input has an invalid shape, must be divisible by %d" % self._spin)
+        # Check the consistency of the input data
+        if self._spin == 2:
+            sizes = {"rho" : 2, "sigma" : 3, "tau" : 2, "lapl" : 2}
+            for var in inp:
+                if inp[var].size != sizes[var]*npoints:
+                    raise ValueError(f"{var} input has an invalid shape, should have length {sizes[var]}*npoints")
+        else:
+            for var in inp:
+                if inp[var].size != npoints:
+                    raise ValueError(f"{var} input has an invalid shape, should have length npoints")
 
         # Find the right compute function
         args = [self.xc_func, ctypes.c_size_t(npoints)]
         if self.get_family() in [flags.XC_FAMILY_LDA, flags.XC_FAMILY_HYB_LDA]:
             input_labels   = ["rho"]
+            args.extend([   inp[x] for x in  input_labels])
             input_num_args = 1
 
             output_labels = [
@@ -732,14 +756,13 @@ class LibXCFunctional:
                             self.xc_func_sizes, npoints, do_kxc)
             output = _check_arrays(output, output_labels[4:5],
                             self.xc_func_sizes, npoints, do_lxc)
-
-            args.extend([   inp[x] for x in  input_labels])
             args.extend([output[x] for x in output_labels])
 
             core.xc_lda(*args)
 
         elif self.get_family() in [flags.XC_FAMILY_GGA, flags.XC_FAMILY_HYB_GGA]:
             input_labels   = ["rho", "sigma"]
+            args.extend([   inp[x] for x in  input_labels])
             input_num_args = 2
 
             output_labels = [
@@ -761,8 +784,6 @@ class LibXCFunctional:
                             self.xc_func_sizes, npoints, do_kxc)
             output = _check_arrays(output, output_labels[10:15],
                             self.xc_func_sizes, npoints, do_lxc)
-
-            args.extend([   inp[x] for x in  input_labels])
             args.extend([output[x] for x in output_labels])
 
             core.xc_gga(*args)
@@ -770,11 +791,20 @@ class LibXCFunctional:
         elif self.get_family() in [flags.XC_FAMILY_MGGA, flags.XC_FAMILY_HYB_MGGA]:
             # Build input args
             input_labels = ["rho", "sigma"]
+            args.extend([   inp[x] for x in  input_labels])
             if self._needs_laplacian:
                 input_labels.append("lapl")
+                args.extend([inp["lapl"]])
+            else:
+                args.extend([ctypes.c_void_p(None)])  # Add none ptr for laplacian
+
             if self._needs_tau:
                 input_labels.append("tau")
-            input_num_args = 4 # this is how it needs to be
+                args.extend([inp["tau"]])
+            else:
+                args.extend([ctypes.c_void_p(None)])  # Add none ptr for tau
+
+            input_num_args = 4
 
             output_labels = [
                 "zk",                                                                # 1, 1
@@ -799,23 +829,16 @@ class LibXCFunctional:
 
             # Build input args
             output = _check_arrays(output, output_labels[0:1],
-                            self.xc_func_sizes, npoints, do_exc)
+                            self.xc_func_sizes, npoints, do_exc, self._needs_laplacian, self._needs_tau)
             output = _check_arrays(output, output_labels[1:5],
-                            self.xc_func_sizes, npoints, do_vxc)
+                            self.xc_func_sizes, npoints, do_vxc, self._needs_laplacian, self._needs_tau)
             output = _check_arrays(output, output_labels[5:15],
-                            self.xc_func_sizes, npoints, do_fxc)
+                            self.xc_func_sizes, npoints, do_fxc, self._needs_laplacian, self._needs_tau)
             output = _check_arrays(output, output_labels[15:35],
-                            self.xc_func_sizes, npoints, do_kxc)
+                            self.xc_func_sizes, npoints, do_kxc, self._needs_laplacian, self._needs_tau)
             output = _check_arrays(output, output_labels[35:70],
-                            self.xc_func_sizes, npoints, do_lxc)
-
-            args.extend([   inp[x] for x in  input_labels])
-            if not self._needs_laplacian:
-                args.insert(-1, np.empty(1))  # Add none ptr to laplacian
-            if not self._needs_tau:
-                args.insert(-1, np.empty(1))  # Add none ptr to tau
+                            self.xc_func_sizes, npoints, do_lxc, self._needs_laplacian, self._needs_tau)
             args.extend([output[x] for x in output_labels])
-
             core.xc_mgga(*args)
 
         else:

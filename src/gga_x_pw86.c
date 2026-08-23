@@ -27,7 +27,7 @@ static const double par_rpw86[3] = {15.0 * 0.1234, 17.33, 0.163};
 
 static void gga_x_pw86_init(xc_func_type *p) {
   assert(p != NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(gga_x_pw86_params));
+  p->params = libxc_malloc_flags(sizeof(gga_x_pw86_params), p->info->flags);
 }
 
 #include "maple2c/gga_exc/gga_x_pw86.c"

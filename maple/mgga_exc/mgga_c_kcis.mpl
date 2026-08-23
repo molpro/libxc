@@ -23,10 +23,10 @@ kcis_t := (rs, xt) -> 2^(2/3)*xt/(8*sqrt(rs)):
 kcis_beta := 0.066725:
 
 (* Eq. (A7) *)
-kcis_gga0 := (rs, xt) -> f_pw(rs, 0)/(1 + kcis_beta*log(1 + kcis_t(rs, xt)^2/m_abs(f_pw(rs, 0)))):
+kcis_gga0 := (rs, xt) -> f_pw(rs, 0)/(1 + kcis_beta*xc_log1p(kcis_t(rs, xt)^2/m_abs(f_pw(rs, 0)))):
 
 (* Eq. (A8) *)
-kcis_gga1 := (rs, xt) -> f_pw(rs, 1)/(1 + kcis_beta*log(1 + 2^(-1/3)*kcis_t(rs, xt)^2/m_abs(f_pw(rs, 1)))):
+kcis_gga1 := (rs, xt) -> f_pw(rs, 1)/(1 + kcis_beta*xc_log1p(2^(-1/3)*kcis_t(rs, xt)^2/m_abs(f_pw(rs, 1)))):
 
 (* Eq. (A5) *)
 (* The polarized parameters are the same as the unpolarized ones *)

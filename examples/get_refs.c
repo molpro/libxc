@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include <xc.h>
+#include <xc_funcs.h>
 
 int main()
 {

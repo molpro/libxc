@@ -47,21 +47,31 @@ w20_f1 := 1.5:
 w20_f2 := 0:
 
 (* eq 6 *)
-w20_cs := z -> 3/10*(9*Pi/4)^(2/3) * 1/2*((1+z)^(5/3) + (1-z)^(5/3)):
+w20_cs := z -> 3/10*(9*Pi/4)^(2/3) * 1/2*(opz_pow_n(z, 5/3) + opz_pow_n(-z, 5/3)):
 (* eq 7 *)
-w20_cx := z -> -3/(4*Pi)*(9*Pi/4)^(1/3) * 1/2*((1+z)^(4/3) + (1-z)^(4/3)):
+w20_cx := z -> -3/(4*Pi)*(9*Pi/4)^(1/3) * 1/2*(opz_pow_n(z, 4/3) + opz_pow_n(-z, 4/3)):
 
 (* eq 8 *)
-w20_ec := (rs, z) -> -w20_a0(z)/2 * log(1 + w20_DF(rs,z,w20_f0-w20_cx(z))/rs + w20_E(rs,z)/rs^(3/2) + w20_DF(rs,z,w20_f2-w20_cs(z))/rs^2) + w20_G(rs,z):
+w20_ec := (rs, z) -> -w20_a0(z)/2 * xc_log1p(w20_DF(rs,z,w20_f0-w20_cx(z))/rs + w20_E(rs,z)/rs^(3/2) + w20_DF(rs,z,w20_f2-w20_cs(z))/rs^2) + w20_G(rs,z):
 
-(* eqs 9 and 11 only differ by the f_i - c_j(z) term *)
-w20_DF := (rs, z, cfterm) -> exp(-2*w20_b0(z)/w20_a0(z)) - 2 * (1 - exp(-(rs/100)^2))*( cfterm/w20_a0(z) + 1/2 * exp(-2*w20_b0(z)/w20_a0(z)) ):
+(* eqs 9 and 11 only differ by the f_i - c_j(z) term.
+   Algebraic identity:
+     1 - (-expm1(-y)) = 1 + expm1(-y) = exp(-y),
+   so collecting the exp(-2 b0/a0) terms gives
+     exp(-2 b0/a0) * exp(-(rs/100)^2) - 2*(-expm1(-(rs/100)^2))*cfterm/a0
+                = exp(-2 b0/a0 - (rs/100)^2) - ...
+   which removes the partial cancellation between the leading
+   exp(-2 b0/a0) and the same term hidden inside the second piece
+   at large rs (where -expm1 -> 1). *)
+w20_DF := (rs, z, cfterm) ->
+  + exp(-2*w20_b0(z)/w20_a0(z) - (rs/100)^2)
+  - 2*(-xc_expm1(-(rs/100)^2))*cfterm/w20_a0(z):
 
 (* eq 10 *)
-w20_E := (rs, z) -> - 2*(1 - exp(-(rs/100)^2))*w20_f1 / w20_a0(z):
+w20_E := (rs, z) -> - 2*(-xc_expm1(-(rs/100)^2))*w20_f1 / w20_a0(z):
 
 (* eq 12, rewritten in terms of a decaying exponential to avoid overflow *)
-w20_G := (rs, z) -> rs*exp(-(rs/100)^2) / (exp(-(rs/100)^2) + 10*rs^(5/4)) * ( -w20_a1(z)*log(1 + 1/rs) + w20_b1(z) ):
+w20_G := (rs, z) -> rs*exp(-(rs/100)^2) / (exp(-(rs/100)^2) + 10*rs^(5/4)) * ( -w20_a1(z)*xc_log1p(1/rs) + w20_b1(z) ):
 
 (* eq 17 *)
 f_w20 := (rs, zeta) -> w20_ec(rs,0) + (w20_ec(rs,1) - w20_ec(rs,0))*f_zeta(zeta):

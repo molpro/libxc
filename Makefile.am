@@ -8,7 +8,7 @@
 ##
 
 ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = pkgconfig scripts maple src testsuite cmake pylibxc
+SUBDIRS = pkgconfig scripts maple src examples testsuite cmake pylibxc
 
 include_HEADERS = xc_version.h libxc.bib
 EXTRA_DIST = ChangeLog.md PACKAGING setup.py config.h.cmake.in CMakeLists.txt CITATION
@@ -20,6 +20,17 @@ CLEANFILES = *~ *.bak
 # references.c references.h: get_references.py ../libxc.bib
 references:
 	(cd $(srcdir)/src && ../scripts/get_references.py ../libxc.bib)
+
+# Regenerate every src/maple2c/*.c file from the SymPy math definitions
+# under python/. This is the SymPy-pipeline counterpart of the per-family
+# `maple2c` targets in maple/*/Makefile.am (which drive the legacy Maple
+# pipeline). It writes into the source tree, so run it explicitly; it is
+# not part of the build. Override the derivative order with e.g.
+# `make sympy2c SYMPY2C_MAXORDER=2`.
+SYMPY2C_MAXORDER = 4
+sympy2c:
+	$(top_srcdir)/scripts/sympy2c/compile.py --all \
+	  --maxorder $(SYMPY2C_MAXORDER)
 
 rpm: dist
 	@topdir=`rpmbuild --showrc | @GREP@ ': *_topdir' | cut -f 2`; \

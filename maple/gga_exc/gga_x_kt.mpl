@@ -14,8 +14,11 @@
   params = (gga_x_kt_params * )(p->params);
 *)
 
-kt_fx := (rs, z, xs) ->
-   1 - params_a_gamma/X_FACTOR_C*n_spin(rs, z)^(4/3)*xs^2/(n_spin(rs, z)^(4/3) + params_a_delta):
+(* The enhancement depends on the reduced gradient only through xs^2, so it is
+   fed the squared reduced gradient (gga_exchange_nsp_p): p = xs^2 is rational in
+   sigma, which keeps the sigma derivatives cancellation-free. *)
+kt_fx := (rs, z, p) ->
+   1 - params_a_gamma/X_FACTOR_C*n_spin(rs, z)^(4/3)*p/(n_spin(rs, z)^(4/3) + params_a_delta):
 
 (* we want energy per particle *)
-f := (rs, zeta, xt, xs0, xs1) -> gga_exchange_nsp(kt_fx, rs, zeta, xs0, xs1):
+f := (rs, zeta, xt, xs0, xs1) -> gga_exchange_nsp_p(kt_fx, rs, zeta, xs0, xs1):

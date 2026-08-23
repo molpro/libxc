@@ -14,6 +14,6 @@ $include "gga_x_pbe.mpl"
 q1d_a := 0.06525:
 
 q1d_f1 := s -> pbe_f0(s) + (s^2 + s^4)/(1 + s^4 + s^6)*(-pbe_f0(s)*s^2 + q1d_a):
-q1d_f  := x -> q1d_f1(X2S*x):
+q1d_f  := x -> q1d_f1(gga_s(x)):
 
 f := (rs, zeta, xt, xs0, xs1) -> gga_exchange(q1d_f, rs, zeta, xs0, xs1):

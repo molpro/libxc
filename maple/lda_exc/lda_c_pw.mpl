@@ -34,7 +34,7 @@ $endif
 g_aux := (k, rs) -> params_a_beta1[k]*sqrt(rs) + params_a_beta2[k]*rs
   + params_a_beta3[k]*rs^1.5 + params_a_beta4[k]*rs^(params_a_pp[k] + 1):
 g     := (k, rs) -> -2*params_a_a[k]*(1 + params_a_alpha1[k]*rs)
-  * log(1 +  1/(2*params_a_a[k]*g_aux(k, rs))):
+  * xc_log1p(1/(2*params_a_a[k]*g_aux(k, rs))):
 
 (* Equation (8) *)
 (* Attention, the function g parametrizes -alpha *)

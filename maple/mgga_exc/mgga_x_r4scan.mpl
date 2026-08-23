@@ -37,5 +37,5 @@ r4scan_dF := (ff, p, a) -> (C2(ff) * ((1-a)-Cn*p) + Caa(ff)*(1-a)^2 + Cpa(ff)*p*
 (* eq 60 *)
 r4scan_dFdamp := (p, a) -> 2*a^2/(1+a^4) * exp(-(1-a)^2/params_a_da4^2 - p^2/params_a_dp4^4):
 
-r4scan_f := (x, u, t) -> (scan_h1x(r2scan_x(scan_p(x), rscan_fx)) + r2scan_f_alpha(r2scan_alpha(x, t), rscan_fx) * (scan_h0x - scan_h1x(r2scan_x(scan_p(x), rscan_fx))) + r4scan_dF(rscan_fx, scan_p(x), r2scan_alpha(x, t)))*scan_gx(x):
+r4scan_f := (x, u, t) -> (scan_h1x(r2scan_x(mgga_p(x), rscan_fx)) + r2scan_f_alpha(mgga_alpha_reg(x, t, params_a_eta), rscan_fx) * (scan_h0x - scan_h1x(r2scan_x(mgga_p(x), rscan_fx))) + r4scan_dF(rscan_fx, mgga_p(x), mgga_alpha_reg(x, t, params_a_eta)))*scan_gx(x):
 f := (rs, z, xt, xs0, xs1, u0, u1, t0, t1) -> mgga_exchange(r4scan_f, rs, z, xs0, xs1, u0, u1, t0, t1):

@@ -18,13 +18,22 @@
     The implementation follows Tawada et al.
 *)
 att_erf_aux1 := a -> sqrt(Pi)*erf(1/(2*a)):
-att_erf_aux2 := a -> exp(-1/(4*a^2)) - 1:
+att_erf_aux2 := a -> xc_expm1(-1/(4*a^2)):
 att_erf_aux3 := a -> 2*a^2*att_erf_aux2(a) + 1/2:
 (* This is the full function, which is numerically unstable for large a *)
 attenuation_erf0 := a ->
   1 - 8/3*a*(att_erf_aux1(a) + 2*a*(att_erf_aux2(a) - att_erf_aux3(a))):
 (* The cutoff and order are determined by check_attenuation.mpl *)
 attenuation_erf := a -> enforce_smooth_lr(attenuation_erf0, a, 1.35, 16):
+
+(* Cancellation-free 1 - attenuation_erf.  The direct subtraction
+   loses precision at small a (high density / small omega) where
+   attenuation_erf -> 1; this primitive evaluates the explicit
+   8/3 a (...)  form that the original 1 - 8/3 a (...) cancels
+   into.  The smooth-large-a wrap reuses the same cutoff/order as
+   attenuation_erf so the two stay matched. *)
+one_minus_attenuation_erf0 := a -> 8/3*a*(att_erf_aux1(a) + 2*a*(att_erf_aux2(a) - att_erf_aux3(a))):
+one_minus_attenuation_erf := a -> enforce_smooth_lr(one_minus_attenuation_erf0, a, 1.35, 16):
 
 (* These are for hyb_mgga_x_js18 and hyb_mgga_x_pjs18. This is the
 bracket in eqn (10) in Patra et al, 2018 *)
@@ -57,8 +66,15 @@ attenuation_gau := a -> enforce_smooth_lr(attenuation_gau0, a, 2.07, 14):
     Akinaga and Ten-no, Chem. Phys. Lett. 462, 348 (2008); doi:10.1016/j.cplett.2008.07.103
 *)
 att_yuk_aux1 := a -> arctan(1, a):
-att_yuk_aux2 := a -> log(1 + 1/a^2):
+att_yuk_aux2 := a -> xc_log1p(1/a^2):
 att_yuk_aux3 := a -> a^2 + 1:
 attenuation_yukawa0 := a -> 1 - 8/3*a*(att_yuk_aux1(a) + a/4*(1 - (att_yuk_aux3(a) + 2)*att_yuk_aux2(a))):
 (* The cutoff and order are determined by check_attenuation.mpl *)
 attenuation_yukawa := a -> enforce_smooth_lr(attenuation_yukawa0, a, 1.92, 36):
+
+(* Cancellation-free 1 - attenuation_yukawa.  Mirrors
+   one_minus_attenuation_erf: the direct subtraction cancels at
+   small a (high density) where attenuation_yukawa -> 1; this
+   primitive evaluates the explicit 8/3 a (...) form. *)
+one_minus_attenuation_yukawa0 := a -> 8/3*a*(att_yuk_aux1(a) + a/4*(1 - (att_yuk_aux3(a) + 2)*att_yuk_aux2(a))):
+one_minus_attenuation_yukawa := a -> enforce_smooth_lr(one_minus_attenuation_yukawa0, a, 1.92, 36):

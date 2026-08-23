@@ -9,9 +9,11 @@
 
 #include "util.h"
 
-#define XC_HYB_MGGA_X_M05      438 /* Minnesota M05    hybrid exchange functional */
-#define XC_HYB_MGGA_X_M05_2X   439 /* Minnesota M05-2X hybrid exchange functional */
-#define XC_HYB_MGGA_X_M06_2X   450 /* Minnesota M06-2X hybrid exchange functional */
+#define XC_HYB_MGGA_X_M05          438 /* Minnesota M05    hybrid exchange functional */
+#define XC_HYB_MGGA_X_M05_2X       439 /* Minnesota M05-2X hybrid exchange functional */
+#define XC_HYB_MGGA_X_M06_2X       450 /* Minnesota M06-2X hybrid exchange functional */
+#define XC_HYB_MGGA_X_PI_M06_2X_DL 767 /* Dispersionless physically-informed Minnesota M06-2X hybrid exchange functional */
+#define XC_HYB_MGGA_X_PI_M06_2X    769 /* Physically-informed Minnesota M06-2X hybrid exchange functional */
 
 typedef struct{
   const double a[12];
@@ -74,11 +76,25 @@ static const double par_m06_2x[N_PAR] = {
   0.54
 };
 
+static const double par_pi_m06_2x_dl[N_PAR] = {
+   4.60000000e-01, -3.09008258e-04, -2.70748981e-03,  1.01431165e-02,  1.84599297e-02,-6.09892330e-02,
+  -4.21257200e-02,  1.34832794e-01,  4.03138146e-02, -1.26515975e-01, -1.41390790e-02, 4.30423110e-02,
+   1.00000000e+00, /* the mixing is already included in the params->a */
+   0.54
+};
+
+static const double par_pi_m06_2x[N_PAR] = {
+   4.60000000e-01, -1.24505449e-01,  5.84211450e-03,  2.08896213e+00, -5.15824176e-01, -1.06018021e+01,
+   3.13539083e+00,  2.17306097e+01, -5.62098212e+00, -1.89586861e+01,  3.04206869e+00,  5.83055526e+00,
+   1.00000000e+00, /* the mixing is already included in the params->a */
+   0.54
+};
+
 static void
 mgga_x_m05_init(xc_func_type *p)
 {
   assert(p->params == NULL);
-  p->params = libxc_malloc(sizeof(mgga_x_m05_params));
+  p->params = libxc_malloc_flags(sizeof(mgga_x_m05_params), p->info->flags);
   xc_hyb_init_hybrid(p, 0.0);
 }
 
@@ -130,6 +146,38 @@ const xc_func_info_type xc_func_info_hyb_mgga_x_m06_2x = {
   XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
   1e-15,
   {N_PAR, names, desc, par_m06_2x, set_ext_params_cpy_exx},
+  mgga_x_m05_init, NULL,
+  NULL, NULL, &work_mgga,
+};
+
+#ifdef __cplusplus
+extern "C"
+#endif
+const xc_func_info_type xc_func_info_hyb_mgga_x_pi_m06_2x_dl = {
+  XC_HYB_MGGA_X_PI_M06_2X_DL,
+  XC_EXCHANGE,
+  "Dispersionless physically-informed Minnesota M06-2X hybrid exchange functional",
+  XC_FAMILY_HYB_MGGA,
+  {&xc_ref_Losev2024_10921, NULL, NULL, NULL, NULL},
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
+  1e-15,
+  {N_PAR, names, desc, par_pi_m06_2x_dl, set_ext_params_cpy_exx},
+  mgga_x_m05_init, NULL,
+  NULL, NULL, &work_mgga,
+};
+
+#ifdef __cplusplus
+extern "C"
+#endif
+const xc_func_info_type xc_func_info_hyb_mgga_x_pi_m06_2x = {
+  XC_HYB_MGGA_X_PI_M06_2X,
+  XC_EXCHANGE,
+  "Physically-informed Minnesota M06-2X hybrid exchange functional",
+  XC_FAMILY_HYB_MGGA,
+  {&xc_ref_Losev2024_10921, NULL, NULL, NULL, NULL},
+  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
+  1e-15,
+  {N_PAR, names, desc, par_pi_m06_2x, set_ext_params_cpy_exx},
   mgga_x_m05_init, NULL,
   NULL, NULL, &work_mgga,
 };

@@ -25,7 +25,7 @@ kcisk_gamma1 := rs -> m_max(0, kcis_beta + kcisk_gcnst*f_pw(rs, 0)/n_total(rs)^(
 (* There seems to be a misspel in Eq. (22) regarding the "1 +". This follows the
    reference implementation of Stefan Kurth *)
 kcis_gga0 := (rs, xt) -> f_pw(rs, 0) /
-  (1 + kcisk_p*log(1 + kcisk_gamma0(rs)*kcis_t(rs, xt)^2/(kcisk_p*m_abs(f_pw(rs, 0))) )):
+  (1 + kcisk_p*xc_log1p(kcisk_gamma0(rs)*kcis_t(rs, xt)^2/(kcisk_p*m_abs(f_pw(rs, 0))) )):
 
 kcis_gga1 := (rs, xt) -> f_pw(rs, 1) /
-  (1 + kcisk_p*log(1 + 2^(-1/3)*kcisk_gamma1(rs)*kcis_t(rs, xt)^2/(kcisk_p*m_abs(f_pw(rs, 1))) )):
+  (1 + kcisk_p*xc_log1p(2^(-1/3)*kcisk_gamma1(rs)*kcis_t(rs, xt)^2/(kcisk_p*m_abs(f_pw(rs, 1))) )):

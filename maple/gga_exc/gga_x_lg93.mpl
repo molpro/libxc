@@ -22,6 +22,6 @@ lg93_f0 := s-> 1 + lg93_a2*s^2 + lg93_a4*s^4
 
 lg93_f1 := s-> lg93_f0(s)^lg93_b/(1 + lg93_ad*s^2):
 
-lg93_f  := x->lg93_f1(X2S*x):
+lg93_f  := x->lg93_f1(gga_s(x)):
 
 f := (rs, zeta, xt, xs0, xs1) -> gga_exchange(lg93_f, rs, zeta, xs0, xs1):

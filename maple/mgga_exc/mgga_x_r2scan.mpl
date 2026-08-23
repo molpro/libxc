@@ -18,7 +18,6 @@ $include "mgga_x_rscan.mpl"
 $include "mgga_x_scan.mpl"
 
 (* eqn S6 *)
-r2scan_alpha := (x, t) -> (t - x^2/8)/(K_FACTOR_C + params_a_eta*x^2/8):
 
 (* f(alpha) replaced with a polynomial for alpha in [0, 2.5], eqn S7 *)
 r2scan_f_alpha_neg := a -> exp(-params_a_c1*a/(1 - a)):
@@ -32,6 +31,13 @@ C2 := ff -> -add(i*ff[9-i], i=1..8) * (1-scan_h0x):
 (* eqn S10; this is analogous to scan_y *)
 r2scan_x := (p, ff) -> (Cn*C2(ff)*exp(-p^2/params_a_dp2^4)+MU_GE)*p:
 
-r2scan_f := (x, u, t) -> (scan_h1x(r2scan_x(scan_p(x), rscan_fx)) + r2scan_f_alpha(r2scan_alpha(x, t), rscan_fx) * (scan_h0x - scan_h1x(r2scan_x(scan_p(x), rscan_fx))))*scan_gx(x):
+(* The enhancement factor as a function of the (regularized) iso-orbital
+   indicator.  Taking alpha as the argument lets a deorbitalized variant supply
+   the alpha its kinetic energy functional yields directly, rather than
+   reconstructing it from tau; see mgga_x_scanl.mpl. *)
+r2scan_f_a := (x, a) -> (scan_h1x(r2scan_x(mgga_p(x), rscan_fx))
+  + r2scan_f_alpha(a, rscan_fx) * (scan_h0x - scan_h1x(r2scan_x(mgga_p(x), rscan_fx))))*scan_gx(x):
+
+r2scan_f := (x, u, t) -> r2scan_f_a(x, mgga_alpha_reg(x, t, params_a_eta)):
 
 f := (rs, z, xt, xs0, xs1, u0, u1, t0, t1) -> mgga_exchange(r2scan_f, rs, z, xs0, xs1, u0, u1, t0, t1):

@@ -29,7 +29,7 @@ static void
 mgga_x_br89_init(xc_func_type *p)
 {
   assert(p != NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(mgga_x_br89_params));
+  p->params = libxc_malloc_flags(sizeof(mgga_x_br89_params), p->info->flags);
 }
 
 GPU_FUNCTION static double
@@ -50,8 +50,13 @@ double xc_mgga_x_br89_get_x(double Q)
 {
   double rhs, tol, x1, x2;
 
-  tol = 5e-12;
-  if(fabs(Q) < 5e-12)
+  /* Solve to floating-point precision. The BR89 root is the inverse
+     of a strictly monotone smooth function so Brent's near-linear
+     convergence brings the bracket to ~2*XC_EPSILON in 50-60 iters
+     from the conservative starting bracket below -- well inside
+     the 500-iter budget. */
+  tol = 2.0*XC_EPSILON;
+  if(fabs(Q) < tol)
     return 2.0;
 
   /* build right-hand side of the non-linear equation

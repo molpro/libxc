@@ -8,7 +8,7 @@
 
 (* type: gga_exc *)
 
-thakkar_f0 := x -> 1 + 0.0055*x^2/(1 + 0.0253*x*arcsinh(x)):
+thakkar_f0 := x -> 1 + 0.0055*x^2/(1 + 0.0253*x*xc_asinh(x)):
 thakkar_f1 := x -> -0.072*x/(1 + 2*4^(1/3)*x):
 
 thakkar_f := x -> thakkar_f0(x) + thakkar_f1(x):

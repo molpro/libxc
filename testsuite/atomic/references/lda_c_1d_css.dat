@@ -1,0 +1,11 @@
+# 1D exchange-correlation energies (Hartree) at the radial-quadrature convergence limit
+# functional: lda_c_1d_css
+# probe systems (1D): harmonic-oscillator quantum wires
+# convergence: normal (N0 = 100 radial points)
+# system  spin         npts  converged  E_xc
+w0.5   unpolarized     50         1 -4.3893153974e-02
+w0.5   polarized       25         1 -7.0137365441e-03
+w2     unpolarized     50         1 -2.0959411538e-02
+w2     polarized       25         1 -3.7935995705e-03
+w8     unpolarized    100         1 -9.4449610824e-03
+w8     polarized       50         1 -1.7451082744e-03

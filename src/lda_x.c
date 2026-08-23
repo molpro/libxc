@@ -16,6 +16,7 @@
 #define XC_LDA_C_XALPHA      6   /* Slater Xalpha                       */
 #define XC_LDA_X_RAE       549   /* Rae self-energy corrected exchange  */
 #define XC_HYB_LDA_XC_LDA0 177   /* LDA0: hybrid LDA exchange           */
+#define XC_HYB_LDA_XC_B93  104   /* Becke's original half-and-half functional */
 
 /*
     Slater's Xalpha functional (Exc = alpha Ex)
@@ -42,7 +43,7 @@ lda_x_init(xc_func_type *p)
   lda_x_params *params;
 
   assert(p != NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(lda_x_params));
+  p->params = libxc_malloc_flags(sizeof(lda_x_params), p->info->flags);
   params = (lda_x_params *) (p->params);
 
   params->alpha = 1.0;
@@ -134,16 +135,42 @@ const xc_func_info_type xc_func_info_lda_x_rae = {
   &work_lda, NULL, NULL
 };
 
+
+#define LDA0_N_PAR 1
+static const char  *lda0_names[LDA0_N_PAR]  = {"_ax"};
+static const char  *lda0_desc[LDA0_N_PAR]   = {
+  "Fraction of exact exchange"
+};
+
 /* Patrick Rinke confirmed that this functional only contains
    75% of LDA correlation. */
+const double lda0_values[LDA0_N_PAR] = {0.25};
+/* Becke half-and-half contains only 50% LDA xc */
+const double lda_b93_values[LDA0_N_PAR] = {0.50};
+
 static void
 hyb_lda_xc_lda0_init(xc_func_type *p)
 {
   static int    funcs_id[2] = {XC_LDA_X, XC_LDA_C_PW_MOD};
-  static double funcs_coef[2] = {1.0 - 0.25, 1.0 - 0.25};
+  static double funcs_coef[2] = {0.0, 0.0}; /* Set by set_ext_params */
 
   xc_mix_init(p, 2, funcs_id, funcs_coef);
-  xc_hyb_init_hybrid(p, 0.25);
+  xc_hyb_init_hybrid(p, 0.0);
+}
+
+static void
+lda0_set_ext_params(xc_func_type *p, const double *ext_params)
+{
+  double ax;
+
+  assert(p != NULL);
+
+  ax = get_ext_param(p, ext_params, 0);
+
+  p->mix_coef[0] = 1.0 - ax;
+  p->mix_coef[1] = 1.0 - ax;
+
+  p->cam_alpha = ax;
 }
 
 #ifdef __cplusplus
@@ -157,7 +184,23 @@ const xc_func_info_type xc_func_info_hyb_lda_xc_lda0 = {
   {&xc_ref_Rinke2012_126404, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-15,
-  {0, NULL, NULL, NULL, NULL},
+  {LDA0_N_PAR, lda0_names, lda0_desc, lda0_values, lda0_set_ext_params},
+  hyb_lda_xc_lda0_init, NULL,
+  NULL, NULL, NULL /* this is taken care of by the generic routine */
+};
+
+#ifdef __cplusplus
+extern "C"
+#endif
+const xc_func_info_type xc_func_info_hyb_lda_xc_b93 = {
+  XC_HYB_LDA_XC_B93,
+  XC_EXCHANGE_CORRELATION,
+  "Becke's original half-and-half functional: 50% HF and 50% LDA xc",
+  XC_FAMILY_HYB_LDA,
+  {&xc_ref_Becke1993_1372, NULL, NULL, NULL, NULL},
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  1e-15,
+  {LDA0_N_PAR, lda0_names, lda0_desc, lda_b93_values, lda0_set_ext_params},
   hyb_lda_xc_lda0_init, NULL,
   NULL, NULL, NULL /* this is taken care of by the generic routine */
 };

@@ -47,10 +47,14 @@ extern xc_func_info_type xc_func_info_hyb_mgga_xc_gas22;
 extern xc_func_info_type xc_func_info_hyb_mgga_xc_r2scanh;
 extern xc_func_info_type xc_func_info_hyb_mgga_xc_r2scan0;
 extern xc_func_info_type xc_func_info_hyb_mgga_xc_r2scan50;
+extern xc_func_info_type xc_func_info_hyb_mgga_x_wr2scan;
 extern xc_func_info_type xc_func_info_hyb_mgga_xc_edmggah;
 extern xc_func_info_type xc_func_info_hyb_mgga_x_js18;
 extern xc_func_info_type xc_func_info_hyb_mgga_x_pjs18;
 extern xc_func_info_type xc_func_info_hyb_mgga_xc_lc_tmlyp;
+extern xc_func_info_type xc_func_info_hyb_mgga_x_pi_m06_2x_dl;
+extern xc_func_info_type xc_func_info_hyb_mgga_x_pi_m06_2x;
+extern xc_func_info_type xc_func_info_hyb_mgga_xc_coach;
 
 const xc_func_info_type *xc_hyb_mgga_known_funct[] = {
   &xc_func_info_hyb_mgga_x_dldf,
@@ -100,9 +104,13 @@ const xc_func_info_type *xc_hyb_mgga_known_funct[] = {
   &xc_func_info_hyb_mgga_xc_r2scanh,
   &xc_func_info_hyb_mgga_xc_r2scan0,
   &xc_func_info_hyb_mgga_xc_r2scan50,
+  &xc_func_info_hyb_mgga_x_wr2scan,
   &xc_func_info_hyb_mgga_xc_edmggah,
   &xc_func_info_hyb_mgga_x_js18,
   &xc_func_info_hyb_mgga_x_pjs18,
   &xc_func_info_hyb_mgga_xc_lc_tmlyp,
+  &xc_func_info_hyb_mgga_x_pi_m06_2x_dl,
+  &xc_func_info_hyb_mgga_x_pi_m06_2x,
+  &xc_func_info_hyb_mgga_xc_coach,
   NULL
 };

@@ -8,8 +8,8 @@
 
 #include "util.h"
 
-#define XC_GGA_X_BKL1        338 /* Bhattacharjee-Koshi-Lee functional for band gaps */
-#define XC_GGA_X_BKL2        339 /* Bhattacharjee-Koshi-Lee functional for band gaps */
+#define XC_GGA_X_BKL1        338 /* Exchange part of Bhattacharjee-Koshi-Lee functional for band gaps */
+#define XC_GGA_X_BKL2        339 /* Exchange part of Bhattacharjee-Koshi-Lee functional for band gaps */
 
 typedef struct{
   double mu1;
@@ -22,11 +22,8 @@ typedef struct{
 static void
 gga_x_bkl_init(xc_func_type *p)
 {
-  gga_x_bkl_params *params;
-
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(gga_x_bkl_params));
-  params = (gga_x_bkl_params *) (p->params);
+  p->params = libxc_malloc_flags(sizeof(gga_x_bkl_params), p->info->flags);
 }
 
 #define N_PAR 5
@@ -53,9 +50,9 @@ extern "C"
 const xc_func_info_type xc_func_info_gga_x_bkl1 = {
   XC_GGA_X_BKL1,
   XC_EXCHANGE,
-  "Type-I band gap functional by Bhattacharjee, Koshi and Lee",
+  "Exchange part of type-I band gap functional by Bhattacharjee, Koshi and Lee",
   XC_FAMILY_GGA,
-  {&xc_ref_Bhattacharjee2024, NULL, NULL, NULL, NULL},
+  {&xc_ref_Bhattacharjee2024_PCCP_26443, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-15,
   {N_PAR, names, desc, bkl1_values, set_ext_params_cpy},
@@ -69,9 +66,9 @@ extern "C"
 const xc_func_info_type xc_func_info_gga_x_bkl2 = {
   XC_GGA_X_BKL2,
   XC_EXCHANGE,
-  "Type-II band gap functional by Bhattacharjee, Koshi and Lee",
+  "Exchange part of type-II band gap functional by Bhattacharjee, Koshi and Lee",
   XC_FAMILY_GGA,
-  {&xc_ref_Bhattacharjee2024, NULL, NULL, NULL, NULL},
+  {&xc_ref_Bhattacharjee2024_PCCP_26443, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-15,
   {N_PAR, names, desc, bkl2_values, set_ext_params_cpy},

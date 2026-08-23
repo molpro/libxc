@@ -1,0 +1,25 @@
+set(examples basic get_refs)
+
+foreach(example ${examples})
+  add_executable(${example} ${example}.c)
+  target_link_libraries(${example} xc)
+endforeach()
+
+if(ENABLE_FORTRAN)
+  foreach(example basic xcinfo)
+    add_executable(${example}_f90 fortran/${example}.f90)
+    target_link_libraries(${example}_f90 xcf03 xc)
+  endforeach()
+endif()
+
+if(ENABLE_CUDA)
+  add_executable(cuda_example cuda.c)
+  set_source_files_properties(cuda.c PROPERTIES LANGUAGE CUDA)
+  target_link_libraries(cuda_example xc)
+endif()
+
+if(ENABLE_HIP)
+  add_executable(rocm_example rocm.c)
+  set_source_files_properties(rocm.c PROPERTIES LANGUAGE HIP)
+  target_link_libraries(rocm_example xc)
+endif()

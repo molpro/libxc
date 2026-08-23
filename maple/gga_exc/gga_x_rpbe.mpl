@@ -20,8 +20,8 @@ params_a_rpbe_mu    := MU_PBE:
 $endif
 
 rpbe_f0 := s -> 1 + params_a_rpbe_kappa * (
-  1 - exp(-params_a_rpbe_mu*s^2/params_a_rpbe_kappa)
+  -xc_expm1(-params_a_rpbe_mu*s^2/params_a_rpbe_kappa)
 ):
-rpbe_f  := x -> rpbe_f0(X2S*x):
+rpbe_f  := x -> rpbe_f0(gga_s(x)):
 
 f := (rs, zeta, xt, xs0, xs1) -> gga_exchange(rpbe_f, rs, zeta, xs0, xs1):

@@ -39,7 +39,7 @@ gga_xc_th3_init(xc_func_type *p)
   int ii;
 
   assert(p->params == NULL);
-  p->params = libxc_malloc(sizeof(gga_xc_th3_params));
+  p->params = libxc_malloc_flags(sizeof(gga_xc_th3_params), p->info->flags);
   params = (gga_xc_th3_params *)p->params;
 
   for(ii = 0; ii < 19; ii++){
@@ -54,7 +54,7 @@ gga_xc_th3_init(xc_func_type *p)
 
     default:
       fprintf(stderr, "Internal error in gga_xc_th3\n");
-      exit(1);
+      abort();
     }
   }
 }

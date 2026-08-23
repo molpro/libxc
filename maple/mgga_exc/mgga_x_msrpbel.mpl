@@ -16,14 +16,24 @@
   params = (mgga_x_msrpbel_params * ) (p->params);
 *)
 
-(* Equation (3) in the 2019 paper by Smeets et al. is missing the third power in the numerator *)
-msrpbel_fa := a -> (1 - a^2)^3 / (1 + a^3 + params_a_b*a^6):
-msrpbel_f0 := (p, c) -> 1 + params_a_kappa*(1 - exp(-(MU_GE*p + c)/params_a_kappa)):
+(* MS-RPBE-l uses the shared ms_fa (with its magnitude clamp) and the
+   regularized iso-orbital indicator mgga_alpha_reg; only its RPBE-style
+   f0 (exp form) differs from MS, so keep just that here.
+   (The 2019 Smeets et al. paper drops the cube in eq (3).) *)
+$include "mgga_x_ms.mpl"
 
-msrpbel_alpha := (t,x) -> (t - x^2/8)/(K_FACTOR_C + params_a_eta*x^2/8):
+(* KEEP IN SYNC: msrpbel_f0 and msrpbel_f0_delta share the same
+   kappa/MU_GE/exp structure.  Algebraic identity:
+     f0(p, c) - f0(p, 0)
+       = kappa*[(-expm1(-(MU_GE p + c)/kappa)) - (-expm1(-MU_GE p/kappa))]
+       = kappa*exp(-MU_GE p/kappa)*(-expm1(-c/kappa));
+   the direct difference cancels at large p where both f0 values
+   saturate to 1 + kappa.  If either piece is retuned, update both. *)
+msrpbel_f0       := (p, c) -> 1 + params_a_kappa*(-xc_expm1(-(MU_GE*p + c)/params_a_kappa)):
+msrpbel_f0_delta := (p, c) -> params_a_kappa*exp(-MU_GE*p/params_a_kappa)*(-xc_expm1(-c/params_a_kappa)):
 
 msrpbel_f := (x, u, t) -> msrpbel_f0(X2S^2*x^2, 0) + \
-  msrpbel_fa(msrpbel_alpha(t,x))*(msrpbel_f0(X2S^2*x^2, params_a_c) - msrpbel_f0(X2S^2*x^2, 0)):
+  ms_fa(mgga_alpha_reg(x, t, params_a_eta))*msrpbel_f0_delta(X2S^2*x^2, params_a_c):
 
 f := (rs, z, xt, xs0, xs1, u0, u1, t0, t1) ->
   mgga_exchange(msrpbel_f, rs, z, xs0, xs1, u0, u1, t0, t1):

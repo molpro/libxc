@@ -36,7 +36,7 @@ const xc_func_info_type xc_func_info_gga_xc_oblyp_d = {
   "oBLYP-D functional of Goerigk and Grimme",
   XC_FAMILY_GGA,
   {&xc_ref_Goerigk2010_107, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {0, NULL, NULL, NULL, NULL},
   gga_xc_oblyp_d_init,
@@ -67,7 +67,7 @@ const xc_func_info_type xc_func_info_gga_xc_opwlyp_d = {
   "oPWLYP-D functional of Goerigk and Grimme",
   XC_FAMILY_GGA,
   {&xc_ref_Goerigk2010_107, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {0, NULL, NULL, NULL, NULL},
   gga_xc_opwlyp_d_init,
@@ -82,7 +82,7 @@ gga_xc_opbe_d_init(xc_func_type *p)
   static double funcs_coef[4] = {1.0, 1.0};
 
   static double par_x_pbe[] = {1.2010, 0.21198};
-  static double par_c_pbe[] = {0.04636, XC_EXT_PARAMS_DEFAULT, XC_EXT_PARAMS_DEFAULT};
+  static double par_c_pbe[] = {0.04636, XC_EXT_PARAMS_DEFAULT, XC_EXT_PARAMS_DEFAULT, XC_EXT_PARAMS_DEFAULT};
 
   xc_mix_init(p, 2, funcs_id, funcs_coef);
   xc_func_set_ext_params(p->func_aux[0], par_x_pbe);
@@ -98,7 +98,7 @@ const xc_func_info_type xc_func_info_gga_xc_opbe_d = {
   "oPBE-D functional of Goerigk and Grimme",
   XC_FAMILY_GGA,
   {&xc_ref_Goerigk2010_107, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {0, NULL, NULL, NULL, NULL},
   gga_xc_opbe_d_init,

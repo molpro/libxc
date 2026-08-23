@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "xc.h"
+#include "util.h"
 
 static int is_cam(xc_func_type *p) {
   return (p->info->flags & XC_FLAGS_HYB_CAM)
@@ -167,6 +168,53 @@ int main(void) {
         if(C != 0.0)
           printf("Functional %i '%s' isn't supposed to long-range correlation but has non-zero C.\n",func_id, fname);
       }
+    }
+
+    /* Exercise the evaluation path so ASan / LSan cover the work
+       harnesses and Maple-generated kernels, not just init/end. Use a
+       tiny unpolarized grid with plausible, non-degenerate inputs that
+       every family accepts. */
+    {
+      size_t np = 1;
+      double rho[1]   = {0.3};
+      double sigma[1] = {0.2};
+      double lapl[1]  = {0.1};
+      double tau[1]   = {0.1};
+
+      /* Declare zk and every higher-order output pointer; init to NULL */
+      double *zk MGGA_OUT_PARAMS_NO_EXC(XC_COMMA *, );
+      zk MGGA_OUT_PARAMS_NO_EXC(=, ) = NULL;
+
+      /* Request derivative orders that were compiled in */
+      int do_zk     = 1;
+      int do_vrho   = 1;
+      int do_v2rho2 = 1;
+      int do_v3rho3 = 1;
+      int do_v4rho4 = 1;
+#if XC_MAXORDER < 1
+      do_vrho = do_v2rho2 = do_v3rho3 = do_v4rho4 = 0;
+#endif
+#if XC_MAXORDER < 2
+      do_v2rho2 = do_v3rho3 = do_v4rho4 = 0;
+#endif
+#if XC_MAXORDER < 3
+      do_v3rho3 = do_v4rho4 = 0;
+#endif
+#if XC_MAXORDER < 4
+      do_v4rho4 = 0;
+#endif
+
+      xc_mgga_vars_allocate_all_flags(
+        func.info->family, np, &func.dim,
+        do_zk, do_vrho, do_v2rho2, do_v3rho3, do_v4rho4,
+        &zk MGGA_OUT_PARAMS_NO_EXC(XC_COMMA &, ),
+        func.info->flags);
+
+      xc_mgga_evaluate_functional(&func, np, rho, sigma, lapl, tau,
+                                  zk MGGA_OUT_PARAMS_NO_EXC(XC_COMMA, ));
+
+      xc_mgga_vars_free_all_flags(zk MGGA_OUT_PARAMS_NO_EXC(XC_COMMA, ),
+                                  func.info->flags);
     }
 
     /* Free memory */

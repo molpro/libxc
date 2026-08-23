@@ -19,7 +19,7 @@ static void
 mgga_x_gx_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(mgga_x_gx_params));
+  p->params = libxc_malloc_flags(sizeof(mgga_x_gx_params), p->info->flags);
 }
 
 #include "maple2c/mgga_exc/mgga_x_gx.c"

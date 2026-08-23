@@ -16,8 +16,8 @@
 
 sogga11_alpha := params_a_mu*X2S*X2S/params_a_kappa:
 
-sogga11_f0 := x -> 1 - 1/(1 + sogga11_alpha*x^2):
-sogga11_f1 := x -> 1 - exp(-sogga11_alpha*x^2):
+sogga11_f0 := x -> sogga11_alpha*x^2/(1 + sogga11_alpha*x^2):
+sogga11_f1 := x -> -xc_expm1(-sogga11_alpha*x^2):
 
 sogga11_f  := x -> add(params_a_a[i]*sogga11_f0(x)^(i-1), i=1..6) + add(params_a_b[i]*sogga11_f1(x)^(i-1), i=1..6):
 

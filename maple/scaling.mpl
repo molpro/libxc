@@ -25,13 +25,13 @@ s_scaling_1 := s -> my_piecewise3(
 *)
 s_scaling_2 := s -> my_piecewise3(
   s < 1,  s,
-  my_piecewise3(s > 15, smax, m_max(m_min(s, 15), 1) - log(1 + exp(m_max(m_min(s, 15), 1) - smax)))
+  my_piecewise3(s > 15, smax, m_max(m_min(s, 15), 1) - xc_log1p(exp(m_max(m_min(s, 15), 1) - smax)))
 ):
 
 (* second version of the scaling by TM Henderson,
    eq (9) in J. Chem. Phys. 131, 044108 (2009); doi:10.1063/1.3185673
 *)
-s_scaling_3 := s -> s - (1 - exp(-s))*log(1 + exp(s - smax)):
+s_scaling_3 := s -> s + xc_expm1(-s)*xc_log1p(exp(s - smax)):
 
 (* appendix of JCP 128, 194105 (2008), doi:10.1063/1.2921797 *)
 s_p :=  [0.615482, 1.136921, -0.449154, 0.0175739*8.572844]:

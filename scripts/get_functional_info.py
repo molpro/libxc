@@ -105,6 +105,28 @@ def read_infos(srcdir, family, all_ids):
 
   return infos
 
+def read_compatibility(srcdir):
+  '''Reads the list of removed functionals to maintain backwards compatibility where it makes sense'''
+
+  lines = open(srcdir + '/xc_funcs_removed.h').readlines()
+
+  # Find the start of the compatibility section
+  iline = 0
+  while lines[iline].find('compatibility') == -1:
+    iline += 1
+  iline += 1
+
+  # Read until there is another compatibility
+  funcs = []
+  while lines[iline].find('compatibility') == -1:
+    entries = lines[iline].split()
+    if len(entries) >= 3:
+      func_name, func_id = entries[1:3]
+      funcs.append((func_name.lower()[3:], int(func_id)))
+    iline += 1
+
+  return funcs
+
 # hybrids are not added automatically
 families = ("lda", "hyb_lda", "gga", "hyb_gga", "mgga", "hyb_mgga")
 family_infos = {}
@@ -116,6 +138,7 @@ for family in families:
   infos = read_infos(params.srcdir, family, all_ids)
   family_infos[family] = infos
   all_infos.update(infos)
+compat_list = read_compatibility(params.srcdir)
 
 # check for duplicate IDs
 info_list = list(all_infos.values())
@@ -137,7 +160,7 @@ for family in families:
     infos[func] = full_infos[func]
 
   # create funcs_family.c file
-  fh =  open("funcs_" + prefix + family + ".c", "w")
+  fh =  open(params.srcdir + "/funcs_" + prefix + family + ".c", "w")
   fh.write('#include "util.h"\n\n')
   for info in sorted(infos.values(), key=lambda item: item["number"]):
     fh.write('extern xc_func_info_type xc_func_info_' + info["codename"] + ';\n')
@@ -148,17 +171,26 @@ for family in families:
   fh.close()
 
 # create funcs_key.c file
-fh =  open("funcs_key.c", "w")
+fh =  open(params.srcdir + "/funcs_key.c", "w")
 fh.write('#include "util.h"\n\nxc_functional_key_t xc_functional_keys[] = {\n')
-for info in sorted(all_infos.values(), key=lambda item: item["number"]):
-  fh.write('  {"' + info["codename"] + '", ' + str(info["number"]) + '},\n')
+# collect info on all functionals
+all_pairs = [(info["codename"], info["number"]) for info in sorted(all_infos.values(), key=lambda item: item["number"]) ]
+# add in the info for compatibility funcs
+func_name_list = [info["codename"] for info in all_infos.values()]
+for name, fid in compat_list:
+  if name not in func_name_list:
+    all_pairs.append((name, fid))
+# sort
+all_pairs = sorted(all_pairs, key=lambda x: x[1])
+for kw, number in all_pairs:
+  fh.write(f'  {{"{kw}", {number}}},\n')
 fh.write('{"", -1}\n};\n')
 fh.close()
 
 # create C and F90 files with list of functionals
-fh1 =  open("xc_funcs.h", "w")
-fh2 =  open("xc_funcs_worker.h", "w")
-fh3 =  open("libxc_inc.f90", "w")
+fh1 =  open(params.srcdir + "/xc_funcs.h", "w")
+fh2 =  open(params.srcdir + "/xc_funcs_worker.h", "w")
+fh3 =  open(params.srcdir + "/libxc_inc.f90", "w")
 for info in sorted(all_infos.values(), key=lambda item: item["number"]):
   line_c = '{:40s} {:5d} {:s}'.format(
     '#define  XC_' + info["codename"].upper(),
@@ -177,6 +209,24 @@ for info in sorted(all_infos.values(), key=lambda item: item["number"]):
 fh1.close()
 fh2.close()
 
+# merge in the atomic-quadrature convergence characterisation, if it has been
+# generated (testsuite/atomic/generate_atomic_energies.py). This is a runtime
+# property -- how quickly the functional's atomic energy converges with the
+# radial grid -- so it cannot be read from the source; it is committed as
+# convergence.json and merged here when present.
+conv_json = os.path.join(params.srcdir, "..", "testsuite", "atomic",
+                         "references", "convergence.json")
+if os.path.exists(conv_json):
+  with open(conv_json) as fh:
+    convergence = json.load(fh)
+  for name, info in all_infos.items():
+    if name in convergence:
+      c = convergence[name]
+      info["quadrature_convergence"] = c.get("band")
+      info["quadrature_convergence_n0"] = c.get("n0")
+      info["fock_quadrature_convergence"] = c.get("fock_band")
+      info["fock_quadrature_convergence_n0"] = c.get("fock_n0")
+
 # dump all information to a json file
-with open("libxc_docs.json", "w") as fh:
+with open(params.srcdir + "/libxc_docs.json", "w") as fh:
   json.dump(all_infos, fh, indent=2)

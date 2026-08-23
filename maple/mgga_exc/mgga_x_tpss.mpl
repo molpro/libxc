@@ -31,7 +31,9 @@ $include "tpss_x.mpl"
 
 (* Equation (5) *)
 
-tpss_a1  := (x, t) -> tpss_kappa(x, t)/(tpss_kappa(x, t) + tpss_fx(x, t)):
-tpss_f   := (x, u, t) -> 1 + tpss_kappa(x, t)*(1 - tpss_a1(x, t)):
+(* Paper has tpss_f = 1 + kappa*(1 - a1) where a1 = kappa/(kappa + fx).
+   Inlined here as 1 + kappa*fx/(kappa + fx); algebraic identity, no
+   1 - close-to-1 cancellation at small fx. *)
+tpss_f   := (x, u, t) -> 1 + tpss_kappa(x, t)*tpss_fx(x, t)/(tpss_kappa(x, t) + tpss_fx(x, t)):
 
 f := (rs, z, xt, xs0, xs1, u0, u1, t0, t1) -> mgga_exchange(tpss_f, rs, z, xs0, xs1, u0, u1, t0, t1):

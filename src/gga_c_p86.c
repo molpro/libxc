@@ -33,7 +33,7 @@ static const double p86ft_val[N_PAR] = {0.023266, 7.389e-6, 8.723, 0.472, 0.0016
 static void gga_c_p86_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(gga_c_p86_params));
+  p->params = libxc_malloc_flags(sizeof(gga_c_p86_params), p->info->flags);
 }
 
 #include "maple2c/gga_exc/gga_c_p86.c"
@@ -47,7 +47,7 @@ const xc_func_info_type xc_func_info_gga_c_p86 = {
   XC_CORRELATION,
   "Perdew 86",
   XC_FAMILY_GGA,
-  {&xc_ref_Perdew1986_8822, NULL, NULL, NULL, NULL},
+  {&xc_ref_Perdew1986_8822, &xc_ref_Perdew1986_7406, NULL, NULL, NULL},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-15,
   {N_PAR, names, desc, p86_val, set_ext_params_cpy},
@@ -63,7 +63,7 @@ const xc_func_info_type xc_func_info_gga_c_p86_ft = {
   XC_CORRELATION,
   "Perdew 86 with more accurate value for ftilde",
   XC_FAMILY_GGA,
-  {&xc_ref_Perdew1986_8822, NULL, NULL, NULL, NULL},
+  {&xc_ref_Perdew1986_8822, &xc_ref_Perdew1986_7406, NULL, NULL, NULL},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-15,
   {N_PAR, names, desc, p86ft_val, set_ext_params_cpy},

@@ -9,6 +9,7 @@
 #include "util.h"
 
 #define XC_LDA_C_WIGNER    2   /* Wigner parametrization       */
+#define XC_LDA_C_BJ89    349   /* Barbiellini & Jarlborg 89 */
 #define XC_LDA_XC_LP_A   547   /* Lee-Parr reparametrization A */
 #define XC_LDA_XC_LP_B   548   /* Lee-Parr reparametrization B */
 #define XC_LDA_C_MCWEENY 551   /* McWeeny 76 */
@@ -25,6 +26,8 @@ static const char  *names[N_PAR]  = {"_a", "_b"};
 static const char  *desc[N_PAR]   = {"a parameter", "b parameter"};
 
 static const double val_wigner[N_PAR] = {-0.44, 7.8};
+/* in Rydberg */
+static const double val_bj89[N_PAR] = {-0.37294/2, 1.89173};
 static const double val_lp_a[N_PAR] = {-0.8626*RS_FACTOR, 0.0};
 static const double val_lp_b[N_PAR] = {-0.906*RS_FACTOR, 2.1987e-2*RS_FACTOR};
 static const double val_mcweeny[N_PAR] = {-RS_FACTOR/2.946, RS_FACTOR*9.652/2.946};
@@ -36,7 +39,7 @@ static void
 lda_c_wigner_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(lda_c_wigner_params));
+  p->params = libxc_malloc_flags(sizeof(lda_c_wigner_params), p->info->flags);
 }
 
 #include "maple2c/lda_exc/lda_c_wigner.c"
@@ -54,6 +57,22 @@ const xc_func_info_type xc_func_info_lda_c_wigner = {
   XC_FLAGS_3D | MAPLE2C_FLAGS,
   1e-24,
   {N_PAR, names, desc, val_wigner, set_ext_params_cpy},
+  lda_c_wigner_init, NULL,
+  &work_lda, NULL, NULL
+};
+
+#ifdef __cplusplus
+extern "C"
+#endif
+const xc_func_info_type xc_func_info_lda_c_bj89 = {
+  XC_LDA_C_BJ89,
+  XC_CORRELATION,
+  "Barbiellini & Jarlborg 89",
+  XC_FAMILY_LDA,
+  {&xc_ref_Barbiellini1989_8865, NULL, NULL, NULL},
+  XC_FLAGS_3D | MAPLE2C_FLAGS,
+  1e-24,
+  {N_PAR, names, desc, val_bj89, set_ext_params_cpy},
   lda_c_wigner_init, NULL,
   &work_lda, NULL, NULL
 };

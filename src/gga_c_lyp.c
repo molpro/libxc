@@ -10,7 +10,7 @@
 #include "util.h"
 
 #define XC_GGA_C_LYP         131  /* Lee, Yang & Parr */
-#define XC_GGA_C_TM_LYP      559  /* Takkar and McCarthy reparametrization, also known as reLYP in the literature */
+#define XC_GGA_C_TM_LYP      559  /* Thakkar and McCarthy reparametrization, also known as reLYP in the literature */
 #define XC_HYB_GGA_XC_HFLYP  314  /* Hartree-Fock + LYP correlation */
 
 typedef struct{
@@ -20,7 +20,7 @@ typedef struct{
 void xc_gga_c_lyp_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(gga_c_lyp_params));
+  p->params = libxc_malloc_flags(sizeof(gga_c_lyp_params), p->info->flags);
 }
 
 #define LYP_N_PAR 4
@@ -60,7 +60,7 @@ extern "C"
 const xc_func_info_type xc_func_info_gga_c_tm_lyp = {
   XC_GGA_C_TM_LYP,
   XC_CORRELATION,
-  "Takkar and McCarthy reparametrization, also known as reLYP",
+  "Thakkar and McCarthy reparametrization, also known as reLYP",
   XC_FAMILY_GGA,
   {&xc_ref_Thakkar2009_134109, NULL, NULL, NULL, NULL},
   XC_FLAGS_3D | MAPLE2C_FLAGS,
@@ -89,7 +89,7 @@ const xc_func_info_type xc_func_info_hyb_gga_xc_hflyp = {
   "HF + LYP correlation",
   XC_FAMILY_HYB_GGA,
   {&xc_ref_Lee1988_785, &xc_ref_Miehlich1989_200, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_gga_xc_hflyp_init, NULL,

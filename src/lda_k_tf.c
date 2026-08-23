@@ -22,7 +22,7 @@ lda_k_tf_init(xc_func_type *p)
   lda_k_tf_params *params;
 
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(lda_k_tf_params));
+  p->params = libxc_malloc_flags(sizeof(lda_k_tf_params), p->info->flags);
   params = (lda_k_tf_params *) (p->params);
 
   switch(p->info->number){
@@ -36,7 +36,7 @@ lda_k_tf_init(xc_func_type *p)
     break;
   default:
     fprintf(stderr, "Internal error in lda_k_tf\n");
-    exit(1);
+    abort();
   }
 }
 

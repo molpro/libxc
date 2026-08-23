@@ -19,4 +19,4 @@ $include "mgga_x_r2scan.mpl"
 $include "mgga_x_rscan.mpl"
 
 (* r++SCAN is obtained from rSCAN by replacing the definition of alpha *)
-rscan_alpha := (rs, z, x, t) -> r2scan_alpha(x, t):
+rscan_alpha := (rs, z, x, t) -> mgga_alpha_reg(x, t, params_a_eta):

@@ -17,6 +17,9 @@
 $include "gga_x_hjs.mpl"
 
 hjs2_xi := 1/(exp(20) - 1):
-hjs2_fs := s -> -log((exp(-s) + hjs2_xi)/(1 + hjs2_xi)):
+(* (exp(-s) + xi)/(1 + xi) = 1 + expm1(-s)/(1 + xi); at small s this
+   would otherwise cancel down to -s/(1+xi). Routed through log1p so
+   the small-argument behaviour is exact. *)
+hjs2_fs := s -> -xc_log1p(xc_expm1(-s)/(1 + hjs2_xi)):
 
-hjs_fx := (rs, z, x) -> hjs_f1(rs, z, hjs2_fs(X2S*x)):
+hjs_fx := (rs, z, x) -> hjs_f1(rs, z, hjs2_fs(gga_s(x))):

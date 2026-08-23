@@ -17,7 +17,7 @@ extern xc_func_info_type xc_func_info_lda_c_ob_pw;
 extern xc_func_info_type xc_func_info_lda_c_2d_amgb;
 extern xc_func_info_type xc_func_info_lda_c_2d_prm;
 extern xc_func_info_type xc_func_info_lda_c_vbh;
-extern xc_func_info_type xc_func_info_lda_c_1d_csc;
+extern xc_func_info_type xc_func_info_lda_c_1d_css;
 extern xc_func_info_type xc_func_info_lda_x_2d;
 extern xc_func_info_type xc_func_info_lda_xc_teter93;
 extern xc_func_info_type xc_func_info_lda_x_1d_soft;
@@ -34,6 +34,7 @@ extern xc_func_info_type xc_func_info_lda_c_vwn_4;
 extern xc_func_info_type xc_func_info_lda_xc_zlp;
 extern xc_func_info_type xc_func_info_lda_k_tf;
 extern xc_func_info_type xc_func_info_lda_k_lp;
+extern xc_func_info_type xc_func_info_lda_xc_th_fl;
 extern xc_func_info_type xc_func_info_lda_xc_ksdt;
 extern xc_func_info_type xc_func_info_lda_c_chachiyo;
 extern xc_func_info_type xc_func_info_lda_c_lp96;
@@ -45,6 +46,11 @@ extern xc_func_info_type xc_func_info_lda_c_epc17;
 extern xc_func_info_type xc_func_info_lda_c_epc17_2;
 extern xc_func_info_type xc_func_info_lda_c_epc18_1;
 extern xc_func_info_type xc_func_info_lda_c_epc18_2;
+extern xc_func_info_type xc_func_info_lda_x_t_sloc;
+extern xc_func_info_type xc_func_info_lda_c_bj89;
+extern xc_func_info_type xc_func_info_lda_c_lp96_b;
+extern xc_func_info_type xc_func_info_lda_k_lp96_b;
+extern xc_func_info_type xc_func_info_lda_c_rpaf;
 extern xc_func_info_type xc_func_info_lda_x_rel;
 extern xc_func_info_type xc_func_info_lda_xc_1d_ehwlrg_1;
 extern xc_func_info_type xc_func_info_lda_xc_1d_ehwlrg_2;
@@ -71,7 +77,6 @@ extern xc_func_info_type xc_func_info_lda_c_pw_erf;
 extern xc_func_info_type xc_func_info_lda_c_upw92;
 extern xc_func_info_type xc_func_info_lda_c_rpw92;
 extern xc_func_info_type xc_func_info_lda_x_sloc;
-extern xc_func_info_type xc_func_info_lda_k_gds08_worker;
 
 const xc_func_info_type *xc_lda_known_funct[] = {
   &xc_func_info_lda_x,
@@ -91,7 +96,7 @@ const xc_func_info_type *xc_lda_known_funct[] = {
   &xc_func_info_lda_c_2d_amgb,
   &xc_func_info_lda_c_2d_prm,
   &xc_func_info_lda_c_vbh,
-  &xc_func_info_lda_c_1d_csc,
+  &xc_func_info_lda_c_1d_css,
   &xc_func_info_lda_x_2d,
   &xc_func_info_lda_xc_teter93,
   &xc_func_info_lda_x_1d_soft,
@@ -108,6 +113,7 @@ const xc_func_info_type *xc_lda_known_funct[] = {
   &xc_func_info_lda_xc_zlp,
   &xc_func_info_lda_k_tf,
   &xc_func_info_lda_k_lp,
+  &xc_func_info_lda_xc_th_fl,
   &xc_func_info_lda_xc_ksdt,
   &xc_func_info_lda_c_chachiyo,
   &xc_func_info_lda_c_lp96,
@@ -119,6 +125,11 @@ const xc_func_info_type *xc_lda_known_funct[] = {
   &xc_func_info_lda_c_epc17_2,
   &xc_func_info_lda_c_epc18_1,
   &xc_func_info_lda_c_epc18_2,
+  &xc_func_info_lda_x_t_sloc,
+  &xc_func_info_lda_c_bj89,
+  &xc_func_info_lda_c_lp96_b,
+  &xc_func_info_lda_k_lp96_b,
+  &xc_func_info_lda_c_rpaf,
   &xc_func_info_lda_x_rel,
   &xc_func_info_lda_xc_1d_ehwlrg_1,
   &xc_func_info_lda_xc_1d_ehwlrg_2,
@@ -145,6 +156,5 @@ const xc_func_info_type *xc_lda_known_funct[] = {
   &xc_func_info_lda_c_upw92,
   &xc_func_info_lda_c_rpw92,
   &xc_func_info_lda_x_sloc,
-  &xc_func_info_lda_k_gds08_worker,
   NULL
 };

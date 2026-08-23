@@ -51,7 +51,7 @@ static void
 hyb_mgga_xc_gas22_init(xc_func_type *p)
 {
   assert(p->params == NULL);
-  p->params = libxc_malloc(sizeof(hyb_mgga_xc_gas22_params));
+  p->params = libxc_malloc_flags(sizeof(hyb_mgga_xc_gas22_params), p->info->flags);
   xc_hyb_init_cam(p, 0.0, 0.0, 0.0);
 
   p->nlc_b = 6.0;

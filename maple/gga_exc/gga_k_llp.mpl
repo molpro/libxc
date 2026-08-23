@@ -14,6 +14,6 @@
   params = (gga_k_llp_params * )(p->params);
 *)
 
-llp_f := x -> 1.0 + params_a_beta/X_FACTOR_C*x^2/(1.0 + params_a_gamma*params_a_beta*x*arcsinh(x)):
+llp_f := x -> 1.0 + params_a_beta/X_FACTOR_C*x^2/(1.0 + params_a_gamma*params_a_beta*x*xc_asinh(x)):
 
 f := (rs, zeta, xt, xs0, xs1) -> gga_kinetic(llp_f, rs, zeta, xs0, xs1):

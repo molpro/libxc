@@ -13,7 +13,7 @@
  */
 
 /* define auxiliary functions to NULL in case they are not available */
-#if defined(XC_DONT_COMPILE_EXC) || maple2c_order < 0 || defined(XC_NO_EXC)
+#if XC_MAXORDER < 0 || maple2c_order < 0 || defined(XC_NO_EXC)
 #define work_gga_exc_unpol NULL
 #define work_gga_exc_pol NULL
 #else
@@ -27,7 +27,7 @@
 #undef ORDER_TXT
 #endif
 
-#if defined(XC_DONT_COMPILE_VXC) || maple2c_order < 1
+#if XC_MAXORDER < 1 || maple2c_order < 1
 #define work_gga_vxc_unpol NULL
 #define work_gga_vxc_pol NULL
 #else
@@ -41,7 +41,7 @@
 #undef ORDER_TXT
 #endif
 
-#if defined(XC_DONT_COMPILE_FXC) || maple2c_order < 2
+#if XC_MAXORDER < 2 || maple2c_order < 2
 #define work_gga_fxc_unpol NULL
 #define work_gga_fxc_pol NULL
 #else
@@ -55,7 +55,7 @@
 #undef ORDER_TXT
 #endif
 
-#if defined(XC_DONT_COMPILE_KXC) || maple2c_order < 3
+#if XC_MAXORDER < 3 || maple2c_order < 3
 #define work_gga_kxc_unpol NULL
 #define work_gga_kxc_pol NULL
 #else
@@ -69,7 +69,7 @@
 #undef ORDER_TXT
 #endif
 
-#if defined(XC_DONT_COMPILE_LXC) || maple2c_order < 4
+#if XC_MAXORDER < 4 || maple2c_order < 4
 #define work_gga_lxc_unpol NULL
 #define work_gga_lxc_pol NULL
 #else

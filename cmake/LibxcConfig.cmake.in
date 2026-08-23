@@ -73,6 +73,15 @@ endif()
 list(FIND ${PN}_FIND_COMPONENTS "shared" _seek_shared)
 list(FIND ${PN}_FIND_COMPONENTS "static" _seek_static)
 
+set(${PN}_ENABLE_CUDA @ENABLE_CUDA@)
+set(${PN}_ENABLE_HIP @ENABLE_HIP@)
+set(${PN}_ENABLE_PYTHON @ENABLE_PYTHON@)
+set(${PN}_DISABLE_VXC @DISABLE_VXC@)
+set(${PN}_DISABLE_VXC @DISABLE_FXC@)
+set(${PN}_DISABLE_VXC @DISABLE_KXC@)
+set(${PN}_DISABLE_VXC @DISABLE_LXC@)
+set(${PN}_DISABLE_FHC @DISABLE_FHC@)
+
 # check library language component
 # * using EXISTS Targets-Fortran instead of @ENABLE_FORTRAN@ so
 #   separate C/Fortran packages don't clobber this file

@@ -31,7 +31,7 @@ static void
 mgga_c_r2scan_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(mgga_c_r2scan_params));
+  p->params = libxc_malloc_flags(sizeof(mgga_c_r2scan_params), p->info->flags);
 }
 
 #ifdef __cplusplus
@@ -58,7 +58,7 @@ const xc_func_info_type xc_func_info_mgga_c_r2scan01 = {
   XC_CORRELATION,
   "Re-regularized SCAN correlation with larger value for eta",
   XC_FAMILY_MGGA,
-  {&xc_ref_Furness2020_8208, &xc_ref_Furness2020_9248, NULL, NULL, NULL},
+  {&xc_ref_Holzwarth2022_125114, &xc_ref_Furness2020_8208, &xc_ref_Furness2020_9248, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
   1e-15,
   {N_PAR, names, desc, r2scan01_values, set_ext_params_cpy},

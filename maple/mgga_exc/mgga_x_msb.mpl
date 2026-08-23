@@ -18,13 +18,14 @@
 $include "mgga_x_ms.mpl"
 
 (* eq (5) in the paper *)
-msb_beta := (t, x) -> ms_alpha(t, x)*K_FACTOR_C/(t + K_FACTOR_C):
+msb_beta := (x, t) -> mgga_alpha(x, t)*K_FACTOR_C/(t + K_FACTOR_C):
 
-(* eq (14) in the supplement *)
-msb_fa := b -> (1 - (2*b)^2)^3 / (1 + (2*b)^3 + params_a_b*(2*b)^6):
-
+(* eq (14) in the supplement is f(2*beta) with the same shape as ms_fa,
+   so reuse the shared ms_fa (which also carries the magnitude clamp)
+   instead of duplicating it. *)
+(* Use ms_f0_delta for the cancellation-free f0(p, c) - f0(p, 0). *)
 msb_f := (x, u, t) -> ms_f0(X2S^2*x^2, 0) + \
-  msb_fa(msb_beta(t,x))*(ms_f0(X2S^2*x^2, params_a_c) - ms_f0(X2S^2*x^2, 0)):
+  ms_fa(2*msb_beta(x,t))*ms_f0_delta(X2S^2*x^2, params_a_c):
 
 f := (rs, z, xt, xs0, xs1, u0, u1, t0, t1) ->
   mgga_exchange(msb_f, rs, z, xs0, xs1, u0, u1, t0, t1):

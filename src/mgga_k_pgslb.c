@@ -18,7 +18,7 @@ static void
 mgga_k_pgslb_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(mgga_k_pgslb_params));
+  p->params = libxc_malloc_flags(sizeof(mgga_k_pgslb_params), p->info->flags);
 }
 
 #define N_PAR 2

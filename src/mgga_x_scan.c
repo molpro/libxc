@@ -30,7 +30,7 @@ static void
 mgga_x_scan_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(mgga_x_scan_params));
+  p->params = libxc_malloc_flags(sizeof(mgga_x_scan_params), p->info->flags);
 }
 
 #include "maple2c/mgga_exc/mgga_x_scan.c"
@@ -93,7 +93,7 @@ static void
 hyb_mgga_x_scan0_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(mgga_x_scan_params));
+  p->params = libxc_malloc_flags(sizeof(mgga_x_scan_params), p->info->flags);
 
   static int   funcs_id  [1] = {XC_MGGA_X_SCAN};
   static double funcs_coef[1] = {0.0}; /* set by ext_params */
@@ -122,7 +122,7 @@ static void
 hyb_mgga_x_revscan0_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(mgga_x_scan_params));
+  p->params = libxc_malloc_flags(sizeof(mgga_x_scan_params), p->info->flags);
 
   static int   funcs_id  [1] = {XC_MGGA_X_REVSCAN};
   static double funcs_coef[1] = {0.0}; /* set by ext_params */

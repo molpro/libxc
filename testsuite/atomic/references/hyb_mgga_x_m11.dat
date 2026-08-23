@@ -1,0 +1,17 @@
+# 3D exchange-correlation energies (Hartree) at the radial-quadrature convergence limit
+# functional: hyb_mgga_x_m11
+# probe atoms (3D): Lehtola & Marques, J. Chem. Phys. 157, 174114 (2022)
+# convergence: medium (N0 = 200 radial points)
+# system  spin         npts  converged  E_xc
+LI     unpolarized    100         1 -7.6960432496e-01
+LI     polarized      100         1 -7.7333179548e-01
+N      unpolarized    100         1 -3.1631447765e+00
+N      polarized      200         1 -3.1970246986e+00
+NE     unpolarized    100         1 -6.1476690542e+00
+NE     polarized      100         1 -6.1476690542e+00
+NA     unpolarized    100         1 -7.1631790172e+00
+NA     polarized      100         1 -7.1658186349e+00
+P      unpolarized    100         1 -1.1718519080e+01
+P      polarized      100         1 -1.1742897101e+01
+AR     unpolarized    100         1 -1.5780674405e+01
+AR     polarized      100         1 -1.5780674405e+01

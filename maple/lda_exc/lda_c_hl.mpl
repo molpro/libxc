@@ -21,7 +21,7 @@ $endif
 
 hl_xx := (k, rs) -> rs/params_a_hl_r[k]:
 hl_f0 := (k, rs) -> -params_a_hl_c[k]*
-  ((1 + hl_xx(k, rs)^3)*log(1 + 1/hl_xx(k, rs)) - hl_xx(k, rs)^2 + 1/2*hl_xx(k, rs) - 1/3):
+  ((1 + hl_xx(k, rs)^3)*xc_log1p(1/hl_xx(k, rs)) - hl_xx(k, rs)^2 + 1/2*hl_xx(k, rs) - 1/3):
 
 hl_f := (rs, zeta) -> hl_f0(1, rs) + f_zeta(zeta)*(hl_f0(2, rs) - hl_f0(1, rs)):
 f    := (rs, zeta) -> hl_f(rs, zeta):

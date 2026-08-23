@@ -14,8 +14,6 @@
   params = (mgga_k_rda_params * ) (p->params);
 *)
 
-rda_s := x -> X2S*x:
-rda_p := u -> X2S^2*u:
 
 (* Equation (61) *)
 rda_k4 := (s, p, b) -> sqrt(s^4 + b*p^2):
@@ -30,7 +28,7 @@ rda_f0 := (s, p) ->
        + params_a_A3 * (rda_k2(s,p,params_a_c) / (1 + params_a_beta3*rda_k2(s,p,params_a_c))):
 
 (* Complete functional *)
-rda_f := (xs, us) -> rda_f0(rda_s(xs), rda_p(us)):
+rda_f := (xs, us) -> rda_f0(gga_s(xs), mgga_q(us)):
 
 f := (rs, z, xt, xs0, xs1, u0, u1, t0, t1) ->
   mgga_kinetic(rda_f, rs, z, xs0, xs1, u0, u1):

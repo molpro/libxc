@@ -22,7 +22,7 @@ static void
 gga_x_kt_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(gga_x_kt_params));
+  p->params = libxc_malloc_flags(sizeof(gga_x_kt_params), p->info->flags);
 }
 
 #include "maple2c/gga_exc/gga_x_kt.c"
@@ -140,7 +140,7 @@ const xc_func_info_type xc_func_info_gga_xc_kt3 = {
   "Keal and Tozer, version 3",
   XC_FAMILY_GGA,
   {&xc_ref_Keal2004_5654, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_I_HAVE_ALL,
+  XC_FLAGS_3D,
   1e-15,
   {0, NULL, NULL, NULL, NULL},
   gga_xc_kt3_init, NULL,

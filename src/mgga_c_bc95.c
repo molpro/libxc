@@ -20,7 +20,7 @@ static void
 mgga_c_bc95_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(mgga_c_bc95_params));
+  p->params = libxc_malloc_flags(sizeof(mgga_c_bc95_params), p->info->flags);
 }
 
 #define BC95_N_PAR 2

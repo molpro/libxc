@@ -16,6 +16,6 @@
 *)
 
 ev93_f0 := s -> (1 + params_a_a1*s^2 + params_a_a2*s^4 + params_a_a3*s^6)/(1 + params_a_b1*s^2 + params_a_b2*s^4 + params_a_b3*s^6):
-ev93_f  := x -> ev93_f0(X2S*x):
+ev93_f  := x -> ev93_f0(gga_s(x)):
 
 f := (rs, z, xt, xs0, xs1) -> gga_exchange(ev93_f, rs, z, xs0, xs1):

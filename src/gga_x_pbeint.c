@@ -19,7 +19,7 @@ static void
 gga_x_pbe_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(gga_x_pbeint_params));
+  p->params = libxc_malloc_flags(sizeof(gga_x_pbeint_params), p->info->flags);
 }
 
 #define PBEINT_N_PAR 4

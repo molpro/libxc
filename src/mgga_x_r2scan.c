@@ -29,7 +29,7 @@ static void
 mgga_x_r2scan_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(mgga_x_r2scan_params));
+  p->params = libxc_malloc_flags(sizeof(mgga_x_r2scan_params), p->info->flags);
 }
 
 
@@ -60,7 +60,7 @@ const xc_func_info_type xc_func_info_mgga_x_r2scan01 = {
   XC_EXCHANGE,
   "Re-regularized SCAN exchange by Furness et al with larger value for eta",
   XC_FAMILY_MGGA,
-  {&xc_ref_Furness2020_8208, &xc_ref_Furness2020_9248, NULL, NULL, NULL},
+  {&xc_ref_Holzwarth2022_125114, &xc_ref_Furness2020_8208, &xc_ref_Furness2020_9248, NULL, NULL},
   XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
   1e-11,
   {N_PAR, names, desc, par_r2scan01, set_ext_params_cpy},

@@ -25,7 +25,7 @@ xc_gga_c_pbe_erf_gws_init(xc_func_type *p)
 {
   xc_hyb_init_hybrid(p, 0.0);
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(gga_c_pbe_erf_gws_params));
+  p->params = libxc_malloc_flags(sizeof(gga_c_pbe_erf_gws_params), p->info->flags);
 }
 
 static const char  *param_names[N_PAR]  = {"_beta", "_gamma", "_a_c","_omega"};

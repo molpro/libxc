@@ -21,7 +21,7 @@ static void
 mgga_c_revtpss_init(xc_func_type *p)
 {
   assert(p != NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(mgga_c_revtpss_params));
+  p->params = libxc_malloc_flags(sizeof(mgga_c_revtpss_params), p->info->flags);
 }
 
 #define REVTPSS_N_PAR 5

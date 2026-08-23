@@ -10,7 +10,7 @@
  ! Hedin & Lundqvist
  integer(c_int), parameter, public :: XC_LDA_C_HL  =      4
 
- ! Gunnarson & Lundqvist
+ ! Gunnarsson & Lundqvist
  integer(c_int), parameter, public :: XC_LDA_C_GL  =      5
 
  ! Slaters Xalpha
@@ -50,7 +50,7 @@
  integer(c_int), parameter, public :: XC_LDA_C_VBH  =     17
 
  ! Casula, Sorella & Senatore
- integer(c_int), parameter, public :: XC_LDA_C_1D_CSC  =     18
+ integer(c_int), parameter, public :: XC_LDA_C_1D_CSS  =     18
 
  ! Slater exchange
  integer(c_int), parameter, public :: XC_LDA_X_2D  =     19
@@ -306,6 +306,9 @@
 
  ! Becke 86
  integer(c_int), parameter, public :: XC_GGA_X_B86  =    103
+
+ ! Beckes original half-and-half functional: 50% HF and 50% LDA xc
+ integer(c_int), parameter, public :: XC_HYB_LDA_XC_B93  =    104
 
  ! Becke 86 with modified gradient correction
  integer(c_int), parameter, public :: XC_GGA_X_B86_MGC  =    105
@@ -581,7 +584,7 @@
  integer(c_int), parameter, public :: XC_GGA_XC_MOHLYP2  =    195
 
  ! Tozer and Handy v. FL
- integer(c_int), parameter, public :: XC_GGA_XC_TH_FL  =    196
+ integer(c_int), parameter, public :: XC_LDA_XC_TH_FL  =    196
 
  ! Tozer and Handy v. FC
  integer(c_int), parameter, public :: XC_GGA_XC_TH_FC  =    197
@@ -682,8 +685,8 @@
  ! Cancio and Chou 2006
  integer(c_int), parameter, public :: XC_MGGA_XC_CC06  =    229
 
- ! Exchange for accurate virtual orbital energies
- integer(c_int), parameter, public :: XC_MGGA_X_MK00  =    230
+ ! Ghosh-Parr 1986 meta-GGA exchange, later reinvestigated by Manby and Knowles
+ integer(c_int), parameter, public :: XC_MGGA_X_GP86  =    230
 
  ! Tao, Perdew, Staroverov & Scuseria
  integer(c_int), parameter, public :: XC_MGGA_C_TPSS  =    231
@@ -895,15 +898,6 @@
  ! MS2beta exchange of Furness and Sun
  integer(c_int), parameter, public :: XC_MGGA_X_MS2B  =    300
 
- ! MS2beta* exchange of Furness and Sun
- integer(c_int), parameter, public :: XC_MGGA_X_MS2BS  =    301
-
- ! MVSbeta exchange by Furness and Sun
- integer(c_int), parameter, public :: XC_MGGA_X_MVSB  =    302
-
- ! MVSbeta* exchange by Furness and Sun
- integer(c_int), parameter, public :: XC_MGGA_X_MVSBS  =    303
-
  ! Revised Minnesota M11 hybrid exchange functional
  integer(c_int), parameter, public :: XC_HYB_MGGA_X_REVM11  =    304
 
@@ -988,10 +982,28 @@
  ! epc18-2: electron-proton correlation 2018 for proton affinities
  integer(c_int), parameter, public :: XC_LDA_C_EPC18_2  =    331
 
- ! Type-I band gap functional by Bhattacharjee, Koshi and Lee
+ ! dispersionless-optimized B97
+ integer(c_int), parameter, public :: XC_GGA_XC_DLB97  =    332
+
+ ! Modified SCAN (mSCAN) exchange of Desmarais, Erba, Vignale, and Pittalis
+ integer(c_int), parameter, public :: XC_MGGA_X_MSCAN  =    333
+
+ ! Modified SCAN (mSCAN) correlation of Desmarais, Erba, Vignale, and Pittalis
+ integer(c_int), parameter, public :: XC_MGGA_C_MSCAN  =    334
+
+ ! PBE reparametrization (version 1) for band gaps
+ integer(c_int), parameter, public :: XC_GGA_X_T_PBE1  =    335
+
+ ! PBE reparametrization (version 2) for band gaps
+ integer(c_int), parameter, public :: XC_GGA_X_T_PBE2  =    336
+
+ ! SLOC reparametrization for band gaps
+ integer(c_int), parameter, public :: XC_LDA_X_T_SLOC  =    337
+
+ ! Exchange part of type-I band gap functional by Bhattacharjee, Koshi and Lee
  integer(c_int), parameter, public :: XC_GGA_X_BKL1  =    338
 
- ! Type-II band gap functional by Bhattacharjee, Koshi and Lee
+ ! Exchange part of type-II band gap functional by Bhattacharjee, Koshi and Lee
  integer(c_int), parameter, public :: XC_GGA_X_BKL2  =    339
 
  ! Minnesota CF22D hybrid exchange functional
@@ -1003,8 +1015,41 @@
  ! Lebeda-Aschebrock-Kummel meta-GGA exchange
  integer(c_int), parameter, public :: XC_MGGA_X_LAK  =    342
 
- ! opB3LYP: B3LYP reoptimized in 6-311++G(2d,2p) basis set
- integer(c_int), parameter, public :: XC_HYB_GGA_XC_OPB3LYP  =    386
+ ! Correlation part of type-I band gap functional by Bhattacharjee, Koshi and Lee
+ integer(c_int), parameter, public :: XC_GGA_C_BKL1  =    343
+
+ ! Correlation part of type-II band gap functional by Bhattacharjee, Koshi and Lee
+ integer(c_int), parameter, public :: XC_GGA_C_BKL2  =    344
+
+ ! Lebeda-Aschebrock-Kummel meta-GGA correlation
+ integer(c_int), parameter, public :: XC_MGGA_C_LAK  =    345
+
+ ! Becke 88 reoptimized by Chakraborty et al for use with vdW functional
+ integer(c_int), parameter, public :: XC_GGA_X_DF3_OPT1  =    346
+
+ ! Becke 86 reoptimized by Chakraborty et al for use with vdW functional
+ integer(c_int), parameter, public :: XC_GGA_X_DF3_OPT2  =    347
+
+ ! HLE17 reparametrization for band gaps
+ integer(c_int), parameter, public :: XC_MGGA_XC_T_HLE17  =    348
+
+ ! Barbiellini & Jarlborg 89
+ integer(c_int), parameter, public :: XC_LDA_C_BJ89  =    349
+
+ ! Lee, Lee & Parr reparametrization of B88
+ integer(c_int), parameter, public :: XC_GGA_X_LLP  =    350
+
+ ! Liu-Parr correlation with 4 parameters
+ integer(c_int), parameter, public :: XC_LDA_C_LP96_B  =    351
+
+ ! Liu-Parr kinetic with 4 parameters
+ integer(c_int), parameter, public :: XC_LDA_K_LP96_B  =    352
+
+ ! Random Phase Approximation based Functional (RPAF)
+ integer(c_int), parameter, public :: XC_LDA_C_RPAF  =    353
+
+ ! CAM-B3LYP retuned for core electron ionization energies
+ integer(c_int), parameter, public :: XC_HYB_GGA_XC_CQTP25  =    385
 
  ! Self-interaction corrected correlation functional by Schmidt et al
  integer(c_int), parameter, public :: XC_MGGA_C_CC  =    387
@@ -1150,10 +1195,10 @@
  ! CAM version of B3LYP, tuned for excitations and properties
  integer(c_int), parameter, public :: XC_HYB_GGA_XC_TUNED_CAM_B3LYP  =    434
 
- ! BHandH i.e. BHLYP
+ ! BHandH: 50% LDA exchange and 50% HF exchange with 100% LYP correlation
  integer(c_int), parameter, public :: XC_HYB_GGA_XC_BHANDH  =    435
 
- ! BHandHLYP
+ ! BHandHLYP a.k.a. BHLYP: 50% B88 exchange and 50% HF exchange with 100% LYP correlation
  integer(c_int), parameter, public :: XC_HYB_GGA_XC_BHANDHLYP  =    436
 
  ! B3LYP with RC04 LDA
@@ -1207,7 +1252,7 @@
  ! MPW with 1 par. for metals/LYP
  integer(c_int), parameter, public :: XC_HYB_GGA_XC_MPWLYP1M  =    453
 
- ! Revised B3LYP
+ ! Revised B3LYP a.k.a. OpB3LYP; B3LYP reoptimized in 6-311++G(2d,2p) basis set
  integer(c_int), parameter, public :: XC_HYB_GGA_XC_REVB3LYP  =    454
 
  ! CAMY version of BLYP
@@ -1522,7 +1567,7 @@
  ! another spin-dependent correction to PBEsol
  integer(c_int), parameter, public :: XC_GGA_C_ZVPBESOL  =    558
 
- ! Takkar and McCarthy reparametrization, also known as reLYP
+ ! Thakkar and McCarthy reparametrization, also known as reLYP
  integer(c_int), parameter, public :: XC_GGA_C_TM_LYP  =    559
 
  ! Thakkar and McCarthy reparametrization
@@ -1537,7 +1582,7 @@
  ! Hybrid based on KCIS
  integer(c_int), parameter, public :: XC_HYB_MGGA_XC_B0KCIS  =    563
 
- ! Lee & Parr, Eq. (56)
+ ! Lee & Parr, Eq. (60)
  integer(c_int), parameter, public :: XC_MGGA_XC_LP90  =    564
 
  ! A dynamical correlation functional
@@ -1831,6 +1876,9 @@
  ! r2SCAN50: r2SCAN hybrid like PBE50 with 50% exact exchange
  integer(c_int), parameter, public :: XC_HYB_MGGA_XC_R2SCAN50  =    661
 
+ ! Range-separated re-regularized SCAN exchange by Wittmann et al
+ integer(c_int), parameter, public :: XC_HYB_MGGA_X_WR2SCAN  =    662
+
  ! CAM hybrid screened exchange PBE version
  integer(c_int), parameter, public :: XC_HYB_GGA_XC_CAM_PBEH  =    681
 
@@ -2016,18 +2064,43 @@
 
  ! MS-PBEl, a PBE-like meta-GGA exchange
  integer(c_int), parameter, public :: XC_MGGA_X_MSPBEL  =    761
- 
+
  ! regularized MS-PBEl
  integer(c_int), parameter, public :: XC_MGGA_X_RMSPBEL  =    762
 
  ! MS-RPBEl, a RPBE-like meta-GGA exchange
  integer(c_int), parameter, public :: XC_MGGA_X_MSRPBEL  =    763
- 
+
  ! regularized MS-RPBEl
  integer(c_int), parameter, public :: XC_MGGA_X_RMSRPBEL  =    764
 
  ! MS-B86bl, a B86b-like meta-GGA exchange
  integer(c_int), parameter, public :: XC_MGGA_X_MSB86BL  =    765
- 
+
  ! regularized MS-B86bl
  integer(c_int), parameter, public :: XC_MGGA_X_RMSB86BL  =    766
+
+ ! Dispersionless physically-informed Minnesota M06-2X hybrid exchange functional
+ integer(c_int), parameter, public :: XC_HYB_MGGA_X_PI_M06_2X_DL  =    767
+
+ ! Dispersionless physically-informed Minnesota M06-2X correlation functional
+ integer(c_int), parameter, public :: XC_MGGA_C_PI_M06_2X_DL  =    768
+
+ ! Physically-informed Minnesota M06-2X hybrid exchange functional
+ integer(c_int), parameter, public :: XC_HYB_MGGA_X_PI_M06_2X  =    769
+
+ ! Physically-informed Minnesota M06-2X correlation functional
+ integer(c_int), parameter, public :: XC_MGGA_C_PI_M06_2X  =    770
+
+ ! COACH exchange-correlation functional
+ integer(c_int), parameter, public :: XC_HYB_MGGA_XC_COACH  =    771
+
+ ! Simplified regularized Tao-Mo exchange (v1)
+ integer(c_int), parameter, public :: XC_MGGA_X_SREGTM_V1  =    772
+
+ ! Simplified regularized Tao-Mo exchange (v2)
+ integer(c_int), parameter, public :: XC_MGGA_X_SREGTM_V2  =    773
+
+ ! Simplified regularized Tao-Mo exchange (v3)
+ integer(c_int), parameter, public :: XC_MGGA_X_SREGTM_V3  =    774
+

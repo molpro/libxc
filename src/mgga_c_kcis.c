@@ -51,9 +51,9 @@ const xc_func_info_type xc_func_info_hyb_mgga_xc_b0kcis = {
   "Hybrid based on KCIS",
   XC_FAMILY_HYB_MGGA,
   {&xc_ref_Toulouse2002_10465, NULL, NULL, NULL, NULL},
-  XC_FLAGS_3D | XC_FLAGS_NEEDS_TAU | MAPLE2C_FLAGS,
+  XC_FLAGS_3D,
   1e-14,
   {0, NULL, NULL, NULL, NULL},
   xc_hyb_mgga_xc_b0kcis_init, NULL,
-  NULL, NULL, &work_mgga
+  NULL, NULL, NULL
 };

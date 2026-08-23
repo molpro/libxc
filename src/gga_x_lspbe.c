@@ -21,7 +21,7 @@ static void
 gga_x_lspbe_init(xc_func_type *p)
 {
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(gga_x_lspbe_params));
+  p->params = libxc_malloc_flags(sizeof(gga_x_lspbe_params), p->info->flags);
 }
 
 #define LSPBE_N_PAR 3

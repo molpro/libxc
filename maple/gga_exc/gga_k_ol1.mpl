@@ -8,6 +8,9 @@
 
 (* type: gga_exc *)
 
+(* The third terms in Equations (14) and (15) are wrong.
+   The expression below reproduces the OL1 results in Table I.
+*)
 ol1_f  := x -> 1 + (x^2/72 + 0.00677*2^(1/3)*x)/K_FACTOR_C:
 
 f := (rs, zeta, xt, xs0, xs1) -> gga_kinetic(ol1_f, rs, zeta, xs0, xs1):

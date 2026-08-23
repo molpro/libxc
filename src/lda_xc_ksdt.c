@@ -30,9 +30,9 @@ typedef struct{
 static const lda_xc_ksdt_params par_ksdt = {
   0.0,  /* T */
   0.0,  /* thetaParam */
-  {     /* b5 = Sqrt[3/2]/(lambda)*b3 */
+  {     /* b5 = Sqrt[3/2]*omega/(lambda)*b3, with omega=1 (zeta=0), omega=2^(1/3) (zeta=1) */
     {0.2839970,  48.9321540, 0.3709190, 61.0953570, 0.871837422702767684673873513724},
-    {0.3290010, 111.5983080, 0.5370530,105.0866630, 1.26233194679913807935662124247}
+    {0.3290010, 111.5983080, 0.5370530,105.0866630, 1.59043859172700921775631406631}
   }, {  /* c */
     {0.8700890, 0.1930770, 2.4146440},
     {0.8489300, 0.1679520, 0.0888200}
@@ -48,9 +48,9 @@ static const lda_xc_ksdt_params par_ksdt = {
 static const lda_xc_ksdt_params par_corrksdt = {
   0.0,  /* T */
   0.0,  /* thetaParam */
-  {     /* b5 = Sqrt[3/2]/(lambda)*b3 */
+  {     /* b5 = Sqrt[3/2]*omega/(lambda)*b3, with omega=1 (zeta=0), omega=2^(1/3) (zeta=1) */
     {0.342554, 9.141315, 0.448483, 18.553096, 1.05414999729322402165649834296},
-    {0.3290010, 111.5983080, 0.5370530,105.0866630, 1.26233194679913807935662124247}
+    {0.3290010, 111.5983080, 0.5370530,105.0866630, 1.59043859172700921775631406631}
   }, {  /* c */
     {0.875130, -0.256320,  0.953988},
     {0.8489300, 0.1679520, 0.0888200}
@@ -67,7 +67,7 @@ static const lda_xc_ksdt_params par_corrksdt = {
 static const lda_xc_ksdt_params par_gdsmfb = {
   0.0 , /* T */
   0.0,  /* thetaParam */
-  {     /* b5 = Sqrt[3/2]/(lambda)*b3 */
+  {     /* b5 = Sqrt[3/2]*omega/(lambda)*b3, with omega=1 (zeta=0), omega=2^(1/3) (zeta=1) */
     {0.34369020, 7.82159531356, 0.300483986662, 15.8443467125, 0.70628138352268528131},
     {0.84987704, 3.04033012073, 0.0775730131248, 7.57703592489, 0.22972614201992673860}
   }, {  /* c */
@@ -88,22 +88,22 @@ lda_xc_ksdt_init(xc_func_type *p)
   lda_xc_ksdt_params *params;
 
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(lda_xc_ksdt_params));
+  p->params = libxc_malloc_flags(sizeof(lda_xc_ksdt_params), p->info->flags);
   params = (lda_xc_ksdt_params *)(p->params);
 
   switch(p->info->number){
   case XC_LDA_XC_KSDT:
-    libxc_memcpy(params, &par_ksdt, sizeof(lda_xc_ksdt_params));
+    libxc_memcpy_flags(params, &par_ksdt, sizeof(lda_xc_ksdt_params), p->info->flags);
     break;
   case XC_LDA_XC_GDSMFB:
-    libxc_memcpy(params, &par_gdsmfb, sizeof(lda_xc_ksdt_params));
+    libxc_memcpy_flags(params, &par_gdsmfb, sizeof(lda_xc_ksdt_params), p->info->flags);
     break;
   case XC_LDA_XC_CORRKSDT:
-    libxc_memcpy(params, &par_corrksdt, sizeof(lda_xc_ksdt_params));
+    libxc_memcpy_flags(params, &par_corrksdt, sizeof(lda_xc_ksdt_params), p->info->flags);
     break;
   default:
     fprintf(stderr, "Internal error in lda_xc_ksdt\n");
-    exit(1);
+    abort();
   }
 }
 

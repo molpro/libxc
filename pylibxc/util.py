@@ -3,9 +3,9 @@ Binds the LibXC utility functions.
 """
 
 import ctypes
-import numpy as np
 
 from .core import core
+from . import array_backend
 
 ### Set required ctypes bindings
 
@@ -26,8 +26,8 @@ core.xc_functional_get_name.restype = ctypes.c_char_p
 core.xc_family_from_id.argtypes = (ctypes.c_int, ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.c_int))
 core.xc_family_from_id.restype = ctypes.c_int
 
-core.xc_available_functional_numbers.argtypes = (np.ctypeslib.ndpointer(dtype=np.intc, ndim=1, flags=("W", "C", "A")), )
-core.xc_available_functional_numbers_by_name.argtypes = (np.ctypeslib.ndpointer(dtype=np.intc, ndim=1, flags=("W", "C", "A")), )
+core.xc_available_functional_numbers.argtypes = (array_backend.pointer(typestr="|i4", ndim=1, flags=("W", "C")), )
+core.xc_available_functional_numbers_by_name.argtypes = (array_backend.pointer(typestr="|i4", ndim=1, flags=("W", "C")), )
 
 core.xc_available_functional_names.argtypes = (ctypes.POINTER(ctypes.c_char_p), )
 
@@ -171,7 +171,7 @@ def xc_functional_get_name(func_id):
     >>> pylibxc.util.xc_functional_get_name(32)
     "gga_x_gam"
     """
-    if not isinstance(func_id, (int, np.integer)):
+    if not array_backend.is_convertible(func_id, ctypes.c_int):
         raise TypeError("xc_functional_get_name: func_id must be an int. Got {}".format(func_id))
     ret = core.xc_functional_get_name(func_id)
     if ret is not None:
@@ -200,7 +200,7 @@ def xc_family_from_id(func_id):
     (4, 4)
 
     """
-    if not isinstance(func_id, (int, np.integer)):
+    if not array_backend.is_convertible(func_id, ctypes.c_int):
         raise TypeError("xc_family_from_id: func_id must be an int. Got {}".format(func_id))
     family = ctypes.c_int()
     number = ctypes.c_int()
@@ -240,14 +240,14 @@ def xc_available_functional_numbers():
     Examples
     --------
     >>> xc_func_list = pylibxc.util.xc_available_functional_numbers()
-    np.array([1, 2, ..., 568, 569])
+    [1, 2, ..., 568, 569]
     """
 
     nfunc = xc_number_of_functionals()
 
-    ret = np.zeros(nfunc, dtype=np.intc)
-    core.xc_available_functional_numbers(ret)
-    return ret
+    ret = (ctypes.c_int * nfunc)(*([0] * nfunc))
+    core.xc_available_functional_numbers(ctypes.cast(ret, ctypes.c_void_p))
+    return [int(n) for n in ret]
 
 
 def xc_available_functional_names():
@@ -267,7 +267,7 @@ def xc_available_functional_names():
 
     # I give up trying to get char** working, someone else can pick it up.
     nfunc = xc_number_of_functionals()
-    func_ids = np.zeros(nfunc, dtype=np.intc)
-    core.xc_available_functional_numbers_by_name(func_ids)
+    func_ids = (ctypes.c_int * nfunc)(*([0] * nfunc))
+    core.xc_available_functional_numbers_by_name(ctypes.cast(func_ids, ctypes.c_void_p))
     available_names = [xc_functional_get_name(x) for x in func_ids]
     return available_names

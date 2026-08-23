@@ -15,6 +15,6 @@
 *)
 
 bkl_f0 := s -> 1 + params_a_gamma*params_a_kappa*(exp(-params_a_alpha*params_a_mu1*s^2) - exp(-params_a_beta*params_a_mu1*s^2)):
-bkl_f  := x -> bkl_f0(X2S*x):
+bkl_f  := x -> bkl_f0(gga_s(x)):
 
 f := (rs, z, xt, xs0, xs1) -> gga_exchange(bkl_f, rs, z, xs0, xs1):

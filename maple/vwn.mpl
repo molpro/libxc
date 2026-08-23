@@ -28,10 +28,18 @@ fpp_vwn := 4/(9*(2^(1/3) - 1)):
 
 fx_vwn := (b, c, rs) -> rs + b*sqrt(rs) + c:
 
+(* At large rs, fx_vwn(b, c, rs) ~ rs, so rs/fx_vwn -> 1 and
+   (sqrt(rs) - x0)^2/fx_vwn -> 1: log of close-to-1.  Both are
+   routed through xc_log1p of (num - den)/den.  The numerator
+   subtractions are written symbolically against fx_vwn so the
+   formula stays single-source -- Maple simplifies the leading `rs`
+   away before codegen (e.g. rs - fx_vwn(b, c, rs) collapses to
+   -b*sqrt(rs) - c), so the emitted C is still cancellation-free
+   and any future retuning of fx_vwn flows through automatically. *)
 f_aux := (A, b, c, x0, rs) -> A*(
-  + log(rs/fx_vwn(b, c, rs))
+  + xc_log1p((rs - fx_vwn(b, c, rs))/fx_vwn(b, c, rs))
   + (f1_vwn(b, c) - f2_vwn(b, c, x0)*f3_vwn(b, c, x0))*arctan(Q_vwn(b, c)/(2*sqrt(rs) + b))
-  - f2_vwn(b, c, x0)*log((sqrt(rs) - x0)^2/fx_vwn(b, c, rs))
+  - f2_vwn(b, c, x0)*xc_log1p(((sqrt(rs) - x0)^2 - fx_vwn(b, c, rs))/fx_vwn(b, c, rs))
 ):
 
 DMC  := (rs, z) ->

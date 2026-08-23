@@ -22,7 +22,7 @@ gga_k_llp_init(xc_func_type *p)
   gga_k_llp_params *params;
 
   assert(p!=NULL && p->params == NULL);
-  p->params = libxc_malloc(sizeof(gga_k_llp_params));
+  p->params = libxc_malloc_flags(sizeof(gga_k_llp_params), p->info->flags);
   params = (gga_k_llp_params *) (p->params);
 
   /* value of beta in standard Becke 88 functional */
@@ -37,7 +37,7 @@ gga_k_llp_init(xc_func_type *p)
     break;
   default:
     fprintf(stderr, "Internal error in gga_k_llp\n");
-    exit(1);
+    abort();
   }
 }
 

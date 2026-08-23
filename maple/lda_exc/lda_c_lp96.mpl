@@ -14,5 +14,5 @@
   params = (lda_c_lp96_params * )(p->params);
 *)
 
-f := (rs, zeta) -> params_a_C1 + params_a_C2*n_total(rs)^(-1/3) + params_a_C3*n_total(rs)^(-2/3):
+f := (rs, zeta) -> params_a_C1 + params_a_C2*n_total(rs)^(-1/3) + params_a_C3*n_total(rs)^(-2/3) + params_a_C4*n_total(rs)^(-1):
 

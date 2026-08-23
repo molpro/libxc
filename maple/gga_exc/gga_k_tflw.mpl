@@ -14,6 +14,6 @@
   params = (gga_k_tflw_params * )(p->params);
 *)
 
-tflw_f := x -> params_a_gamma + (params_a_lambda/8)*x^2/K_FACTOR_C:
+tflw_f := p -> params_a_gamma + (params_a_lambda/8)*p/K_FACTOR_C:
 
-f := (rs, zeta, xt, xs0, xs1) -> gga_kinetic(tflw_f, rs, zeta, xs0, xs1):
+f := (rs, zeta, xt, xs0, xs1) -> gga_kinetic_p(tflw_f, rs, zeta, xs0, xs1):

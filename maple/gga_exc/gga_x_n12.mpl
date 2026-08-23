@@ -20,7 +20,7 @@ n12_gamma_x := 0.004:
 n12_rss := (rs, z) -> rs * 2^(1/3) * opz_pow_n(z,-1/3):
 
 n12_vx := rs -> 1/(1 + (1/(RS_FACTOR*n12_omega_x))*rs):
-n12_ux := x -> n12_gamma_x*x^2/(1 + n12_gamma_x*x^2):
+n12_ux := x -> b97_u(n12_gamma_x, x^2):
 
 n12_FN12 := (rs, z, x) ->
   + add(params_a_CC_0_[i+1]*n12_ux(x)^i, i=0..3)

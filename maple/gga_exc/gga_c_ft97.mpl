@@ -24,7 +24,7 @@ kssp0_k1 := 0.349064173:
 kssp0_r1 := 0.08327588:
 
 kssp0 := rs ->
-  kssp0_k0 - kssp0_k1*(1 - exp(-kssp0_r1*rs^(4/5))):
+  kssp0_k0 - kssp0_k1*(-xc_expm1(-kssp0_r1*rs^(4/5))):
 
 (* Equation (45) *)
 fssp_A1 := 1.622118767:
@@ -47,10 +47,11 @@ kss0_k2 := -0.812904345:
 kss0_r1 :=  1.089338848:
 kss0_r2 :=  0.655638823:
 
-kss0 := (rs, gr) ->
+(* gr is unused -- kss0 depends only on rs *)
+kss0 := rs ->
   + kss0_k0
-  + kss0_k1*(1 - exp(-kss0_r1*sqrt(rs)))
-  + kss0_k2*(1 - exp(-kss0_r2*rs^(2/5))):
+  + kss0_k1*(-xc_expm1(-kss0_r1*sqrt(rs)))
+  + kss0_k2*(-xc_expm1(-kss0_r2*rs^(2/5))):
 
 fss_A4 := 4.946281353:
 fss_A5 := 3.600612059:

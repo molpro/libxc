@@ -1,0 +1,34 @@
+"""
+ Copyright (C) 2020 Susi Lehtola
+
+ This Source Code Form is subject to the terms of the Mozilla Public
+ License, v. 2.0. If a copy of the MPL was not distributed with this
+ file, You can obtain one at http://mozilla.org/MPL/2.0/.
+"""
+
+# type: mgga_exc
+# prefix:
+#   mgga_k_csk_loc_params *params;
+#
+#   assert(p->params != NULL);
+#   params = (mgga_k_csk_loc_params * )(p->params);
+
+from libxc_codegen import *  # noqa: F401, F403
+
+params_a_csk_cp = param_default("csk_cp")
+params_a_csk_cq = param_default("csk_cq")
+
+include('mgga_k_csk')
+
+# Equation (21).  The literal 1's cancel exactly, but as written the
+# codegen would form (1 + cp*p + cq*q) - 1 - 5p/3, adding the small
+# cp*p + cq*q to 1 (losing its low bits) before subtracting 1 back.
+# Cancel the constants by hand so the small quantity is never added
+# to 1: 1 + cp*p + cq*q - (1 + 5p/3) = (cp - 5/3)*p + cq*q.
+
+@helper
+def csk_z(p, q):
+    return (params_a_csk_cp - Integer(5)/Integer(3))*p + params_a_csk_cq*q
+
+TYPE = "mgga_exc"
+PARAMS_STRUCT = "mgga_k_csk_loc_params"

@@ -10,9 +10,11 @@
 
 $include "hyb_mgga_x_pjs18.mpl"
 
-(* This expression (10) has \tilde A, and not A *)
+(* This expression (10) has \tilde A, and not A.
+   Use tm_one_minus_w (defined in mgga_x_tm.mpl) for the SC weight so
+   the iso-orbital cancellation is gone. *)
 js18_f_SR := (rs, z, x, t) -> tm_w(x, t)*js18_DME_SR(rs, z, x, t)
-  + (1 - tm_w(x, t))*attenuation_erf(a_cnst*rs/opz_pow_n(z,1/3))*tm_fx_SC(x, t):
+  + tm_one_minus_w(x, t)*attenuation_erf(a_cnst*rs/opz_pow_n(z,1/3))*tm_fx_SC(x, t):
 
 js18_f := (rs, z, x, u, t) -> -p_a_cam_beta*js18_f_SR(rs, z, x, t) + tm_f(x, u, t):
 
